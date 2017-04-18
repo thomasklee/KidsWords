@@ -16,4 +16,4 @@ Funding was provided by the [Marsden Fund of the Royal Society of New Zealand](h
 * William J Gavin, Colorado State University
 * Nuttanan Witchitaksorn, Thailand Development Research Institute
 
-![KidsWords banner](images/CMDS1836_Kids_Word_Banner.jpg)
+![](images/CMDS1836_Kids_Word_Banner.jpg)
