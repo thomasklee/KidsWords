@@ -3,7 +3,7 @@
 # Data preparation-01
 # Thomas Klee
 # Created: 18 Apr 2017
-# Revised: 22 Apr 2017
+# Revised: 23 Apr 2017
 # ---------------------------
 
 # This script removes fields from the original data files
@@ -43,11 +43,11 @@ CDI_temp <- read_csv("data/Kidswords_cdi_replies_011216.csv")
 # load parent questionnaire data
 PQ_temp <- read_csv("data/Kidswords_scl_replies_011216.csv")
 
-# remove sensitive information from parent questionnaire data, including
-# child's name, respondent's name, phone numbers, email address
+# remove variables containing sensitive information
+# including child's name, respondent's name, phone numbers, email address
 PQ_temp <- select(PQ_temp, -i_1_1, -i_2_1, -i_1_28, -i_1_29, -i_1_30) 
 
-# remove unused variable from CDI data
+# remove unused variable
 CDI_temp <- select(CDI_temp, -WAVE)
 
 # remove records added during website's test phase
