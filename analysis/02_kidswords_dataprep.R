@@ -3,7 +3,7 @@
 # Data preparation-02
 # Thomas Klee
 # Created: 17 Apr 2017
-# Updated: 23 Apr 2017
+# Updated: 24 Apr 2017
 # ---------------------------
 
 # This script (1) defines the word lookup data frame, 
@@ -45,8 +45,9 @@ word_lookup <- rename(word_lookup,
                  IPC = IPC_CDI_wf
                  )
 
-# replace incorrect birthdate in record 22826
+# replace incorrect birthdates
 CDI <- mutate(CDI, BIRTHDAY = replace(BIRTHDAY, CHILD_ID == 22826, "16-03-12"))
+# CDI <- mutate(CDI, BIRTHDAY = replace(BIRTHDAY, CHILD_ID == 20574, "dd-mm-10")) # from KidsWords participants database
 
 # locate records with missing sex (i_1_2) data in PQ dataframe
 PQ[is.na(PQ$i_1_2), ]
@@ -140,6 +141,7 @@ CDI <- rename(CDI, session_date = FILLEDOUT)
 CDI$session_date <- parse_date_time(CDI$session_date, "d-m-y")
 
 # create "session" variable and assign ranks to its values based session date
+# from http://stackoverflow.com/questions/29568956/how-to-add-a-rank-column-to-sorted-dates-in-r
 CDI <-
   CDI %>% group_by(CHILD_ID) %>%
   mutate(session = rank(session_date)) %>%
@@ -148,64 +150,128 @@ CDI <-
 # declare "session" as a factor
 CDI$session <- factor(CDI$session)
 
-# check relevant variables and their definitions; remove temp1
-temp1 <- select(CDI, CHILD_ID, DOB, session_date, session)
-temp1
-rm(temp1)
+# calculate child's age (in days)
+CDI <- mutate(CDI, c_agedays = session_date - DOB)
 
-# done to here ----------------------------------
+# begin test section ============================
+
+# several calculations were tested to
+# calculate number of whole months between two dates 
+# based on http://stackoverflow.com/questions/1995933/number-of-months-between-two-dates
+
+# test 1: calculate agemos1
+CDI_agetest <- mutate(CDI, agemos1 = as.numeric(floor((session_date - DOB) / (365.25/12))))
+# result: age not rounded up until same day of next month reached.
+# first 50 records were tested against hand calculations and all 
+# new values were as expected
+
+# test 2: calculate agemos2
+# uses lubridate package
+CDI_agetest$agemos2 <- interval(CDI$DOB, CDI$session_date) %/% months(1)
+# result: produced identical values to test 1 (agemos1)
+
+# test 3: calculate agemos3
+elapsed_months <- function(end_date, start_date) {
+  ed <- as.POSIXlt(end_date)
+  sd <- as.POSIXlt(start_date)
+  12 * (ed$year - sd$year) + (ed$mon - sd$mon)
+}
+CDI_agetest <- transform(CDI_agetest, agemos3 = elapsed_months(CDI$session_date, CDI$DOB))
+# result: appears to round age to nearest month, so could be used as an alternative
+
+# check relevant variables and their definitions and display
+# note that the "AGE" variable was part of the original data file and should not be used
+CDI_agetest <- select(CDI_agetest, CHILD_ID, DOB, session_date, DOB, AGE, agemos1, agemos2, agemos3, session)
+CDI_agetest
+
+# remove temporary dataframe
+rm(CDI_agetest)
+
+# end test section ==============================
+
+
+# calculate child's age (in months) without rounding to next month;
+# if rounding is called for, use agemos3 variable in test section above
+CDI$c_agemos <- interval(CDI$DOB, CDI$session_date) %/% months(1)
+
+# display relevant variables and remove temp 
+temp <- select(CDI, CHILD_ID, DOB, session_date, c_agemos, c_agedays, session)
+temp
+rm(temp)
+
+# done to here ==================================
 
 # rename some variables using dplyr format (new_name = current_name)
 CDI <- rename(CDI, PID = CHILD_ID)
 PQ <- rename(PQ,
              PID = SCL_ID,
              csex = i_1_2,
-             cbirth_order= i_1_3
+             cbirth_order = i_1_3,
+             cbirth_weight_g = i_1_4,
+             cbirth_weight_lb = i_1_5,
+             cbirth_weight_oz = i_1_6,
+#              = i_1_7,
+             cpremature = i_1_8,
+             cprem_wks= i_1_9,
+#              = i_1_10,
+#              = i_1_11,
+#             = i_1_12,
+#             = i_1_13,
+#             = i_1_14,
+#             = i_1_15,
+#             = i_1_16,
+#             = i_1_17,
+#             = i_1_18,
+#             = i_1_19,
+#             = i_1_20,
+#             = i_1_21,
+#             = i_1_22,
+             PQ1_lang_conc = i_1_23,
+             PQ2_comm_conc = i_1_24,
+             PQ3_hear_conc = i_1_25,
+             why_concerned = i_1_26,
+#             = i_1_27,
+#             = i_1_31,
+#             = i_1_32,
+             region = i_1_33,
+#             = i_2_2,
+#             = i_2_3,
+#             = i_2_4,
+#             = i_2_5,
+#             = i_2_6,
+#             = i_2_7,
+#             = i_2_8,
+#             = i_2_9,
+#             = i_2_10,
+             occupation = i_2_11
              )
 
-# declare variables as factors
+# ---------------------------
+# need to convert birthweight to grams
+# and create new variable: cbirthweight
+
+# lbs_g = (cbirth_weight_lb / 2.2046)*1000
+# oz_g = cbirth_weight_oz / 0.035274
+# cbirthweight = lbs_g + oz_g
+# ---------------------------
+
+# declare some variables as factors
 PQ$csex <- factor(PQ$csex)
 PQ$cbirth_order <- factor(PQ$cbirth_order)
 
-# test of concept -------------------------------
+# convert CDI data frame from wide- to long-format # works
+CDI <- 
+  CDI %>%
+  gather(key = CDI_item, value = measurement, i_1_1:i_32_1, factor_key = TRUE)
 
-# Fake data creating a new variable (time) and assigning ranks based on dates
-# http://stackoverflow.com/questions/29568956/how-to-add-a-rank-column-to-sorted-dates-in-r
+# drop variables not needed from CDI data frame
+# since they occur in the PQ data frame
+CDI <- select(CDI, PID, DOB, session_date, session, CDI_item, measurement)
 
-set.seed(5)
-dat = data.frame(date=sample(seq(as.Date("2015-01-01"), as.Date("2015-01-31"), 
-                                 "1 day"), 12),
-                 ID=rep(LETTERS[1:3], c(2,6,4)))
+# -----------------------------------------------
+# needed only if calculating odds ratios 
+# declare that baseline (reference) category female
+# PQ$csex <- relevel(PQ$csex, "Girl")
 
-dat %>% group_by(ID) %>%
-  mutate(wave = rank(date)) %>%
-  arrange(ID, wave)
-
-# work to be done -------------------------------
-
-# test script for calculating age in months from a csv file
-
-library(tidyverse)
-library(lubridate)
-
-datedata <- read_csv("datedata.csv")
-
-mutate(datedata, agemos = round((DOE - DOB) / (365.25/12)))
-
-# length(seq(datedata, from=DOB, to=DOE, by='month')) - 1 
-
-# works, but not used --------------------------------
-
-# vitals2 <- read_csv("tk_vitals.csv")
-
-# change "date" variable (integer) into a date type
-#vitals2$date <- ymd(vitals2$date)
-#vitals2
-
-#agedays <- ymd("20170406") - ymd("20170122") #works
-
-# ----------------------------------------------------
-
-#elapsed_months("2017-04-06", "2016-04-30")
 
 sessionInfo()
