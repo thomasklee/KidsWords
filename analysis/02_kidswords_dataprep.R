@@ -6,10 +6,11 @@
 # Updated: 24 Apr 2017
 # ---------------------------
 
-# This script (1) defines the word lookup data frame, 
-# (2) cleans the PQ data frame, and (3) adds a new variable 
-# to CDI data frame to designate session order of cross-sectional 
-# and longitudinal data.
+# This script (1) defines the word lookup data frame; 
+# (2) cleans the PQ data frame;
+# (3) adds a new variable to CDI data frame indicating session order
+# of cross-sectional and longitudinal data; and
+# (4) tests and adds child age variables (in days and months) for each record.
 
 # The script requires two data files to run:
 # data_CDI.csv, data_PQ.csv
@@ -189,7 +190,6 @@ rm(CDI_agetest)
 
 # end test section ==============================
 
-
 # calculate child's age (in months) without rounding to next month;
 # if rounding is called for, use agemos3 variable in test section above
 CDI$c_agemos <- interval(CDI$DOB, CDI$session_date) %/% months(1)
@@ -199,7 +199,9 @@ temp <- select(CDI, CHILD_ID, DOB, session_date, c_agemos, c_agedays, session)
 temp
 rm(temp)
 
+
 # done to here ==================================
+# code below needs further work =================
 
 # rename some variables using dplyr format (new_name = current_name)
 CDI <- rename(CDI, PID = CHILD_ID)
@@ -272,6 +274,5 @@ CDI <- select(CDI, PID, DOB, session_date, session, CDI_item, measurement)
 # needed only if calculating odds ratios 
 # declare that baseline (reference) category female
 # PQ$csex <- relevel(PQ$csex, "Girl")
-
 
 sessionInfo()
