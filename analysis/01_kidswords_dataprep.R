@@ -3,7 +3,7 @@
 # Data preparation-01
 # Thomas Klee
 # Created: 18 Apr 2017
-# Revised: 23 Apr 2017
+# Revised: 24 Apr 2017
 # ---------------------------
 
 # This script removes fields from the original data files
@@ -63,7 +63,6 @@ PQ_temp <- filter(PQ_temp, SCL_ID < 22029 | SCL_ID > 22196)
 # correct data entry dates for paper-based CDIs manually entered 
 # into kidswords.org by RAs from 72 parents initially recruited for
 # Learning to Talk, but not enrolled in that project
-
 CDI_temp <- mutate(CDI_temp, FILLEDOUT = replace(FILLEDOUT, CHILD_PASSWORD == "2uS4Ug", "07-12-12"))
 CDI_temp <- mutate(CDI_temp, FILLEDOUT = replace(FILLEDOUT, CHILD_PASSWORD == "BRene9", "11-08-12"))
 CDI_temp <- mutate(CDI_temp, FILLEDOUT = replace(FILLEDOUT, CHILD_PASSWORD == "c8A3up", "13-06-12"))
@@ -130,7 +129,6 @@ CDI_temp <- mutate(CDI_temp, FILLEDOUT = replace(FILLEDOUT, CHILD_PASSWORD == "T
 CDI_temp <- mutate(CDI_temp, FILLEDOUT = replace(FILLEDOUT, CHILD_PASSWORD == "WabU6a", "24-01-12"))
 CDI_temp <- mutate(CDI_temp, FILLEDOUT = replace(FILLEDOUT, CHILD_PASSWORD == "sPEt6e", "30-08-12"))
 CDI_temp <- mutate(CDI_temp, FILLEDOUT = replace(FILLEDOUT, CHILD_PASSWORD == "9UStam", "16-06-12"))
-#CDI_temp <- mutate(CDI_temp, FILLEDOUT = replace(FILLEDOUT, CHILD_PASSWORD == "KuB57W", ""))
 CDI_temp <- mutate(CDI_temp, FILLEDOUT = replace(FILLEDOUT, CHILD_PASSWORD == "7ebeBr", "26-10-12"))
 CDI_temp <- mutate(CDI_temp, FILLEDOUT = replace(FILLEDOUT, CHILD_PASSWORD == "had6aM", "19-06-12"))
 CDI_temp <- mutate(CDI_temp, FILLEDOUT = replace(FILLEDOUT, CHILD_PASSWORD == "Z3p2ub", "04-11-12"))
