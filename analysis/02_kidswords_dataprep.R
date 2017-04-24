@@ -185,8 +185,9 @@ CDI_agetest <- transform(CDI_agetest, agemos3 = elapsed_months(CDI$session_date,
 CDI_agetest <- select(CDI_agetest, CHILD_ID, DOB, session_date, DOB, AGE, agemos1, agemos2, agemos3, session)
 CDI_agetest
 
-# remove temporary dataframe
+# remove temporary dataframe and function
 rm(CDI_agetest)
+rm(elapsed_months)
 
 # end test section ==============================
 
