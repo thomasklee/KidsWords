@@ -62,7 +62,8 @@ PQ_temp <- filter(PQ_temp, SCL_ID < 22029 | SCL_ID > 22196)
 
 # correct data entry dates for paper-based CDIs manually entered 
 # into kidswords.org by RAs from 72 parents initially recruited for
-# Learning to Talk, but not enrolled in that project
+# Learning to Talk, but not enrolled in that project.
+# dates below were written on paper CDI forms by parents
 CDI_temp <- mutate(CDI_temp, FILLEDOUT = replace(FILLEDOUT, CHILD_PASSWORD == "2uS4Ug", "07-12-12"))
 CDI_temp <- mutate(CDI_temp, FILLEDOUT = replace(FILLEDOUT, CHILD_PASSWORD == "BRene9", "11-08-12"))
 CDI_temp <- mutate(CDI_temp, FILLEDOUT = replace(FILLEDOUT, CHILD_PASSWORD == "c8A3up", "13-06-12"))

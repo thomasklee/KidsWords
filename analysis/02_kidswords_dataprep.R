@@ -3,14 +3,14 @@
 # Data preparation-02
 # Thomas Klee
 # Created: 17 Apr 2017
-# Updated: 24 Apr 2017
+# Updated: 25 Apr 2017
 # ---------------------------
 
 # This script (1) defines the word lookup data frame; 
-# (2) cleans the PQ data frame;
+# (2) cleans the PQ data frame and adds name of variables;
 # (3) adds a new variable to CDI data frame indicating session order
 # of cross-sectional and longitudinal data; and
-# (4) tests and adds child age variables (in days and months) for each record.
+# (4) tests and adds child age variables (in days and months).
 
 # The script requires two data files to run:
 # data_CDI.csv, data_PQ.csv
@@ -48,7 +48,7 @@ word_lookup <- rename(word_lookup,
 
 # replace incorrect birthdates
 CDI <- mutate(CDI, BIRTHDAY = replace(BIRTHDAY, CHILD_ID == 22826, "16-03-12"))
-# CDI <- mutate(CDI, BIRTHDAY = replace(BIRTHDAY, CHILD_ID == 20574, "dd-mm-10")) # from KidsWords participants database
+CDI <- mutate(CDI, BIRTHDAY = replace(BIRTHDAY, CHILD_ID == 20574, "23-03-10")) # from KidsWords participants database
 
 # locate records with missing sex (i_1_2) data in PQ dataframe
 PQ[is.na(PQ$i_1_2), ]
@@ -200,67 +200,62 @@ temp <- select(CDI, CHILD_ID, DOB, session_date, c_agemos, c_agedays, session)
 temp
 rm(temp)
 
-
-# done to here ==================================
-# code below needs further work =================
-
-# rename some variables using dplyr format (new_name = current_name)
+# rename variables using dplyr format (new_name = current_name)
 CDI <- rename(CDI, PID = CHILD_ID)
 PQ <- rename(PQ,
              PID = SCL_ID,
+#            cname = i_1_1, # removed
              csex = i_1_2,
              cbirth_order = i_1_3,
              cbirth_weight_g = i_1_4,
              cbirth_weight_lb = i_1_5,
              cbirth_weight_oz = i_1_6,
-#              = i_1_7,
+             ctwin = i_1_7,
              cpremature = i_1_8,
-             cprem_wks= i_1_9,
-#              = i_1_10,
-#              = i_1_11,
-#             = i_1_12,
-#             = i_1_13,
-#             = i_1_14,
-#             = i_1_15,
-#             = i_1_16,
-#             = i_1_17,
-#             = i_1_18,
-#             = i_1_19,
-#             = i_1_20,
-#             = i_1_21,
-#             = i_1_22,
-             PQ1_lang_conc = i_1_23,
-             PQ2_comm_conc = i_1_24,
-             PQ3_hear_conc = i_1_25,
-             why_concerned = i_1_26,
-#             = i_1_27,
-#             = i_1_31,
-#             = i_1_32,
+             cprem_wks = i_1_9,
+             chealth_probs = i_1_10,
+             chealth_what = i_1_11,
+             csiblings = i_1_12,
+             ccountry_born = i_1_13,
+             ccountry_where= i_1_14,
+             ctime_in_nz = i_1_15,
+             cethnicity_nz = i_1_16,
+             cethnicity_other = i_1_17,
+             cmain_lang = i_1_18,
+             cother_langs = i_1_19,
+             cwhich_langs = i_1_20,
+             cdaycare = i_1_21,
+             cdaycare_hrs = i_1_22,
+             PQ3_hear_conc = i_1_23,
+             PQ1_lang_conc = i_1_24,
+             PQ2_comm_conc = i_1_25,
+             why_conc = i_1_26,
+             discuss_conc = i_1_27,
+             #            home_phone = i_1_28, # removed
+             #            cell_phone = i_1_29, # removed
+             #            email_address = i_1_30, # removed
+             family_hist = i_1_31,
+             family_hist_who = i_1_32,
              region = i_1_33,
-#             = i_2_2,
-#             = i_2_3,
-#             = i_2_4,
-#             = i_2_5,
-#             = i_2_6,
-#             = i_2_7,
-#             = i_2_8,
-#             = i_2_9,
-#             = i_2_10,
-             occupation = i_2_11
-             )
-
-# ---------------------------
-# need to convert birthweight to grams
-# and create new variable: cbirthweight
-
-# lbs_g = (cbirth_weight_lb / 2.2046)*1000
-# oz_g = cbirth_weight_oz / 0.035274
-# cbirthweight = lbs_g + oz_g
-# ---------------------------
+             #            pname = i_2_1, # removed
+             prelation = i_2_2,
+             pbirth_place = i_2_3,
+             pother_place = i_2_4,
+             parrived_nz = i_2_5,
+             pethnicity_nz = i_2_6,
+             pethnicity_other = i_2_7,
+             psec_qual = i_2_8,
+             pother_qual = i_2_9,
+             pother_qual_what = i_2_10,
+             poccupation = i_2_11
+)
 
 # declare some variables as factors
 PQ$csex <- factor(PQ$csex)
 PQ$cbirth_order <- factor(PQ$cbirth_order)
+# =================
+# add any others
+# =================
 
 # convert CDI data frame from wide- to long-format # works
 CDI <- 
@@ -271,9 +266,18 @@ CDI <-
 # since they occur in the PQ data frame
 CDI <- select(CDI, PID, DOB, session_date, session, CDI_item, measurement)
 
-# -----------------------------------------------
-# needed only if calculating odds ratios 
-# declare that baseline (reference) category female
-# PQ$csex <- relevel(PQ$csex, "Girl")
+# declare baseline (reference) category for csex
+# (needed for calculating odds ratios) 
+PQ$csex <- relevel(PQ$csex, "Girl")
+
+
+# done to here ==================================
+# code below needs further work =================
+
+# need to convert birthweight to grams
+# and create new variable: cbirthweight
+# lbs_g = (cbirth_weight_lb / 2.2046)*1000
+# oz_g = cbirth_weight_oz / 0.035274
+# cbirthweight = lbs_g + oz_g
 
 sessionInfo()
