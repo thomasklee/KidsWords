@@ -36,6 +36,7 @@
 
 # load packages
 library(tidyverse)
+library(lubridate)
 
 # load CDI data
 CDI_temp <- read_csv("data/Kidswords_cdi_replies_011216.csv")

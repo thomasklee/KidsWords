@@ -3,7 +3,7 @@
 # Data preparation-02
 # Thomas Klee
 # Created: 17 Apr 2017
-# Updated: 26 Apr 2017
+# Updated: 10 May 2017
 # ---------------------------
 
 # This script: 
@@ -268,44 +268,5 @@ PQ$csex <- relevel(PQ$csex, "Girl")
 
 # merge CDI data with word_lookup data 
 # item_data <- merge(CCDI_items, lookup, by = "item_id")
-
-
-# begin test section ============================
-# code below works but is not needed ============
-
-# several calculations were tested to
-# calculate number of whole months between two dates 
-# based on http://stackoverflow.com/questions/1995933/number-of-months-between-two-dates
-
-# test 1: calculate agemos1
-CDI_agetest <- mutate(CDI, agemos1 = as.numeric(floor((session_date - DOB) / (365.25/12))))
-# result: age not rounded up until same day of next month reached.
-# first 50 records were tested against hand calculations and all 
-# new values were as expected
-
-# test 2: calculate agemos2
-# uses lubridate package
-CDI_agetest$agemos2 <- interval(CDI$DOB, CDI$session_date) %/% months(1)
-# result: produced identical values to test 1 (agemos1)
-
-# test 3: calculate agemos3
-elapsed_months <- function(end_date, start_date) {
-  ed <- as.POSIXlt(end_date)
-  sd <- as.POSIXlt(start_date)
-  12 * (ed$year - sd$year) + (ed$mon - sd$mon)
-}
-CDI_agetest <- transform(CDI_agetest, agemos3 = elapsed_months(CDI$session_date, CDI$DOB))
-# result: appears to round age to nearest month, so could be used as an alternative
-
-# check relevant variables and their definitions and display
-# note that the "AGE" variable was part of the original data file and should not be used
-CDI_agetest <- select(CDI_agetest, CHILD_ID, DOB, session_date, DOB, AGE, agemos1, agemos2, agemos3, session)
-CDI_agetest
-
-# remove temporary dataframe and function
-rm(CDI_agetest)
-rm(elapsed_months)
-
-# end test section ==============================
 
 sessionInfo()
