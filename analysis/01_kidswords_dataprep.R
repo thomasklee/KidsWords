@@ -3,7 +3,7 @@
 # Data preparation-01
 # Thomas Klee
 # Created: 18 Apr 2017
-# Revised: 24 Apr 2017
+# Revised: 12 May 2017
 # ---------------------------
 
 # This script removes fields from the original data files
@@ -17,8 +17,7 @@
 # that were part of the website's test phrase.
 
 # -----------------------------------------------
-# neither this script nor the original data files 
-# should be pushed to GitHub
+# the original data files should not be pushed to GitHub
 # -----------------------------------------------
 
 # Data files received on 2016-12-01:
@@ -26,12 +25,15 @@
 # Kidswords_sci_replies_011216.csv
 # KidsWords_user_children_20161201.csv
 
-# MS Access data not used -----------------------
+# MS Access data --------------------------------
 # The data files above were originally imported to a MS Access database
 # and processed there. Database queries were used to generate the 
 # following data files:
 # data1 <- read_csv("data/qry_statfile_T1_ID_CA_Sex_CDIwordtotal_20161201.csv") 
 # data2 <- read_csv("data/qry_vocabulary_entry_all.csv")
+# These data file are not used subsequently.
+# Instead, R is used to process and analyse the data
+# to enable reproducibility.
 # -----------------------------------------------
 
 # load packages
