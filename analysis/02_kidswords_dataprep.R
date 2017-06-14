@@ -3,7 +3,7 @@
 # Data preparation-02
 # Thomas Klee
 # Created: 17 Apr 2017
-# Updated: 19 May 2017
+# Updated: 14 June 2017
 # ---------------------------
 
 # This script: 
@@ -46,6 +46,9 @@ word_lookup <- rename(word_lookup,
                  WL = Length_phoneme_CDIwf, # word length in phonemes
                  IPC = IPC_CDI_wf
                  )
+
+# drop unneeded variable from lookup 
+word_lookup <- select(word_lookup, -Refno_CDIwf)
 
 # replace incorrect birthdates
 CDI <- mutate(CDI, BIRTHDAY = replace(BIRTHDAY, CHILD_ID == 22826, "16-03-12"))
@@ -220,6 +223,7 @@ PQ <- rename(PQ,
 )
 
 # declare some variables as nominal or ordered factors
+PQ$PID <- factor(PQ$PID)
 PQ$csex <- factor(PQ$csex)
 PQ$cbirth_order <- ordered(PQ$cbirth_order)
 PQ$ctwin <- factor(PQ$ctwin)
@@ -246,18 +250,24 @@ PQ$pethnicity_nz <- factor(PQ$pethnicity_nz)
 PQ$pethnicity_other <- factor(PQ$pethnicity_other)
 PQ$psec_qual <- factor(PQ$psec_qual)
 
+CDI$PID <- factor(CDI$PID)
+
+word_lookup$sem_field <- factor(word_lookup$sem_field)
+word_lookup$word_class <- factor(word_lookup$word_class)
+word_lookup$syl_structure <- factor(word_lookup$syl_structure)
+
 # create 2nd data frame from CDI before converting CDI to long-format
 CDI_wide <- CDI
 
 # convert CDI data frame from wide- to long-format
-CDI <- 
+CDI_long <- 
   CDI %>%
-  gather(key = CDI_item, value = measurement, i_1_1:i_32_1, factor_key = TRUE)
+  gather(key = itemID, value = response, i_1_1:i_32_1, factor_key = TRUE)
 
 # select variables from CDI data frames that don't also occur in PQ
-CDI <- select(CDI, PID, DOB, DOS, session, span, camos, cadays, 
-              CDI_item, measurement)
-CDI_wide <- select(CDI_wide, PID, DOB, DOS, session, span, camos, cadays) 
+CDI_long <- select(CDI_long, PID, DOB, DOS, session, camos, cadays, 
+              itemID, response)
+CDI_wide <- select(CDI_wide, PID, DOB, DOS, session, camos, cadays) 
 
 # declare baseline (reference) category for csex
 # (needed for calculating odds ratios) 
