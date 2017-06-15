@@ -288,8 +288,8 @@ CDI_words <- mutate(CDI_words, resp = response)
 # vocabulary size correctly calculated as 0.
 
 # recode "Says" as 1 and NA as 0
-CDI_words$resp <- recode(CDI_words$resp, Says = 1)
 CDI_words <- CDI_words %>% replace_na(list(resp = 0))
+CDI_words$resp <- recode(CDI_words$resp, Says = 1)
 
 # CDI_words$resp[is.na(CDI_words$resp)] <- 0  # also works but not used
 
