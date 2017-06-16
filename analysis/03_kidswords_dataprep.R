@@ -35,7 +35,7 @@ wordtotals <- CDI_words %>%
 #   select(PID, camos, words)  # reorder variables
 
 # merge wordtotals with other variables
-CDIdata <- merge(wordtotals, CDI_wide, by = c("PID", "session"))
+CDIdata <- merge(wordtotals, CDI_wide, by = c("PID", "session"))  ## merge(x, y) uses an inner_join
 CDIdata <- select(CDIdata, PID, session, DOB, DOS, camos, cadays, wordtotal)  # reorder variables
 
 # select relevant variables from parent quesionnaire
@@ -45,6 +45,9 @@ PQdata <-
 
 # merge CDI and PQ variables
 CDIPQ <- merge(CDIdata, PQdata, by = "PID")
+
+# convert data frame to csv file
+write_csv(CDIPQ, "data/data_CDIPQ.csv")
 
 glimpse(CDIPQ)
 
