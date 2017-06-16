@@ -8,10 +8,6 @@ Over 2,500 parents of toddlers between 16 and 30 months of age, from every regio
 
 The purpose of this repository is to make our data analyses **reproducible** by others. Consequently, data files and R scripts will be placed in this repository as they become available. 
 
-### Funding
-
-Funding was provided by the [Marsden Fund of the Royal Society of New Zealand](http://royalsociety.org.nz/programmes/funds/marsden/) (UOC 1003) to Thomas Klee, Stephanie F Stokes and Catherine Moran, University of Canterbury, and by the [MacArthur-Bates CDI Advisory Board](https://mb-cdi.stanford.edu/board.html).
-
 ### Research Team
 
 * Thomas Klee, The University of Hong Kong
@@ -20,6 +16,10 @@ Funding was provided by the [Marsden Fund of the Royal Society of New Zealand](h
 * Rune Jørgensen, University of Southern Denmark
 * Dorthe Bleses, Aarhus University
 * William J Gavin, Colorado State University
-* Nuttanan Witchitaksorn, Thailand Development Research Institute
+* Nuttanan Witchitaksorn, Auckland University of Technology
+
+### Funding
+
+Funding was provided by the [Marsden Fund of the Royal Society of New Zealand](http://royalsociety.org.nz/programmes/funds/marsden/) (UOC 1003) to Thomas Klee, Stephanie F Stokes and Catherine Moran, University of Canterbury, and by the [MacArthur-Bates CDI Advisory Board](https://mb-cdi.stanford.edu/board.html).
 
 ![](images/CMDS1836_Kids_Word_Banner.jpg)
