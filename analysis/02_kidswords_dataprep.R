@@ -252,7 +252,6 @@ PQ$psec_qual <- factor(PQ$psec_qual)
 
 CDI$PID <- factor(CDI$PID)
 
-# word_lookup$sem_field <- factor(word_lookup$sem_field)
 word_lookup$word_class <- factor(word_lookup$word_class)
 word_lookup$syl_structure <- factor(word_lookup$syl_structure)
 
