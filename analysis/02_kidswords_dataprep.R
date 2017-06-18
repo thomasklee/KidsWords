@@ -257,7 +257,7 @@ CDI_wide <- CDI
 # convert CDI data frame from wide- to long-format
 CDI_long <- 
   CDI %>%
-  gather(key = itemID, value = response, i_1_1:i_32_1, factor_key = TRUE)  #line works
+  gather(key = itemID, value = response, i_1_1:i_32_1, factor_key = TRUE)
 
 # select variables from CDI data frames that don't also occur in PQ
 CDI_long <- select(CDI_long, PID, DOB, DOS, session, camos, cadays, 
