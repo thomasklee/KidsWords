@@ -3,7 +3,7 @@
 # Data preparation-02
 # Thomas Klee
 # Created: 17 Apr 2017
-# Updated: 17 June 2017
+# Updated: 18 June 2017
 # ---------------------------
 
 # This script: 
@@ -21,9 +21,15 @@
 # (3) cdi_lookup.csv labels each item on the CDI and
 # describes some linguistic features of the CDI words.
 
-# The script also merges the lookup and CDI data frames and creates 
-# a new variable ("resp" in CDI_words) containing 1s and 0s instead of 
-# "Says" and NA.
+# The script merges the lookup and CDI data frames and creates 
+# a new variable ("resp" in CDI_words data frame) containing 1s and 0s 
+# instead of "Says" and NA. The "resp" variable also contains 1s and 0s 
+# for CDI Section E items originally coded with values from 0-2.
+
+# The script creates CDI_text, a data frame consisting of CDI items with
+# open-ended, text-based responses.
+
+# The script produces long (CDI_words) and wide (CDI, CDI_wide) data frames.
 
 # load packages
 library(tidyverse)
@@ -35,20 +41,6 @@ PQ <- read_csv("data/data_PQ.csv")
 
 # load lookup table of CDI vocabulary characteristics
 word_lookup<- read_csv("data/cdi_lookup.csv")
-
-# rename variables in lookup dataframe using dplyr
-word_lookup <- rename(word_lookup, 
-                 itemID = CDI_ItemID_CDIwf, # KidsWords item ID
-                 CDI_item = CDI_Item_CDIwf, # CDI item
-                 sem_field = Semantic_field_CDIwf, # semantic field of word
-                 syllables = Syllables_CDIwf, # number of syllables in word
-                 word_class = WordClass_CDIwf, # grammatical class of word
-                 syl_structure = SylStruct_CDIwf, # syllable structure of word
-                 ND = ND_CDIwf, # neighborhood density of word
-                 WF = WF_CDIwf, # word frequency in English
-                 WL = Length_phoneme_CDIwf, # word length in phonemes
-                 IPC = IPC_CDI_wf
-                 )
 
 # replace incorrect birthdates
 CDI <- mutate(CDI, BIRTHDAY = replace(BIRTHDAY, CHILD_ID == 22826, "16-03-12"))
@@ -265,7 +257,7 @@ CDI_wide <- CDI
 # convert CDI data frame from wide- to long-format
 CDI_long <- 
   CDI %>%
-  gather(key = itemID, value = response, i_1_1:i_32_1, factor_key = TRUE)
+  gather(key = itemID, value = response, i_1_1:i_32_1, factor_key = TRUE)  #line works
 
 # select variables from CDI data frames that don't also occur in PQ
 CDI_long <- select(CDI_long, PID, DOB, DOS, session, camos, cadays, 
@@ -278,17 +270,38 @@ CDI_words <- merge(CDI_long, word_lookup, by = "itemID")
 # create new (duplicate) variable
 CDI_words <- mutate(CDI_words, resp = response)
 
-# recode values of new variable in order to count
-# "1"s and "0"s instead of number of rows = "Says".
-# Any child with no words checked on CDI will now have 
-# vocabulary size correctly calculated as 0.
+# filter out open-ended response items (30 & 32) and put in new data frame
+CDI_text <- CDI_words %>% 
+  filter(field == 30 | field == 32) %>% 
+  select(PID, session, field, CDI_item, itemID, response)
 
-# recode "Says" as 1 and NA as 0 (following 2 steps must occur in this order)
-# note: step 1 generates warning message that can be ignored: "Unreplaced values 
-# treated as NA as .x is not compatible. Please specify replacements 
-# exhaustively or supply .default"
-CDI_words$resp <- recode(CDI_words$resp, Says = 1) 
-CDI_words <- CDI_words %>% replace_na(list(resp = 0)) 
+# delete these text records from CDI_words
+CDI_words <- CDI_words %>% 
+  filter(field != 30 & field != 32) 
+#  select(PID, session, field, CDI_item, itemID, response)
+
+# recode text responses into numeric code in 3 CDI items 
+CDI_words$resp <- ifelse(CDI_words$resp == "Often", "2", CDI_words$resp)
+CDI_words$resp <- ifelse(CDI_words$resp == "Sometimes", "1", CDI_words$resp)
+CDI_words$resp <- ifelse(CDI_words$resp == "Not Yet", "0", CDI_words$resp)
+
+# recode values of new variable (resp) in order to count
+# "1"s and "0"s instead of number of rows = "Says".
+# Any child having no words checked on CDI will have 
+# vocabulary size correctly calculated as 0.
+CDI_words$resp <- ifelse(CDI_words$resp == "Says", "1", CDI_words$resp)
+CDI_words$resp <- ifelse(is.na(CDI_words$resp), 0, CDI_words$resp) 
+
+# CDI Section E: Complexity
+# find records in Section E (field = 31) with resp = 1, and replace with 0;
+# find records in Section E with resp = 2 and replace with 1;
+# recoding of original "response" variable containing NAs (to resp = 0) was done above
+# from https://stackoverflow.com/questions/40705807/replace-values-on-condition-in-r
+CDI_words[CDI_words$field == 31 & CDI_words$resp == "1", c("resp")] <- "0"
+CDI_words[CDI_words$field == 31 & CDI_words$resp == "2", c("resp")] <- "1"
+
+# declare "resp" variable to be an integer
+CDI_words$resp <- as.integer(CDI_words$resp)
 
 # delete CDI_long
 rm(CDI_long)
