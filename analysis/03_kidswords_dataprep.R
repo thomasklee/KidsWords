@@ -2,70 +2,93 @@
 # KidsWords Project
 # Data preparation-03
 # Thomas Klee
-# Created: 9 June 2017
-# Updated: 18 June 2017
+# Created: 09 June 2017
+# Updated: 21 June 2017
 # ---------------------------
 
 library(tidyverse)
 
 # This script:
-# calculates the total number of CDI words for each child in session 1,
-# merges the CDI data with selected variables from the parent questionnaire,
+# calculates CDI word total and grammatical complexity score for each child;
+# merges the CDI data with selected variables from the parent questionnaire;
 # and summarizes the variables.
+
+# Note that no filters have been applied for age or session number.
 
 # Depends on the output of prior scripts:
 # 01_kidswords_dataprep.R
-# 01_kidswords_dataprep.R
+# 02_kidswords_dataprep.R
 
 # calculate CDI vocabulary size
-# based on session 1 (each child's 1st CDI) 
-# ages 16 through 30 months 
 wordtotals <- CDI_words %>% 
-  filter(field <= 22, session == 1,  camos > 15, camos < 31) %>% 
+  filter(field <= 22) %>% 
   select(PID, session, camos, cadays, field, CDI_item, itemID, resp) %>% 
   group_by(PID, session) %>% 
   summarise(wordtotal = sum(resp)) 
 
-# =============================================
-
 # calculate CDI grammatical complexity score
-# based on session 1 (each child's 1st CDI) 
-# ages 16 through 30 months 
+gctotals <- CDI_words %>% 
+  filter(field == 31) %>% 
+  select(PID, session, camos, cadays, field, CDI_item, itemID, resp) %>% 
+  group_by(PID, session) %>% 
+  summarise(gctotal = sum(resp)) 
 
-# select all CDI items with ("Says" or NA) response options 
-# 
-CDI_words <- CDI_words %>% 
-  filter(field < 23 | between(field, 25, 28))
+# extract comprehension question from CDI and declare as factor
+CDI_comp <- CDI_words %>% 
+  filter(CDI_item == "1_B4") %>% 
+  select(PID, session, CDI_item, response, resp) %>% 
+  group_by(PID, session)
 
-# -------------
+# extract word combinations question from CDI and declare as factor
+CDI_wc <- CDI_words %>% 
+  filter(CDI_item == "word_comb") %>% 
+  select(PID, session, CDI_item, response, resp) %>% 
+  group_by(PID, session)
 
-# CDI Section E: Complexity
-# find records in Section E (field = 31) with resp = 1, and replace with 0
-# find records in Section E with resp = 2 and replace with 1
-# "resp" recoding of original "response" variable was done previous (with 0) 
-# https://stackoverflow.com/questions/40705807/replace-values-on-condition-in-r
-CDI_words[CDI_words$field == 31 & CDI_words$resp == "1", c("resp")] <- "0"
-CDI_words[CDI_words$field == 31 & CDI_words$resp == "2", c("resp")] <- "1"
+# merge wordtotals and gctotals
+CDI_measures <- merge(wordtotals, gctotals, by = c("PID", "session"))
 
-# ==============================================
+# merge with CDI_comp
+CDI_measures <- merge(CDI_measures, CDI_comp, by = c("PID", "session"))
 
-# merge wordtotals with other variables
-CDIdata <- merge(wordtotals, CDI_wide, by = c("PID", "session"))  ## merge(x, y) uses an inner_join
-CDIdata <- select(CDIdata, PID, session, DOB, DOS, camos, cadays, wordtotal)  # reorder variables
+# merge with CDI_wc
+CDI_measures <- merge(CDI_measures, CDI_wc, by = c("PID", "session"))
+
+# merge CDI_measures with other variables
+CDIdata <- merge(CDI_measures, CDI_wide, by = c("PID", "session"))  ## merge(x, y) uses an inner_join
+CDIdata <- select(CDIdata, PID, session, DOB, DOS, camos, cadays, wordtotal, gctotal, resp.x, resp.y)  # reorder variables
+
+# rename variables
+CDIdata <- rename(CDIdata,
+             CDI_comp = resp.x,
+             CDI_wc = resp.y)
+
+# declare variables as factors
+CDIdata$CDI_comp <- factor(CDIdata$CDI_comp)
+CDIdata$CDI_wc <- factor(CDIdata$CDI_wc)
 
 # select relevant variables from parent quesionnaire
 PQdata <-
   PQ %>% 
-  select(PID, csex, cbirth_order, ctwin, cdaycare, region)
+  select(PID, csex, cbirth_order, ctwin, cdaycare, region, peduc)
 
 # merge CDI and PQ variables
 CDIPQ <- merge(CDIdata, PQdata, by = "PID")
 
 # convert data frame to csv file
-write_csv(CDIPQ, "data/data_CDIPQ.csv")
+write_csv(CDIPQ, "data/data_CDIPQ_4.csv")
 
 glimpse(CDIPQ)
 
 summary(CDIPQ)
+
+# remove temporary data frames
+rm(wordtotals)
+rm(gctotals)
+rm(CDIdata)
+rm(PQdata)
+rm(CDI_wc)
+rm(CDI_comp)
+rm(CDI_wide)
 
 sessionInfo()
