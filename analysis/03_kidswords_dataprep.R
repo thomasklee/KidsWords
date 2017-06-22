@@ -76,7 +76,7 @@ PQdata <-
 CDIPQ <- merge(CDIdata, PQdata, by = "PID")
 
 # convert data frame to csv file
-write_csv(CDIPQ, "data/data_CDIPQ_4.csv")
+write_csv(CDIPQ, "data/data_CDIPQ.csv")
 
 glimpse(CDIPQ)
 
