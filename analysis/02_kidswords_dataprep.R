@@ -3,7 +3,7 @@
 # Data preparation-02
 # Thomas Klee
 # Created: 17 Apr 2017
-# Updated: 21 June 2017
+# Updated: 22 June 2017
 # ---------------------------
 
 # This script: 
@@ -249,6 +249,40 @@ PQ$psec_qual <- factor(PQ$psec_qual)
 
 word_lookup$word_class <- factor(word_lookup$word_class)
 word_lookup$syl_structure <- factor(word_lookup$syl_structure)
+
+# recode variable values for consistency
+PQ$prelation <- recode(PQ$prelation, 
+                       Mother = "mother", Mum = "mother", mum = "mother", 
+                       mummy = "mother", Mummy = "mother",
+                       "Mumma!" = "mother", "Mum (one of two)" = "mother",
+                       mothet = "mother", Mothet = "mother", Mothers = "mother",
+                       "mother to olivia" = "mother",
+                       "Im her mother" = "mother", "I am her mother" = "mother",
+                       "Im her Mother" = "mother", "I am his mother." = "mother",
+                       "I am his mother" = "mother", "His mother." = "mother",
+                       "his mother" = "mother", "Her mummy :)" = "mother",
+                       "Her mother" = "mother", "her mother" = "mother",
+                       "Grandmother and part time carer" = "grandmother",
+                       "Grandmother" = "grandmother", "Foster mum" = "foster mother",
+                       MOther = "mother", Monther = "mother", MOTHER = "mother",
+                       "mother (and stand in for father)" = "mother",
+                       mama = "mother", Mama = "mother", mom = "mother",
+                       Melissa = "mother", 
+                       "Bens Mum" = "mother", Mothe = "mother",
+                       Morher = "mother", Moither = "mother",
+                       mither = "mother", Māmā = "mother",
+                       Father = "father", daddy = "father", 
+                       "Mother / Father" = "mother and father",
+                       "Mother/Son" = "mother", "Mother Daughter" = "mother",
+                       "Mother and son" = "mother", "Mother and daughter" = "mother",
+                       "Mother / Son" = "mother", "Mother / Father" = "mother and father",
+                       Parents = "mother and father", parents = "mother and father",
+                       Parent = "mother or father", "Dad & Mum" = "mother and father",
+                       close = "unknown", yes = "unknown", Yes = "unknown",
+                       Son = "mother or father", daughter = "mother or father",
+                       Daughter = "mother or father", 
+                       "He is my son" = "mother or father", monther = "mother"
+                       )
 
 # rename PQed variables
 PQed <- rename(PQed, 
