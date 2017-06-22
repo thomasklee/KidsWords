@@ -24,6 +24,10 @@
 # (4) Parent education level was recoded by hand into summary
 # categories used by Statistics NZ and appears in KidsWords_peduc.csv.
 
+# The script makes changes to several fields of the parent questionnaire.
+# The new information resulted from contacting parents about missing data
+# or apparently incorrect data entered by them on the website.
+
 # The script merges the lookup and CDI data frames and creates 
 # a new variable ("resp" in CDI_words data frame) containing 1s and 0s 
 # instead of "Says" and NA. The "resp" variable also contains 1s and 0s 
