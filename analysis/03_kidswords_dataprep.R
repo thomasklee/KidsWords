@@ -3,7 +3,7 @@
 # Data preparation-03
 # Thomas Klee
 # Created: 09 June 2017
-# Updated: 21 June 2017
+# Updated: 22 June 2017
 # ---------------------------
 
 library(tidyverse)
@@ -85,8 +85,6 @@ summary(CDIPQ)
 # remove temporary data frames
 rm(wordtotals)
 rm(gctotals)
-rm(CDIdata)
-rm(PQdata)
 rm(CDI_wc)
 rm(CDI_comp)
 rm(CDI_wide)
