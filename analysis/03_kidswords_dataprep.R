@@ -70,7 +70,7 @@ CDIdata$CDI_wc <- factor(CDIdata$CDI_wc)
 # select relevant variables from parent quesionnaire
 PQdata <-
   PQ %>% 
-  select(PID, csex, cbirth_order, ctwin, cdaycare, region, peduc)
+  select(PID, csex, cbirth_order, ctwin, cdaycare, region, prelation, cborn_in_nz, family_hist, peduc)
 
 # merge CDI and PQ variables
 CDIPQ <- merge(CDIdata, PQdata, by = "PID")
