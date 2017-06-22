@@ -3,7 +3,7 @@
 # Data preparation-01
 # Thomas Klee
 # Created: 18 Apr 2017
-# Revised: 12 May 2017
+# Revised: 22 Jun 2017
 # ---------------------------
 
 # This script removes fields from the original data files
@@ -50,6 +50,10 @@ PQ_temp <- read_csv("data/Kidswords_scl_replies_011216.csv")
 # including child's name, respondent's name, phone numbers, email address
 PQ_temp <- select(PQ_temp, -i_1_1, -i_2_1, -i_1_28, -i_1_29, -i_1_30) 
 
+# replace values containing sensitive information
+PQ_temp <- mutate(PQ_temp, i_2_2 = replace(i_2_2, SCL_ID == 21612, "mother"))
+PQ_temp <- mutate(PQ_temp, i_2_2 = replace(i_2_2, SCL_ID == 23321, "mother"))
+
 # remove unused variable
 CDI_temp <- select(CDI_temp, -WAVE)
 
@@ -65,7 +69,7 @@ PQ_temp <- filter(PQ_temp, SCL_ID < 22029 | SCL_ID > 22196)
 
 # correct data entry dates for paper-based CDIs manually entered 
 # into kidswords.org by RAs from 72 parents initially recruited for
-# Learning to Talk, but not enrolled in that project.
+# Learning to Talk but not enrolled in that project.
 # dates below were written on paper CDI forms by parents
 CDI_temp <- mutate(CDI_temp, FILLEDOUT = replace(FILLEDOUT, CHILD_PASSWORD == "2uS4Ug", "07-12-12"))
 CDI_temp <- mutate(CDI_temp, FILLEDOUT = replace(FILLEDOUT, CHILD_PASSWORD == "BRene9", "11-08-12"))
