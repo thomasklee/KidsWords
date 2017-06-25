@@ -21,7 +21,7 @@ CDIPQ <- read.csv("data/data_CDIPQ.csv")
 # for the full sample,
 # tabulate sample size of each age x sex cell and add margin totals
 tbl_agesex1 <- addmargins(table(CDIPQ$camos, CDIPQ$csex, dnn = c("Age", "")))
-colnames(tbl_agesex1) <- c("Boys", "Girls", "n")
+colnames(tbl_agesex1) <- c("Boys", "Girls", "Total")
 tbl_agesex1
 
 # the "Age" column header gets lost when adding latex commands; otherwise ok
@@ -53,10 +53,44 @@ bosex_props <- (prop.table(table(CDIPQxs$cbirth_order)) * 100)
 # combine population and sample data, name columns, create latex table 
 tbl_bosex <- cbind(bosex_counts, bosex_rowcounts, bosex_props)
 colnames(tbl_bosex) <- c("Boys", "Girls", "Total", "%")
+tbl_bosex
 
 print(xtable(tbl_bosex,  
              digits = c(0, 0, 0, 0, 1), align = "lrrrr", 
              label = "tbl:bosex"), booktabs = TRUE)
+
+# -----------------------------------------------
+statsnz <- read_csv("data/NZBirths_20140914_NA_omit.csv")
+
+NZbirths <- table(statsnz$region, statsnz$runAve)
+NZbirths <- round((statsnz$runAve * 100), digits = 1)
+
+# Calculate number of births per region in the KidsWords sample
+region_totals <- table(CDIPQxs$region)
+
+# Convert frequencies to percentages
+region_props <- (prop.table(table(CDIPQxs$region)) * 100)
+
+# Combine population and sample data, name columns, create latex table 
+region_tbl <- with(CDIPQxs, cbind(region_totals, region_props, NZbirths))
+colnames(region_tbl) <- c("n", "Sample (%)", "Population (%)")
+region_tbl
+
+print(xtable(region_tbl, digits = c(0, 0, 1, 1), align = "lrrr", 
+             caption = 'Sample size by region in relation to distribution of births in the population; ignore first row for now',
+             label = "tbl:regions"), caption.placement = 'top', booktabs = TRUE)
+
+rm(bosex_counts)
+rm(bosex_props)
+rm(tbl_agesex1)
+rm(tbl_agesex2)
+rm(tbl_bosex)
+rm(bosex_rowcounts)
+rm(region_tbl)
+rm(NZbirths)
+rm(region_props)
+rm(region_totals)
+rm(statsnz)
 
 sessionInfo()
 
