@@ -3,16 +3,16 @@
 # Growth curves for vocabulary
 # Thomas Klee
 # Created: 04 July 2017
-# Updated:  
+# Updated: 06 July 2017
 # ---------------------------
 
 # This script constructs growth curves for vocabulary
 # based on growth curve quantile regression models. 
 # Vocabularly growth as a function of age is plotted, 
 # with separate plots for boys, girlsand combined sexes.
+# Plots are exported as PDF files.
 
 library(tidyverse)
-library(quantreg)
 library(quantregGrowth)
 library(ggthemes)
 library(RColorBrewer)
@@ -33,57 +33,88 @@ xs <- CDIPQ %>%
 attach(xs)
 
 # define quantiles of interest
-tau_set1 <- c(0.05, 0.10, 0.25, 0.50, 0.75, 0.90, 0.95)
+tau_set1 <- c(0.05, 0.10, 0.25, 0.50, 0.75, 0.90)
 
 # fit quantile curves for boys and girls combined
-gcrq_comb <- gcrq(wordtotal ~ ps(camos, monotone = 1, lambda = 1000),
+gcrq_comb <- gcrq(wordtotal ~ ps(camos, monotone = 1, lambda = 100),
            data = xs, tau = tau_set1)
 
+summary(gcrq_comb)
+
 # select colors for quantile lines
-mypalette<-brewer.pal(7,"Paired")
+mypalette<-brewer.pal(6,"Dark2")
 
 print(gcrq_comb, digits = 2)
 
+# set font size used in all plots
+par(cex=1.25)
+
+# plot combined sexes in one graph and export 
+pdf("gcrq_comb.pdf", width = 7.0, height = 5.5)
 plot(gcrq_comb, 
      # y = TRUE, # uncomment to add data points
      xlab = "Age (months)", 
-     ylab = "Vocabulary Size (words)", 
+     ylab = "Vocabulary size (words)",
      legend = TRUE, 
-     lwd = 3, col = mypalette, lty = "solid", 
-     main = "Conditional quantiles for words produced\n Combined sexes (N = 2617)\n  New Zealand English (CDI:WS)")
+     lwd = 2, col = mypalette, lty = "solid",
+     main = "Girls and Boys Combined")
+dev.off()
 
-# fit quantile curves for boys only
+# fit quantile curves for boys only -------------
 xs_boys <- xs %>% 
   filter(session == 1,  camos >= 16 & camos <= 30, csex == "Boy")
 
-gcrq_boys <- gcrq(wordtotal ~ ps(camos, monotone = 1, lambda = 1000),
+gcrq_boys <- gcrq(wordtotal ~ ps(camos, monotone = 1, lambda = 100),
            data = xs_boys, tau = tau_set1)
 
-print(gcrq_boys, digits = 2)
-
+# plot boys in a graph and export 
+pdf("gcrq_boys.pdf", width = 7.0, height = 5.5)
 plot(gcrq_boys, 
      # y = TRUE, # uncomment if data points wanted
      xlab = "Age (months)", 
-     ylab = "Vocabulary Size (words)", 
+     ylab = "Vocabulary size (words)", 
      legend = TRUE,
-     lwd = 3, col = mypalette, lty = "solid",
-     main = "Conditional quantiles for words produced\n Boys (N = 1281)\n  New Zealand English (CDI:WS)")
+     lwd = 2, col = mypalette, lty = "solid",
+     main = "Boys")
+dev.off()
 
-# fit quantile curves for girls only
+# fit quantile curves for girls only ------------
 xs_girls <- xs %>% 
   filter(session == 1,  camos >= 16 & camos <= 30, csex == "Girl")
 
-gcrq_girls <- gcrq(wordtotal ~ ps(camos, monotone = 1, lambda = 1000),
+gcrq_girls <- gcrq(wordtotal ~ ps(camos, monotone = 1, lambda = 100),
                data = xs_girls, tau = tau_set1)
 
 print(gcrq_girls, digits = 2)
 
+# plot girls in a graph and export 
+pdf("gcrq_girls.pdf", width = 7.0, height = 5.5)
 plot(gcrq_girls, 
      # y = TRUE, # uncomment if data points wanted
      xlab = "Age (months)", 
-     ylab = "Vocabulary Size (words)", 
+     ylab = "Vocabulary size (words)", 
      legend = TRUE,
-     lwd = 3, col = mypalette, lty = "solid",
-     main = "Conditional quantiles for words produced\n Girls (N = 1336)\n  New Zealand English (CDI:WS)")
+     lwd = 2, col = mypalette, lty = "solid",
+     main = "Girls")
+dev.off()
+
+# plot girls and boys in side-by-side graphs and expor
+pdf("gcrq_girls_boys.pdf", width = 7.0, height = 5.5)
+par(mfrow = c(1, 2))
+plot(gcrq_girls, 
+     # y = TRUE, # uncomment if data points wanted
+     xlab = "Age (months)", 
+     ylab = "Vocabulary size (words)", 
+     legend = TRUE,
+     lwd = 2, col = mypalette, lty = "solid",
+     main = "Girls")
+plot(gcrq_boys, 
+     # y = TRUE, # uncomment if data points wanted
+     xlab = "Age (months)", 
+     ylab = "Vocabulary size (words)", 
+     legend = TRUE,
+     lwd = 2, col = mypalette, lty = "solid",
+     main = "Boys")
+dev.off()
 
 sessionInfo()
