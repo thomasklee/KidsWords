@@ -2,7 +2,7 @@
 
 KidsWords is an international collaborative research project on the early language development of children growing up in New Zealand. 
 One of the aims of the project is to establish normative data for the New Zealand adaptation of the
-*MacArthur-Bates Communicative Development Inventory: Words & Sentences*. Another aim is to examine factors thought to be associated with children's early vocabulary and grammatical development.
+*MacArthur-Bates Communicative Development Inventory: Words & Sentences* (PDF version available above). Another aim is to examine factors thought to be associated with children's early vocabulary and grammatical development.
 
 Over 2,500 parents of toddlers between 16 and 30 months of age, from every region of New Zealand, participated and data were collected at http://kidswords.org. The website is no longer being used for data collection. 
 
