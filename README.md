@@ -6,7 +6,7 @@ One of the aims of the project is to establish normative data for the New Zealan
 
 Over 2,500 parents of toddlers between 16 and 30 months of age, from every region of New Zealand, participated and data were collected at http://kidswords.org. The website is no longer being used for data collection. 
 
-The purpose of this repository is to make our data analyses transparent and reproducible by others. Consequently, text-based R scripts and data files (CSV format) will be placed in this repository as they become available.
+The purpose of this repository is to make our data analyses transparent and reproducible by others. Consequently, text-based R scripts and data files (CSV format) will be placed here as they become available.
 
 ### Research Team
 
