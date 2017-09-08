@@ -3,7 +3,7 @@
 # Data preparation-02
 # Thomas Klee
 # Created: 17 Apr 2017
-# Updated: 22 June 2017
+# Updated: 08 Sep 2017
 # ---------------------------
 
 # This script: 
@@ -50,7 +50,7 @@ PQ <- read_csv("data/data_PQ.csv")
 word_lookup<- read_csv("data/cdi_lookup.csv")
 
 # load recoded parent education data from the PQ
-PQed <- read_csv("data/KidsWords_peduc.csv")
+PQed <- read_csv("data/KidsWords_peduc_20170904.csv")
 
 # replace incorrect birthdates
 CDI <- mutate(CDI, BIRTHDAY = replace(BIRTHDAY, CHILD_ID == 22826, "16-03-12"))
@@ -287,11 +287,6 @@ PQ$prelation <- recode(PQ$prelation,
                        Daughter = "mother or father", 
                        "He is my son" = "mother or father", monther = "mother"
                        )
-
-# rename PQed variables
-PQed <- rename(PQed, 
-               PID = SCL_ID,
-               peduc = pEducLevel)
 
 # select relevant variables from PQed
 PQed <- select(PQed, PID, peduc)
