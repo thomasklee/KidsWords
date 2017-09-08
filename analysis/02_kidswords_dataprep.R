@@ -22,7 +22,7 @@
 # (3) cdi_lookup.csv labels each item on the CDI and
 # describes some linguistic features of the CDI words.
 # (4) Parent education level was recoded by hand into summary
-# categories used by Statistics NZ and appears in KidsWords_peduc.csv.
+# categories used by Statistics NZ (in KidsWords_peduc_20170904.csv).
 
 # The script makes changes to several fields of the parent questionnaire.
 # The new information resulted from contacting parents about missing data
