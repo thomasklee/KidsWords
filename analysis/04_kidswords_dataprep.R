@@ -43,3 +43,4 @@ write_csv(CDIPQ, "data/data_CDIPQ.csv")
 glimpse(CDIPQ)
 
 summary(CDIPQ)
+
