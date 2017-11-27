@@ -2,8 +2,8 @@
 # KidsWords Project
 # Data preparation-03
 # Thomas Klee
-# Created: 09 June 2017
-# Updated: 22 June 2017
+# Created: 2017-06-09
+# Updated: 2017-11-27
 # ---------------------------
 
 library(tidyverse)
