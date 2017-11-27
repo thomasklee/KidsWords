@@ -3,7 +3,7 @@
 # Summary statistics
 # Thomas Klee
 # Created: 2017-06-22
-# Updated: 2017-09-18
+# Updated: 2017-09-19
 # ---------------------------
 
 # This script constructs summary tables and graphs.
@@ -122,20 +122,32 @@ CDIPQxs$pedcat <- ordered(CDIPQxs$pedcat)
 
 CDIPQxs$camos <- ordered(CDIPQxs$camos)
 
-# create density ridgeline plots word totals by maternal education
+# plot word totals by maternal education --------
+
+# density ridgeline plot
 ggplot(CDIPQxs, aes(x = wordtotal, y = pedcat)) + 
   geom_density_ridges(scale = 0.85) +
   scale_x_continuous(limits = c(0, 700)) +
   theme_few() +
   scale_colour_few(palette = "dark")  
 
-# create density ridgeline plots of word totals by age
-ggplot(CDIPQxs, aes(x = wordtotal, y = camos)) + 
-  geom_density_ridges(scale = 0.85) +
-  scale_x_continuous(limits = c(0, 700)) +
-  theme_few() +
-  scale_colour_few(palette = "dark")  
+# notched box plot using ggplot
+ggplot(CDIPQxs, aes(pedcat, wordtotal)) + 
+  stat_boxplot(notch = TRUE) + 
+  theme_few()
 
+# notched box plot using base R
+boxplot(wordtotal ~ pedcat, data = CDIPQxs, 
+        notch = TRUE, col = "linen", range=1.5,
+        names = c("A", "B", "C", "D"),
+#        names = c("some secondary qualification", 
+#                  "secondary education certs and dips", 
+#                  "undergrad and postgrad degrees and grad and postgrad",
+#                  "university degree"),
+        xlab = "Maternal Education Attained", 
+        ylab = "Vocabulary Size in Words")
+
+# -----------------------------------------------
 # calculate percentage of each education level in the sample
 cat0 <- filter(CDIPQxs, pedcat == 0)
 cat0pct <- nrow(cat0) / nrow(CDIPQxs)
@@ -150,8 +162,8 @@ cat3 <- filter(CDIPQxs, pedcat == 3)
 cat3pct <- nrow(cat3) / nrow(CDIPQxs)
 
 # for the purpose of comparison, plot summary data for CDI word totals
-# and grammatical complexity 3 different ways: 
-# notched boxplots, box-percentile plots & violin plots
+# and grammatical complexity in different ways: 
+# notched boxplots, box-percentile plots, violin plots, density ridgeline plots
 
 # -----------------------------------------------
 # create notched boxplots of CDI word total for each month
@@ -198,6 +210,14 @@ vioplot(x16, x17, x18, x19, x20, x21, x22, x23,
                   "23", "24", "25", "26", "27", "28", "29", "30"), 
         col = "linen")  
 # unsure how to add axis labels; xlab and ylab don't work
+
+# -----------------------------------------------
+# create density ridgeline plots of word totals by age
+ggplot(CDIPQxs, aes(x = wordtotal, y = camos)) + 
+  geom_density_ridges(scale = 0.85) +
+  scale_x_continuous(limits = c(0, 700)) +
+  theme_few() +
+  scale_colour_few(palette = "dark") 
 
 # -----------------------------------------------
 # create notched boxplots of CDI grammatical complexity score for each month
