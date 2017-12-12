@@ -26,6 +26,8 @@ CDIPQ <- read.csv("data/data_CDIPQ.csv")
 xs <- CDIPQ %>% 
   filter(session == 1,  camos >= 16 & camos <= 30)
 
+# create plot with 3 categories -----------------
+
 # declare wc variable as a factor
 xs$CDI_wc <- as.factor(xs$CDI_wc)
 
@@ -38,10 +40,29 @@ dfwc <- xs %>%
   count(wc) %>%
   mutate(prop_wc = prop.table(n))
   
-# plot proportions across age range
+# plot proportions across age range using original categories
 ggplot(dfwc, aes(x = camos, y = prop_wc, fill = wc)) + geom_bar(stat = "identity") +
   labs(x = "Age (months)", y = "Proportion", title = "Reported word combinations on NZ CDI") +
   facet_grid(wc ~ .) +
+  guides(fill = FALSE) +
+  theme_hc()
+
+# create new plot with 2 categories -------------
+
+# create new wc variable with labels
+xs$wc2 <- recode_factor(xs$CDI_wc, '0' = "Not yet", '1' = "Sometimes or Often", '2' = "Sometimes or Often")
+
+# calculate proportion of each wc category at each age
+dfwc2 <- xs %>%
+  group_by(camos) %>%
+  count(wc2) %>%
+  mutate(prop_wc = prop.table(n))
+
+# plot proportions across age range using original categories
+ggplot(dfwc2, aes(x = camos, y = prop_wc, fill = wc2)) + geom_bar(stat = "identity") +
+  labs(x = "Age (months)", y = "Proportion", title = "Reported word combinations on NZ CDI") +
+  facet_grid(wc2 ~ .) +
+  guides(fill = FALSE) +
   theme_hc()
 
 sessionInfo()
