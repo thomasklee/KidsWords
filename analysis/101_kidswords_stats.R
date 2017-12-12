@@ -94,33 +94,7 @@ print(xtable(region_tbl, digits = c(0, 0, 1, 1), align = "lrrr",
              births in the population; ignore first row for now',
              label = "tbl:regions"), caption.placement = 'top', booktabs = TRUE)
 
-# -----------------------------------------------
-# aggregate peduc codes (0-9) into a new variable (pedcat)
-# using Statistics NZ categories and declare as an ordered factor:
-# 0 = no qualification
-# 1 = level 1-2 certificates (some secondary qualification)
-# 2 = level 3-4 certificates and level 5-6 diplomas (secondary education certs and dips)
-# 3 = level 7-10 undergrad and postgrad degrees and grad and postgrad 
-# certs and dips (university degree)
-# 11 = level 11 overseas secondary school qualification
-CDIPQxs$pedcat <- recode(CDIPQxs$peduc,
-                         '0' = "0",
-                         '1' = "1",
-                         '2' = "1",
-                         '3' = "2",
-                         '4' = "2",
-                         '5' = "2",
-                         '6' = "2",
-                         '7' = "3",
-                         '8' = "3",
-                         '9' = "3",
-                         '10' = "3",
-                         '11' = "2"
-)
 
-CDIPQxs$pedcat <- ordered(CDIPQxs$pedcat)
-
-CDIPQxs$camos <- ordered(CDIPQxs$camos)
 
 # plot word totals by maternal education --------
 
