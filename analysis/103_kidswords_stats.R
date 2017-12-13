@@ -3,11 +3,12 @@
 # Word combinations
 # Thomas Klee
 # Created: 2017-12-12
-# Updated: 2017-12-12
+# Updated: 2017-12-13
 # ---------------------------
 
 # This script analyses reported use of word combinations
-# as a function of age, sex and other variables.
+# as a function of age and sex. The relationship is graphed
+# in several ways.
 
 library(tidyverse)
 library(ggthemes)
@@ -26,43 +27,111 @@ CDIPQ <- read.csv("data/data_CDIPQ.csv")
 xs <- CDIPQ %>% 
   filter(session == 1,  camos >= 16 & camos <= 30)
 
-# create plot with 3 categories -----------------
+# plot proportion of WCs by age using 3 CDI categories ----
 
 # declare wc variable as a factor
 xs$CDI_wc <- as.factor(xs$CDI_wc)
 
 # create new wc variable with labels
-xs$wc <- recode_factor(xs$CDI_wc, '0' = "Not yet", '1' = "Sometimes", '2' = "Often")
+xs$wc <- recode_factor(xs$CDI_wc, '0' = "Not yet", 
+                       '1' = "Sometimes", '2' = "Often")
 
-# calculate proportion of each wc category at each age
+# calculate proportion of each category across age
 dfwc <- xs %>%
   group_by(camos) %>%
   count(wc) %>%
   mutate(prop_wc = prop.table(n))
   
-# plot proportions across age range using original categories
-ggplot(dfwc, aes(x = camos, y = prop_wc, fill = wc)) + geom_bar(stat = "identity") +
-  labs(x = "Age (months)", y = "Proportion", title = "Reported word combinations on NZ CDI") +
+# plot proportions across age range
+ggplot(dfwc, aes(x = camos, y = prop_wc, fill = wc)) + 
+  geom_bar(stat = "identity") +
+  labs(x = "Age (months)", y = "Proportion of Children") +
   facet_grid(wc ~ .) +
+  ggtitle("Word combinations reported", "New Zealand CDI:WS (N = 2,617)") + 
   guides(fill = FALSE) +
-  theme_hc()
+  theme_few()
 
-# create new plot with 2 categories -------------
+# re-plot using 2 categories --------------------
 
-# create new wc variable with labels
-xs$wc2 <- recode_factor(xs$CDI_wc, '0' = "Not yet", '1' = "Sometimes or Often", '2' = "Sometimes or Often")
+# combine 3 original WC categories into 2
+xs$wc2 <- recode_factor(xs$CDI_wc, '0' = "Not yet", 
+                        '1' = "Sometimes or Often", '2' = "Sometimes or Often")
 
-# calculate proportion of each wc category at each age
+# calculate proportion of each category across age
 dfwc2 <- xs %>%
   group_by(camos) %>%
   count(wc2) %>%
   mutate(prop_wc = prop.table(n))
 
-# plot proportions across age range using original categories
-ggplot(dfwc2, aes(x = camos, y = prop_wc, fill = wc2)) + geom_bar(stat = "identity") +
-  labs(x = "Age (months)", y = "Proportion", title = "Reported word combinations on NZ CDI") +
+# plot proportions across age range
+ggplot(dfwc2, aes(x = camos, y = prop_wc, fill = wc2)) + 
+  geom_bar(stat = "identity") +
+  labs(x = "Age (months)", y = "Proportion of Children",
+       title = "Reported word combinations on NZ CDI") +
   facet_grid(wc2 ~ .) +
+  ggtitle("Word combinations reported", "New Zealand CDI:WS (N = 2,617)") + 
   guides(fill = FALSE) +
-  theme_hc()
+  theme_few()
+
+# re-plot using 1 category ----------------------
+
+# select single, combined WC category
+dfwc3 <- filter(dfwc2, wc2 == "Sometimes or Often")
+
+# plot proportions across age range
+ggplot(dfwc3, aes(x = camos, y = prop_wc)) + 
+  geom_bar(stat = "identity") +
+  scale_x_continuous(breaks = seq(16,30,2), name = "\nAge (months)") + 
+  scale_y_continuous(breaks = seq(0,1.0,.1), name = "Proportion of Children\n") +
+  ggtitle("Word combinations reported", "New Zealand CDI:WS (N = 2,617)") + 
+  guides(fill = FALSE) +
+  theme_few()
+
+# plot line graph using 1 category -------------
+
+# plot proportions across age range
+ggplot(dfwc3, aes(x = camos, y = prop_wc, group = "identity")) + 
+  geom_point() + 
+  geom_line() +
+  scale_x_continuous(breaks = seq(16,30,2), name = "\nAge (months)") + 
+  scale_y_continuous(breaks = seq(0,1.0,.1), name = "Proportion of Children\n") +
+  ggtitle("Word combinations reported as 'sometimes' or 'often'", "New Zealand CDI:WS (N = 2,617)") + 
+  guides(fill = FALSE) +
+  theme_few()
+
+# plot line graph of age and sex using 1 category -------------
+
+# calculate proportion of each category by age and sex
+dfwc4 <- xs %>%
+  group_by(camos, csex) %>%
+  count(wc2) %>%
+  mutate(prop_wc = prop.table(n))
+
+# select single, combined WC category
+dfwc4 <- filter(dfwc4, wc2 == "Sometimes or Often")
+
+# plot proportions by age and sex
+ggplot(dfwc4, aes(x = camos, y = prop_wc, group = csex, colour = csex)) + 
+  geom_point() +
+  geom_line() +
+  labs(x = "Age (months)", y = "Proportion of Children", colour = "Sex") +
+  scale_x_continuous(breaks = seq(16,30,2), name = "\nAge (months)") + 
+  ggtitle("Word combinations reported as 'sometimes' or 'often'", "New Zealand CDI:WS (N = 2,617)") + 
+  theme_few()
+
+# plot vocabulary totals and show which children are not combining words
+ggplot(xs, aes(x = camos, y = wordtotal, colour = wc2)) +
+  geom_jitter() + 
+  labs(colour = "Word combinations") +
+  scale_x_continuous(breaks = seq(16,30,2), name = "\nAge (months)") + 
+  scale_y_continuous(breaks = seq(0,700,100), name = "Vocabulary Size (words)\n") +
+  ggtitle("Vocabulary and Word Combinations", "New Zealand CDI:WS (N = 2,617)") + 
+  theme_few()
+
+# remove temporary data frames created in this script
+rm(dfwc)
+rm(dfwc2)
+rm(dfwc3)
+rm(dfwc4)
 
 sessionInfo()
