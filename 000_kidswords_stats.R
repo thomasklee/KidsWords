@@ -6,8 +6,7 @@
 # Updated: 2017-12-14
 # ---------------------------
 
-# This script analyses the co-occurence of 
-# word combinations, sex and parent concern. 
+# This script contains test routines.
 
 library(tidyverse)
 library(ggthemes)
