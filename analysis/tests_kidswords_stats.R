@@ -49,14 +49,7 @@ bwdata  # messy
 bwdata2  # tidy
 
 # remove temporary objects
-rm(PID)
-rm(lb)
-rm(oz)
-rm(g)
-rm(cbirth_weight_g)
-rm(cbirth_weight_lb)
-rm(cbirth_weight_oz)
-rm(grams1)
-rm(grams2)
+rm(PID, lb, oz, g, cbirth_weight_g, cbirth_weight_lb, 
+   cbirth_weight_oz, grams1, grams2)
 
 sessionInfo()
