@@ -3,7 +3,7 @@
 # Data preparation-03
 # Thomas Klee
 # Created: 2017-06-09
-# Updated: 2017-11-27
+# Updated: 2017-12-19
 # ---------------------------
 
 library(tidyverse)
@@ -70,7 +70,7 @@ CDIdata$CDI_wc <- factor(CDIdata$CDI_wc)
 # select relevant variables from parent quesionnaire
 PQdata <-
   PQ %>% 
-  select(PID, csex, cbirth_order, ctwin, cdaycare, region, prelation, cborn_in_nz, family_hist, peduc)
+  select(PID, csex, cbirth_order, ctwin, cdaycare, region, prelation, cborn_in_nz, family_hist, peduc, cethnicity_nz, cethnicity_other)
 
 # merge CDI and PQ variables
 CDIPQ <- merge(CDIdata, PQdata, by = "PID")
