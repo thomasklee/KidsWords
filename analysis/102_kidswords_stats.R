@@ -49,14 +49,20 @@ print(gcrq_comb, digits = 2)
 # set font size used in all plots
 par(cex=1.25)
 
+# -----------------------------------------------
+# the plot below contains updated syntax
+# based on quantregGrowth v0.4-0.
+# Other plots in this script need to be changed.
+# -----------------------------------------------
+
 # plot combined sexes in one graph and export 
 pdf("gcrq_comb.pdf", width = 7.0, height = 5.5)
-plot(gcrq_comb, 
+plot(gcrq_comb, conf.level = .95, shade = TRUE,
      # y = TRUE, # uncomment to add data points
      xlab = "Age (months)", 
      ylab = "Vocabulary size (words)",
-     legend = TRUE, 
-     lwd = 2, col = mypalette, lty = "solid",
+     legend = TRUE, overlap = TRUE,
+     lwd = 2, col = mypalette, lty = 1,
      main = "Girls and Boys Combined")
 dev.off()
 
