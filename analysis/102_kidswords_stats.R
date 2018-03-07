@@ -70,6 +70,7 @@ gcrq_boys <- gcrq(wordtotal ~ ps(camos, monotone = 1, lambda = 100),
 # plot boys in a graph and export 
 pdf("gcrq_boys.pdf", width = 7.0, height = 5.5)
 plot(gcrq_boys, 
+     # conf.level = .8,
      # y = TRUE, # uncomment if data points wanted
      xlab = "Age (months)", 
      ylab = "Vocabulary size (words)", 
@@ -89,7 +90,7 @@ print(gcrq_girls, digits = 2)
 
 # plot girls in a graph and export 
 pdf("gcrq_girls.pdf", width = 7.0, height = 5.5)
-plot(gcrq_girls, 
+plot(gcrq_girls, conf.level = .8,
      # y = TRUE, # uncomment if data points wanted
      xlab = "Age (months)", 
      ylab = "Vocabulary size (words)", 
