@@ -2,8 +2,8 @@
 # KidsWords project
 # Data preparation-01
 # Thomas Klee
-# Created: 18 Apr 2017
-# Revised: 22 Jun 2017
+# Created: 2017-04-18
+# Revised: 2017-06-22
 # ---------------------------
 
 # This script removes fields from the original data files
@@ -155,3 +155,4 @@ write_csv(CDI_temp, "data/data_CDI.csv")
 rm(CDI_temp, PQ_temp)
 
 sessionInfo()
+
