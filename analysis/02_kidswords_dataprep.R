@@ -2,8 +2,8 @@
 # KidsWords project
 # Data preparation-02
 # Thomas Klee
-# Created: 17 Apr 2017
-# Updated: 08 Sep 2017
+# Created: 2017-04-17
+# Updated: 2018-07-18
 # ---------------------------
 
 # This script: 
@@ -152,27 +152,26 @@ CDI$DOS <- dmy(CDI$DOS)
 CDI$span <- interval(CDI$DOB, CDI$DOS)
 
 # convert interval to a period, expressed in months and days
-CDI$span <- as.period(CDI$span, unit = "months")
+CDI$span <- as.period(CDI$span, unit = "months") 
 
 # calculate child's age in months
 # extract number of months (as an integer)
 CDI$camos <- month(CDI$span)
 
-# calculate child's age in days
 CDI <- mutate(CDI, cadays = DOS - DOB)
 
 # convert child's age in days to an integer
 CDI$cadays <- as.integer(CDI$cadays)
 
 # create "session" variable and assign ranks to its values based session date
-# from http://stackoverflow.com/questions/29568956/how-to-add-a-rank-column-to-sorted-dates-in-r
-CDI <-
-  CDI %>% group_by(CHILD_ID) %>%
-  mutate(session = rank(DOS)) %>%
-  arrange(CHILD_ID, session)
+CDI <- CDI %>% group_by(CHILD_ID)
+CDI <- CDI %>% mutate(session = rank(DOS))
 
-# declare "session" as a factor
+# convert session variable to a factor
 CDI$session <- factor(CDI$session)
+
+# sort records by child ID and session number (base R syntax used instead of tidyverse for this)
+CDI <- CDI[order(CDI$CHILD_ID, CDI$session),]
 
 # rename variables using dplyr format (new_name = current_name)
 CDI <- rename(CDI, PID = CHILD_ID)
