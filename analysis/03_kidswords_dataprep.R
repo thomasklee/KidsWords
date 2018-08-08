@@ -73,18 +73,16 @@ PQdata <-
   PQ %>% 
   select(PID, csex, cbirth_order, ctwin, cdaycare, region, prelation, cborn_in_nz, family_hist, peduc, cethnicity_nz, cethnicity_other)
 
-# merge CDI and PQ variables
-# CDIPQ <- merge(CDIdata, PQdata, by = "PID") # variables previously defined as factors get re-defined as character strings, so merge() not used
-
-# use dplyr's inner_join() instead # this retains factor status of variables
+# use dplyr's inner_join() instead of merge() so that variables previously defined 
+# as factors don't become character strings
 CDIPQ <- inner_join(CDIdata, PQdata, by = "PID")
-
-# convert data frame to csv file
-write_csv(CDIPQ, "data/data_CDIPQ.csv")
 
 glimpse(CDIPQ)
 
 summary(CDIPQ)
+
+# convert data frame to csv file
+write_csv(CDIPQ, "data/data_CDIPQ.csv")
 
 # remove temporary data frames
 rm(wordtotals)
