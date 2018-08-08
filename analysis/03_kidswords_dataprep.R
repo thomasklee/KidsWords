@@ -3,7 +3,7 @@
 # Data preparation-03
 # Thomas Klee
 # Created: 2017-06-09
-# Updated: 2017-12-19
+# Updated: 2018-08-08
 # ---------------------------
 
 library(tidyverse)
@@ -11,7 +11,8 @@ library(tidyverse)
 # This script:
 # calculates CDI word total and grammatical complexity score for each child;
 # merges the CDI data with selected variables from the parent questionnaire;
-# and summarizes the variables.
+# and summarizes the variables. However, base R's merge function wasn't used
+# since it changes factors to character strings. dplyr's inner_join used instead.
 
 # Note that no filters have been applied for age or session number.
 
@@ -73,7 +74,10 @@ PQdata <-
   select(PID, csex, cbirth_order, ctwin, cdaycare, region, prelation, cborn_in_nz, family_hist, peduc, cethnicity_nz, cethnicity_other)
 
 # merge CDI and PQ variables
-CDIPQ <- merge(CDIdata, PQdata, by = "PID")
+# CDIPQ <- merge(CDIdata, PQdata, by = "PID") # variables previously defined as factors get re-defined as character strings, so merge() not used
+
+# use dplyr's inner_join() instead # this retains factor status of variables
+CDIPQ <- inner_join(CDIdata, PQdata, by = "PID")
 
 # convert data frame to csv file
 write_csv(CDIPQ, "data/data_CDIPQ.csv")
