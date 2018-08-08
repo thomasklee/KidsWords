@@ -57,7 +57,7 @@ CDI_measures <- merge(CDI_measures, CDI_wc, by = c("PID", "session"))
 
 # merge CDI_measures with other variables
 CDIdata <- merge(CDI_measures, CDI_wide, by = c("PID", "session"))  ## merge(x, y) uses an inner_join
-CDIdata <- select(CDIdata, PID, session, DOB, DOS, camos, cadays, wordtotal, gctotal, resp.x, resp.y)  # reorder variables
+CDIdata <- select(CDIdata, PID, session, DOB, DOS, camos, cadays, wordtotal, gctotal, resp.x, resp.y)  # reorders variables
 
 # rename variables
 CDIdata <- rename(CDIdata,
@@ -108,8 +108,13 @@ glimpse(CDIPQ)
 
 summary(CDIPQ)
 
-# convert data frame to csv file
-write_csv(CDIPQ, "data/data_CDIPQ.csv")
+# save CDIPQ data frame with variable formats intact
+saveRDS(CDIPQ, file = "data/data_CDIPQ.RDS")
+# add "CDIPQ <_readRDS("data_CDIPQ.RDS")" near beginning of kidswords1.Rnw to use data in manuscript
+
+# convert data frame to csv file; factor and date formats will be lost
+# no need to use any further but might be useful to give someone else
+write_csv(CDIPQ, "data/data_CDIPQ.csv") 
 
 # remove temporary data frames
 rm(wordtotals)
