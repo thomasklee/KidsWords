@@ -3,7 +3,7 @@
 # Data preparation-02
 # Thomas Klee
 # Created: 2017-04-17
-# Updated: 2018-09-18
+# Updated: 2018-08-09
 # ---------------------------
 
 # This script: 
@@ -254,7 +254,8 @@ PQ$psec_qual <- factor(PQ$psec_qual)
 word_lookup$word_class <- factor(word_lookup$word_class)
 word_lookup$syl_structure <- factor(word_lookup$syl_structure)
 
-# recode variable values for consistency
+# recode variable values for consistency using dplyr's old = "new" format;
+# multiword phrases on left side of "=" are correctly surrounded by quote marks
 PQ$prelation <- recode(PQ$prelation, 
                        Mother = "mother", Mum = "mother", mum = "mother", 
                        mummy = "mother", Mummy = "mother",
@@ -287,6 +288,50 @@ PQ$prelation <- recode(PQ$prelation,
                        Daughter = "mother or father", 
                        "He is my son" = "mother or father", monther = "mother"
                        )
+
+PQ$cmain_lang <- recode(PQ$cmain_lang,
+                        english = "English",
+                        Englinsh  = "English",
+                        englinsh  = "English",
+                        Emglish = "English",
+                        emglish = "English",
+                        eglish = "English",
+                        Eglish = "English",
+                        Eng = "English",
+                        Engish = "English",
+                        Engliah  = "English",
+                        Englisch = "English",
+                        englich  = "English",
+                        Engligh  = "English",
+                        Englih  = "English",
+                        "Engllish" = "English",
+                        "Enlish" = "English",
+                        "Enhlish" = "English",
+                        ENGLISH = "English",
+                        "english (nz)" = "English",
+                        "English / Sign" = "English",
+                        "English. baby sign" = "English",
+                        "NZEnglish" = "English",
+                        "New Zealand English" = "English",
+                        "NZSL-supported English (she uses both equally)" = "English",
+                        "english / maori" = "English"
+# the following records are noted but not changed 
+# since these children are apparently being raised in bilingual households
+#                       "Englisch/spanish" = "English", 
+#                        "combination of English and Bisaya (one of the many dialects in Philippines aside from Tagalog)" = "English"
+#                        "English & indonesian" = "English",
+#                        "english and german equally" = "English",
+#                        "English and Gujarati are being taught simultaneously" = "English",
+#                        "English and Indonesian" = "English",
+#                        "English and Romanian" = "English",
+#                        "english and turkish" = "English",
+#                        "English/ French" = "English",
+#                        "English/Dutch" = "English",
+#                        "English/Romanian (50/50..sort of....)" = "English",
+#                        "German and English equal" = "English",
+#                        "marathi and english" = "English", 
+#                        "Russian with mother. English with father" = "English"
+                        )
 
 # select relevant variables from PQed
 PQed <- select(PQed, PID, peduc)
