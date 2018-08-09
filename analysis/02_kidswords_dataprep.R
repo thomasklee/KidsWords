@@ -333,6 +333,13 @@ PQ$cmain_lang <- recode(PQ$cmain_lang,
 #                        "Russian with mother. English with father" = "English"
                         )
 
+# replace missing responses (NA) in PQ$cmain_lang with "English" since no reason to assume otherwise
+PQ$cmain_lang <- PQ$cmain_lang %>% 
+  replace_na("English") 
+
+# create dichotomous variable to indicate whether child's main language environment is monolingual 
+PQ$mono_env <- factor(ifelse(PQ$cmain_lang == "English", "yes", "no"))
+
 # select relevant variables from PQed
 PQed <- select(PQed, PID, peduc)
 

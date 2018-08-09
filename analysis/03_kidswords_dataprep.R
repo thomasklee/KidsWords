@@ -3,7 +3,7 @@
 # Data preparation-03
 # Thomas Klee
 # Created: 2017-06-09
-# Updated: 2018-08-08
+# Updated: 2018-08-09
 # ---------------------------
 
 library(tidyverse)
@@ -72,7 +72,7 @@ CDIdata$CDI_wc <- factor(CDIdata$CDI_wc)
 PQdata <-
   PQ %>% 
   select(PID, csex, cbirth_order, ctwin, cdaycare, region, prelation, cborn_in_nz, ccountry_where,
-         cmain_lang, cother_langs, cwhich_langs,
+         cmain_lang, cother_langs, cwhich_langs, mono_env,
          family_hist, peduc, cethnicity_nz, cethnicity_other)
 
 # use dplyr's inner_join() instead of merge() so that variables previously defined 
