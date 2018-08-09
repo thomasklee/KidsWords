@@ -3,7 +3,7 @@
 # Data preparation-02
 # Thomas Klee
 # Created: 2017-04-17
-# Updated: 2018-07-18
+# Updated: 2018-09-18
 # ---------------------------
 
 # This script: 
@@ -237,6 +237,7 @@ PQ$cmain_lang <- factor(PQ$cmain_lang)
 PQ$cother_langs <- factor(PQ$cother_langs)
 PQ$cmain_lang <- factor(PQ$cmain_lang)
 PQ$cother_langs <- factor(PQ$cother_langs)
+PQ$cwhich_langs <- factor(PQ$cwhich_langs)
 PQ$cdaycare <- factor(PQ$cdaycare)
 PQ$PQ3_hear_conc <- factor(PQ$PQ3_hear_conc)
 PQ$PQ1_lang_conc <- factor(PQ$PQ1_lang_conc)

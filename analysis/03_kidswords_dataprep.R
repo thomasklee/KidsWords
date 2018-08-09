@@ -71,7 +71,9 @@ CDIdata$CDI_wc <- factor(CDIdata$CDI_wc)
 # select relevant variables from parent quesionnaire
 PQdata <-
   PQ %>% 
-  select(PID, csex, cbirth_order, ctwin, cdaycare, region, prelation, cborn_in_nz, family_hist, peduc, cethnicity_nz, cethnicity_other)
+  select(PID, csex, cbirth_order, ctwin, cdaycare, region, prelation, cborn_in_nz, ccountry_where,
+         cmain_lang, cother_langs, cwhich_langs,
+         family_hist, peduc, cethnicity_nz, cethnicity_other)
 
 # use dplyr's inner_join() instead of merge() so that variables previously defined 
 # as factors don't become character strings
