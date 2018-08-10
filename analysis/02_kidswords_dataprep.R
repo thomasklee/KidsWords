@@ -3,7 +3,7 @@
 # Data preparation-02
 # Thomas Klee
 # Created: 2017-04-17
-# Updated: 2018-08-09
+# Updated: 2018-08-10
 # ---------------------------
 
 # This script: 
@@ -403,9 +403,5 @@ CDI_words[CDI_words$field == 31 & CDI_words$resp == "2", c("resp")] <- "1"
 
 # declare "resp" variable to be an integer
 CDI_words$resp <- as.integer(CDI_words$resp)
-
-# delete temporary data frames
-rm(CDI_long)
-rm(PQed)
 
 sessionInfo()
