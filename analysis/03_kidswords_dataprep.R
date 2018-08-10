@@ -3,7 +3,7 @@
 # Data preparation-03
 # Thomas Klee
 # Created: 2017-06-09
-# Updated: 2018-08-09
+# Updated: 2018-08-10
 # ---------------------------
 
 library(tidyverse)
@@ -104,8 +104,6 @@ CDIPQ$pedcat <- recode(CDIPQ$peduc,
 
 CDIPQ$pedcat <- ordered(CDIPQ$pedcat)
 
-CDIPQ$camos <- ordered(CDIPQ$camos)
-
 glimpse(CDIPQ)
 
 summary(CDIPQ)
@@ -119,6 +117,8 @@ saveRDS(CDIPQ, file = "data/data_CDIPQ.RDS")
 write_csv(CDIPQ, "data/data_CDIPQ.csv") 
 
 # remove temporary data frames
+rm(CDI_long)
+rm(PQed)
 rm(wordtotals)
 rm(gctotals)
 rm(CDI_wc)
