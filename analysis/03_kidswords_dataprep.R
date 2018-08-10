@@ -108,13 +108,17 @@ glimpse(CDIPQ)
 
 summary(CDIPQ)
 
-# save CDIPQ data frame with variable formats intact
+# save data frames needed for manuscript with variable formats intact;
+# these need to be loaded into .Rnw file as "CDIPQ <- readRDS("analysis/data/data_CDIPQ.RDS")" etc 
 saveRDS(CDIPQ, file = "data/data_CDIPQ.RDS")
-# add "CDIPQ <_readRDS("data_CDIPQ.RDS")" near beginning of kidswords1.Rnw to use data in manuscript
+saveRDS(CDIdata, file = "data/data_CDIdata.RDS")
+saveRDS(PQdata, file = "data/data_PQdata.RDS")
 
-# convert data frame to csv file; factor and date formats will be lost
+# convert data frames to csv file; factor and date formats will be lost
 # no need to use any further but might be useful to give someone else
 write_csv(CDIPQ, "data/data_CDIPQ.csv") 
+write_csv(CDIdata, "data/data_CDIdata.csv") 
+write_csv(PQdata, "data/data_PQdata.csv") 
 
 # remove temporary data frames
 rm(CDI_long)
