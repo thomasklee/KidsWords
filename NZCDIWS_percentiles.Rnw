@@ -1,0 +1,372 @@
+% ---------------------------
+% Kidswords Project 
+% Appendix of percentile tables
+% R code with LaTeX markup 
+% LaTeX installation needed to output PDF via RStudio
+% Thomas Klee
+% Updated: 2018-11-12
+% ---------------------------
+
+\documentclass[11pt,a4paper]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{booktabs}
+\usepackage{geometry} % for changing default page format
+\usepackage{lscape} % to insert a landscape page
+\usepackage{graphicx}
+\usepackage{amsfonts, amsmath, amsthm, amssymb} % For math fonts, symbols and environments
+\usepackage{ctable} % for command-driven tables
+\usepackage[colorlinks = true, linkcolor = blue, urlcolor = blue, citecolor = black]{hyperref} 
+\usepackage[natbibapa]{apacite}
+\usepackage{longtable} % allows tables to span pages
+\usepackage{dcolumn} % aligns column numbers on the decimal point
+\usepackage[blocks]{authblk} % for listing multiple authors, institutions
+\usepackage[toc, page]{appendix}
+\usepackage{tcolorbox}
+\usepackage{lineno}
+
+\title{
+Appendix.\\
+\vspace{0.5cm}
+MacArthur-Bates Communicative Development Inventory: Words and Sentences (NZ Adaptation):
+percentiles for expressive vocabulary and grammatical complexity
+}
+
+\author{Klee, T., Stokes, S.F., Reese, E., J\o rgensen, R.N., Bleses, D., Gavin, W.J. \& Witchitaksorn, N.}
+
+\date{November 12, 2018}
+
+\begin{document}
+
+\maketitle
+
+%\linenumbers
+
+Children's raw scores from the New Zealand adaptation of the MacArthur-Bates Communicative Development Inventory: Words and Sentences (NZ CDI:WS) can be converted to percentile scores using the tables in this document. Percentiles for the Vocabulary Checklist (Part I) and the Complexity (Part II--E) sections are presented for all children together and separately for girls and boys. The data are based on 2,581 English-speaking children living in New Zealand and collected as part of the KidsWords project. Readers are referred to a separate manuscript in prepartation for further details.
+
+To determine a percentile score in any of the tables, (1) calculate the child's chronological age (unadjusted for prematurity) by rounding down to the nearest whole number and locating it in the left-hand column of the table; (2) read across the age row from left-to-right to find the tabled raw score closest in value to the child's raw score; and (3) read up the column to determine the percentile score. Regarding the first point, it is important to calculate the child's chronological age in the same way as was done for children in the normative study. For example, if a child was born on August 1, 2016 and the CDI was completed on August 20, 2018, the child's age would be 24 months for the purpose of using the tables. This age calculation differs from that used for some tests, such as the Peabody Picture Vocabulary Test.
+
+\vspace{0.25cm}
+
+\begin{tcolorbox}
+Please cite this document as: \\
+
+Klee, T., Stokes, S.F., Reese, E., J\o rgensen, R.N., Bleses, D., Gavin, W.J. \& Witchitaksorn, N. (2018). MacArthur-Bates Communicative Development Inventory: Words and Sentences (NZ Adaptation): percentiles for expressive vocabulary and grammatical complexity. Downloaded from \url{https://github.com/thomasklee/KidsWords}.
+
+\end{tcolorbox}
+
+\listoftables
+
+\vspace{0.5cm}
+\begin{figure}[bh]
+\centering
+\includegraphics[width = \textwidth]{images/CMDS1836_Kids_Word_Banner.jpg}
+\end{figure}
+
+% run quantile regression
+% code taken from 102_kidswords_stats.R
+
+<<result = 'asis', echo = FALSE, message = FALSE, cache = TRUE>>=
+library(tidyverse)
+library(quantregGrowth)
+library(ggthemes)
+library(RColorBrewer)
+library(xtable)
+library(kableExtra)
+
+CDIPQ <- read.csv("analysis/data/data_CDIPQ.csv") 
+
+# select cross-sectional data for the normative study
+xs <- CDIPQ %>% 
+  filter(session == 1,  camos >= 16 & camos <= 30, mono_env == "yes")
+
+attach(xs)
+
+# define quantiles of interest
+tau_set2 <- seq(.05, .95, by = .05)
+
+# --- quantile regression for girls and boys combined: vocabulary
+
+# run QR
+gcrq1 <- gcrq(wordtotal ~ ps(camos, monotone = 1, lambda = 100),
+                  data = xs, tau = tau_set2)
+
+# create table of fitted scores (next 3 lines of coded provided by Vito Muggeo; thanks Vito!)
+months_seq <- seq(16, 30, by = 1)
+months_df <- data.frame(camos = months_seq)
+fitted_vocab_all <- round(predict(gcrq1, months_df), digits = 0)
+
+# convert output to data frame
+fitted_vocab_all_df <- data.frame(fitted_vocab_all)
+
+# add labels to age column
+fitted_vocab_all_df <- mutate(fitted_vocab_all_df, age_labels = months_seq)
+
+# reorder columns with age in first column
+fitted_vocab_all_df <- fitted_vocab_all_df[c(20, 1:19)]
+
+# fitted_vocab_all_df <- fitted_vocab_all_df[c(6, 1:5)] # use with tau_set1
+
+@
+
+% construct table of fitted scores for girls and boys combined: vocabulary
+
+\begin{landscape} 
+
+<<vocab_all_table, results = 'asis', echo = FALSE, message = FALSE, cache = TRUE>>=
+
+# extra 'c' needed in align argument since it takes 1 + ncol as the number of elements
+# test_tab <- xtable(fitted_vocab_all_df, digits = 0, align = "ccrrrrr") # use with tau_set1
+vocab_tab <- xtable(fitted_vocab_all_df, digits = 0, 
+                    align = "ccrrrrrrrrrrrrrrrrrrr",
+                    label = "vocab_table") 
+colnames(vocab_tab) <- c('Age', seq('5', '95', by = 5))
+# colnames(test_tab) <- c('Age (months)', '10', '25', '50', '75', '90') # use with tau_set1
+
+kable(vocab_tab, "latex",
+      caption = "Conditional percentile scores for NZ CDI:WS vocabulary---girls and boys combined.",
+      booktabs = T) %>%
+      add_header_above(c(" ", "Percentile score" = 19)) %>% 
+      kable_styling(latex_options = c("repeat_header")) %>%
+      footnote(general = "Age is in months. ")
+
+@
+
+\end{landscape}
+
+%  quantile regression for girls: vocabulary
+
+<<result = 'asis', echo = FALSE, message = FALSE, cache = TRUE>>=
+
+# select subset of girls
+xs_girls <- xs %>% filter(csex == "Girl")
+
+# run QR
+gcrq2 <- gcrq(wordtotal ~ ps(camos, monotone = 1, lambda = 100),
+                  data = xs_girls, tau = tau_set2)
+
+# create table of fitted scores
+months_seq <- seq(16, 30, by = 1)
+months_df <- data.frame(camos = months_seq)
+fitted_vocab_girls <- round(predict(gcrq2, months_df), digits = 0)
+
+# convert output to data frame
+fitted_vocab_girls_df <- data.frame(fitted_vocab_girls)
+
+# add labels to age column
+fitted_vocab_girls_df <- mutate(fitted_vocab_girls_df, age_labels = months_seq)
+
+# reorder columns with age in first column
+fitted_vocab_girls_df <- fitted_vocab_girls_df[c(20, 1:19)]
+
+@
+
+% construct table of fitted scores for girls: vocabulary
+
+\begin{landscape} 
+
+<<vocab_table_girls, results = 'asis', echo = FALSE, message = FALSE, cache = TRUE>>=
+
+vocab_tab <- xtable(fitted_vocab_girls_df, digits = 0, 
+                    align = "ccrrrrrrrrrrrrrrrrrrr",
+                    label = "vocab_table") 
+colnames(vocab_tab) <- c('Age', seq('5', '95', by = 5))
+
+kable(vocab_tab, "latex",
+      caption = "Conditional percentile scores for NZ CDI:WS vocabulary---girls.",
+      booktabs = T) %>%
+      add_header_above(c(" ", "Percentile score" = 19)) %>% 
+      kable_styling(latex_options = c("repeat_header")) %>%  
+      footnote(general = "Age is in months.")
+
+@
+
+\end{landscape}
+
+%  quantile regression for boys: vocabulary
+
+<<result = 'asis', echo = FALSE, message = FALSE, cache = TRUE>>=
+
+# select subset of boys
+xs_boys <- xs %>% filter(csex == "Boy")
+
+# run QR
+gcrq3 <- gcrq(wordtotal ~ ps(camos, monotone = 1, lambda = 100),
+                  data = xs_boys, tau = tau_set2)
+
+# create table of fitted scores
+months_seq <- seq(16, 30, by = 1)
+months_df <- data.frame(camos = months_seq)
+fitted_vocab_boys <- round(predict(gcrq3, months_df), digits = 0)
+
+# convert output to data frame
+fitted_vocab_boys_df <- data.frame(fitted_vocab_boys)
+
+# add labels to age column
+fitted_vocab_boys_df <- mutate(fitted_vocab_boys_df, age_labels = months_seq)
+
+# reorder columns with age in first column
+boys_df <- fitted_vocab_boys_df[c(20, 1:19)]
+
+@
+
+% construct table of fitted scores for boys: vocabulary
+
+\begin{landscape} 
+
+<<vocab_table_boys, results = 'asis', echo = FALSE, message = FALSE, cache = TRUE>>=
+
+vocab_tab <- xtable(boys_df, digits = 0, 
+                    align = "ccrrrrrrrrrrrrrrrrrrr",
+                    label = "vocab_table") 
+colnames(vocab_tab) <- c('Age', seq('5', '95', by = 5))
+
+kable(vocab_tab, "latex",
+      caption = "Conditional percentile scores for NZ CDI:WS vocabulary---boys.",
+      booktabs = T) %>%
+      add_header_above(c(" ", "Percentile score" = 19)) %>% 
+      kable_styling(latex_options = c("repeat_header")) %>% 
+      footnote(general = "Age is in months.")
+      
+@
+
+\end{landscape}
+
+% --- quantile regression for girls and boys combined: complexity
+
+<<result = 'asis', echo = FALSE, message = FALSE, cache = TRUE>>=
+# run QR
+gcrq4 <- gcrq(gctotal ~ ps(camos, monotone = 1, lambda = 100),
+                  data = xs, tau = tau_set2)
+
+# create table of fitted scores (Vito Muggeo provided next 3 code lines)
+months_seq <- seq(16, 30, by = 1)
+months_df <- data.frame(camos = months_seq)
+fitted_gc_all <- round(predict(gcrq4, months_df), digits = 0)
+
+# convert output to data frame
+fitted_gc_all_df <- data.frame(fitted_gc_all)
+
+# add labels to age column
+fitted_gc_all_df <- mutate(fitted_gc_all_df, age_labels = months_seq)
+
+# reorder columns with age in first column
+fitted_gc_all_df <- fitted_gc_all_df[c(20, 1:19)]
+
+@
+
+% construct table of fitted scores for girls and boys combined: complexity
+
+\begin{landscape} 
+
+<<gc_all_table, results = 'asis', echo = FALSE, message = FALSE, cache = TRUE>>=
+
+# extra 'c' needed in align argument since it takes 1 + ncol as the number of elements
+gc_tab <- xtable(fitted_gc_all_df, digits = 0, 
+                    align = "ccrrrrrrrrrrrrrrrrrrr",
+                    label = "vocab_table") 
+colnames(gc_tab) <- c('Age', seq('5', '95', by = 5))
+
+kable(gc_tab, "latex",
+      caption = "Conditional percentile scores for NZ CDI:WS complexity---girls and boys combined.",
+      booktabs = T) %>%
+      add_header_above(c(" ", "Percentile score" = 19)) %>% 
+      kable_styling(latex_options = c("repeat_header")) %>% 
+      footnote(general = "Age is in months.")
+
+@
+
+\end{landscape}
+
+% --- quantile regression for girls: complexity
+
+<<result = 'asis', echo = FALSE, message = FALSE, cache = TRUE>>=
+# run QR
+gcrq5 <- gcrq(gctotal ~ ps(camos, monotone = 1, lambda = 100),
+                  data = xs_girls, tau = tau_set2)
+
+# create table of fitted scores (Vito Muggeo provided next 3 code lines)
+months_seq <- seq(16, 30, by = 1)
+months_df <- data.frame(camos = months_seq)
+fitted_gc_girls <- round(predict(gcrq5, months_df), digits = 0)
+
+# convert output to data frame
+fitted_gc_girls_df <- data.frame(fitted_gc_girls)
+
+# add labels to age column
+fitted_gc_girls_df <- mutate(fitted_gc_girls_df, age_labels = months_seq)
+
+# reorder columns with age in first column
+fitted_gc_girls_df <- fitted_gc_girls_df[c(20, 1:19)]
+
+@
+
+% construct table of fitted scores for girls: complexity
+
+\begin{landscape} 
+
+<<gc_girls_table, results = 'asis', echo = FALSE, message = FALSE, cache = TRUE>>=
+
+# extra 'c' needed in align argument since it takes 1 + ncol as the number of elements
+gc_tab <- xtable(fitted_gc_girls_df, digits = 0, 
+                    align = "ccrrrrrrrrrrrrrrrrrrr",
+                    label = "vocab_table") 
+colnames(gc_tab) <- c('Age', seq('5', '95', by = 5))
+
+kable(gc_tab, "latex",
+      caption = "Conditional percentile scores for NZ CDI:WS complexity---girls.",
+      booktabs = T) %>%
+      add_header_above(c(" ", "Percentile score" = 19)) %>% 
+      kable_styling(latex_options = c("repeat_header")) %>% 
+      footnote(general = "Age is in months.")
+
+@
+
+\end{landscape}
+
+% --- quantile regression for boys: complexity
+
+<<result = 'asis', echo = FALSE, message = FALSE, cache = TRUE>>=
+# run QR
+gcrq6 <- gcrq(gctotal ~ ps(camos, monotone = 1, lambda = 100),
+                  data = xs_boys, tau = tau_set2)
+
+# create table of fitted scores (Vito Muggeo provided next 3 code lines)
+months_seq <- seq(16, 30, by = 1)
+months_df <- data.frame(camos = months_seq)
+fitted_gc_boys <- round(predict(gcrq6, months_df), digits = 0)
+
+# convert output to data frame
+fitted_gc_boys_df <- data.frame(fitted_gc_boys)
+
+# add labels to age column
+fitted_gc_boys_df <- mutate(fitted_gc_boys_df, age_labels = months_seq)
+
+# reorder columns with age in first column
+fitted_gc_boys_df <- fitted_gc_boys_df[c(20, 1:19)]
+
+@
+
+% construct table of fitted scores for boys: complexity
+
+\begin{landscape} 
+
+<<gc_boys_table, results = 'asis', echo = FALSE, message = FALSE, cache = TRUE>>=
+
+# extra 'c' needed in align argument since it takes 1 + ncol as the number of elements
+gc_tab <- xtable(fitted_gc_boys_df, digits = 0, 
+                    align = "ccrrrrrrrrrrrrrrrrrrr",
+                    label = "vocab_table") 
+colnames(gc_tab) <- c('Age', seq('5', '95', by = 5))
+
+kable(gc_tab, "latex",
+      caption = "Conditional percentile scores for NZ CDI:WS complexity---boys.",
+      booktabs = T) %>%
+      add_header_above(c(" ", "Percentile score" = 19)) %>% 
+      kable_styling(latex_options = c("repeat_header")) %>% 
+      footnote(general = "Age is in months.")
+
+@
+
+\end{landscape}
+
+\end{document}
