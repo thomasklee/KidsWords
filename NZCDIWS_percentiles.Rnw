@@ -90,7 +90,7 @@ tau_set2 <- seq(.05, .95, by = .05)
 gcrq1 <- gcrq(wordtotal ~ ps(camos, monotone = 1, lambda = 100),
                   data = xs, tau = tau_set2)
 
-# create table of fitted scores (next 3 lines of coded provided by Vito Muggeo; thanks Vito!)
+# create table of fitted scores (thanks to Vito Muggeo for suggesting the next 3 lines)
 months_seq <- seq(16, 30, by = 1)
 months_df <- data.frame(camos = months_seq)
 fitted_vocab_all <- round(predict(gcrq1, months_df), digits = 0)
