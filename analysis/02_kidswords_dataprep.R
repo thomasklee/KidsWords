@@ -3,7 +3,7 @@
 # Data preparation-02
 # Thomas Klee
 # Created: 2017-04-17
-# Updated: 2018-08-10
+# Updated: 2019-02-19
 # ---------------------------
 
 # This script: 
@@ -368,6 +368,11 @@ CDI_wide <- select(CDI_wide, PID, DOB, DOS, session, camos, cadays)
 
 # merge CDI_long and word_lookup data frames
 CDI_words <- merge(CDI_long, word_lookup, by = "itemID")
+
+# select csex from CDIPQ and add to CDIwords
+CDIPQ_csex <- select(CDIPQ, PID, csex)
+CDI_words <- merge(CDI_words, CDIPQ_csex, by = "PID")
+rm(CDIPQ_csex)
 
 # create new (duplicate) variable
 CDI_words <- mutate(CDI_words, resp = response)
