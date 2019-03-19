@@ -4,7 +4,8 @@
 % R code with LaTeX markup 
 % LaTeX installation needed to output PDF via RStudio
 % Thomas Klee
-% Updated: 2018-11-12
+% Created: 2018-11-12
+% Updated: 2019-03-19
 % ---------------------------
 
 \documentclass[11pt,a4paper]{article}
@@ -33,7 +34,7 @@ percentiles for expressive vocabulary and grammatical complexity
 
 \author{Klee, T., Stokes, S.F., Reese, E., J\o rgensen, R.N., Bleses, D., Gavin, W.J. \& Witchitaksorn, N.}
 
-\date{November 12, 2018}
+\date{November 12, 2018 \\ Instructions updated March 19, 2019}
 
 \begin{document}
 
@@ -41,16 +42,20 @@ percentiles for expressive vocabulary and grammatical complexity
 
 %\linenumbers
 
-Children's raw scores from the New Zealand adaptation of the MacArthur-Bates Communicative Development Inventory: Words and Sentences (NZ CDI:WS) can be converted to percentile scores using the tables in this document. Percentiles for the Vocabulary Checklist (Part I) and the Complexity (Part II--E) sections are presented for all children together and separately for girls and boys. The data are based on 2,581 English-speaking children living in New Zealand and collected as part of the KidsWords project. Readers are referred to a separate manuscript in prepartation for further details.
+Children's raw scores from the New Zealand adaptation of the MacArthur-Bates Communicative Development Inventory: Words and Sentences (NZ CDI:WS) can be converted to percentile scores using the tables in this document. Percentile scores for the Vocabulary Checklist (Part I, Section A) and the Complexity (Part II, Section E) sections are presented for all children together and separately for girls and boys. (The current document does not contain information regarding Part I, Section B or Part II, Sections A--D.)  
 
-To determine a percentile score in any of the tables, (1) calculate the child's chronological age (unadjusted for prematurity) by rounding down to the nearest whole number and locating it in the left-hand column of the table; (2) read across the age row from left-to-right to find the tabled raw score closest in value to the child's raw score; and (3) read up the column to determine the percentile score. Regarding the first point, it is important to calculate the child's chronological age in the same way as was done for children in the normative study. For example, if a child was born on August 1, 2016 and the CDI was completed on August 20, 2018, the child's age would be 24 months for the purpose of using the tables. This age calculation differs from that used for some tests, such as the Peabody Picture Vocabulary Test.
+To determine a percentile score in any of the tables, (1) calculate the child's chronological age (unadjusted for prematurity) by rounding down to the nearest whole number and locating it in the left-hand column of the table; (2) read across the age row from left-to-right to find the tabled raw score closest in value to the child's raw score; and (3) read up the column to determine the percentile score. Regarding the first point, it is important to calculate the child's chronological age in the same way as was done for children in the normative study. For example, if a child was born on August 1, 2016 and the CDI was completed on August 20, 2018, the child's age would be 24 months for the purpose of using the tables. Note that this method of calculating chronological age differs slightly from that used by some standardized, norm-referenced tests (e.g., Peabody Picture Vocabulary Test).
+
+The data in the following tables were based on 2,581 English-speaking children living in New Zealand between 2012--15. Children who spoke an additional language (e.g., te reo M\={a}ori) were also included, but similar tables based on their other languages is not presented since that was beyond the scope of the project. A separate manuscript currently being prepared will contain further information about the full research project. Please note that the percentile scores presented in this Apendix are provisional and that minor changes may be made to the final document. This Appendix and the NZ CDI:WS can be downloaded and used, without charge, from the website listed in the citation below. 
+
+Grant support was provided by the Marsden Fund of the Royal Society of New Zealand (to T. Klee, S.F. Stokes \& C. Moran; UOC1003) and the CDI Advisory Board. Research ethics approval was given by the University of Canterbury Human Ethics Committee in September, 2012 (Ref: HEC 2012/124) and by the Plunket Ethics Committee in December, 2013.
 
 \vspace{0.25cm}
 
 \begin{tcolorbox}
 Please cite this document as: \\
 
-Klee, T., Stokes, S.F., Reese, E., J\o rgensen, R.N., Bleses, D., Gavin, W.J. \& Witchitaksorn, N. (2018). MacArthur-Bates Communicative Development Inventory: Words and Sentences (NZ Adaptation): percentiles for expressive vocabulary and grammatical complexity. Downloaded from \url{https://github.com/thomasklee/KidsWords}.
+Klee, T., Stokes, S.F., Reese, E., J\o rgensen, R.N., Bleses, D., Gavin, W.J. \& Witchitaksorn, N. (2019). MacArthur-Bates Communicative Development Inventory: Words and Sentences (NZ Adaptation): percentiles for expressive vocabulary and grammatical complexity. Downloaded from \url{https://github.com/thomasklee/KidsWords}.
 
 \end{tcolorbox}
 
