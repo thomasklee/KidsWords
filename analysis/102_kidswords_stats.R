@@ -2,14 +2,14 @@
 # KidsWords Project
 # Growth curves for vocabulary
 # Thomas Klee
-# Created: 04 July 2017
-# Updated: 06 July 2017
+# Created: 2017-07-04
+# Updated: 2018-11-12
 # ---------------------------
 
 # This script constructs growth curves for vocabulary
 # based on growth curve quantile regression models. 
 # Vocabularly growth as a function of age is plotted, 
-# with separate plots for boys, girlsand combined sexes.
+# with separate plots for boys, girls and combined sexes.
 # Plots are exported as PDF files.
 
 library(tidyverse)
@@ -28,26 +28,57 @@ CDIPQ <- read.csv("data/data_CDIPQ.csv")
 
 # select cross-sectional data for the normative study
 xs <- CDIPQ %>% 
-  filter(session == 1,  camos >= 16 & camos <= 30)
+  filter(session == 1,  camos >= 16 & camos <= 30, mono_env == "yes")
 
 attach(xs)
 
 # define quantiles of interest
-tau_set1 <- c(0.05, 0.10, 0.25, 0.50, 0.75, 0.90)
-
-# fit quantile curves for boys and girls combined
-gcrq_comb <- gcrq(wordtotal ~ ps(camos, monotone = 1, lambda = 100),
-                  data = xs, tau = tau_set1)
-
-summary(gcrq_comb)
+tau_set <- c(0.10, 0.25, 0.50, 0.75, 0.90)
 
 # select colors for quantile lines
 mypalette<-brewer.pal(6,"Dark2")
 
+# fit quantile curves for boys and girls combined
+gcrq_comb <- gcrq(wordtotal ~ ps(camos, monotone = 1, lambda = 100),
+                  data = xs, tau = tau_set)
+
+summary(gcrq_comb)
+
 print(gcrq_comb, digits = 2)
 
-# set font size used in all plots
-par(cex=1.25)
+# create table of fitted scores for full sample
+# thanks to vito muggeo for this code
+months_seq <- seq(16, 30, by = 1)
+months_df <- data.frame(camos = months_seq)
+fitted_vocab_all <- round(predict(gcrq_comb, months_df), digits = 0)
+
+# convert outout to a data frame
+testdf <- data.frame(fitted_vocab_all)
+
+# add labels to age column
+testdf <- mutate(testdf, age_labels = months_seq)
+
+# reorder columns
+testdf <- testdf[, c(6, 1:5)]
+testdf
+
+# colnames <- c('10', '25', '50', '75', '90')
+# colnames
+
+test_tab <- xtable(testdf, digits = 0)
+test_tab
+
+# addtorow <- list()
+# addtorow$pos <- list(0, 0)
+# addtorow$command <- c("Age & 10 & 25 & 50 & 75 & 90")
+
+# tabulate size of each age x sex cell and add margin totals
+# test_tab <- addmargins(table(xs$camos, xs$csex, dnn = c("Age", ""))) # works
+colnames(test_tab) <- c("Age & 10 & 25 & 50 & 75 & 90")
+
+print(test_tab, include.rownames = FALSE, include.colnames = TRUE, 
+      booktabs = TRUE)
+
 
 # -----------------------------------------------
 # the plot below contains updated syntax
@@ -55,23 +86,43 @@ par(cex=1.25)
 # Other plots in this script need to be changed.
 # -----------------------------------------------
 
+# set font size of plots
+par(cex=1.25)
+
 # plot combined sexes in one graph and export 
 pdf("gcrq_comb.pdf", width = 7.0, height = 5.5)
 plot(gcrq_comb, conf.level = .95, shade = TRUE,
      # y = TRUE, # uncomment to add data points
      xlab = "Age (months)", 
-     ylab = "Vocabulary size (words)",
+     ylab = "Vocabulary Size (words produced)",
      legend = TRUE, overlap = TRUE,
      lwd = 2, col = mypalette, lty = 1,
      main = "Girls and Boys Combined")
 dev.off()
 
-# fit quantile curves for boys only -------------
+# 
 xs_boys <- xs %>% 
   filter(session == 1,  camos >= 16 & camos <= 30, csex == "Boy")
 
 gcrq_boys <- gcrq(wordtotal ~ ps(camos, monotone = 1, lambda = 100),
                   data = xs_boys, tau = tau_set1)
+
+gcrq_boys_50th <- gcrq(wordtotal ~ ps(camos, monotone = 1, lambda = 100),
+                  data = xs_boys, tau = .5)
+
+# ===== not used
+test <- gcrq(wordtotal ~ ps(camos, monotone = 1, lambda = 100, d = 3), data = xs_boys, tau = .5)
+summary(test)
+coef(test)
+fitted.values(test)
+predict.gcrq() # author recommends not using this function
+
+plot(test, conf.level = .95, lwd = 2, lty = 1, shade = TRUE, overlap = TRUE, rug = TRUE)
+plot.gcrq(test) # same as plot()
+vcov.gcrq(test)
+# =====
+
+# plots below need to be fixed using syntax above
 
 # plot boys in a graph and export 
 pdf("gcrq_boys.pdf", width = 7.0, height = 5.5)
