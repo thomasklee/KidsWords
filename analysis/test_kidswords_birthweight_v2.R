@@ -68,21 +68,34 @@ clean_bw$gram <- round(clean_bw$gram, digits = 0)
 # create new data frame having only original and recoded variables
 clean_bw2 <- select(clean_bw, PID, cbirth_weight_g, cbirth_weight_lb, cbirth_weight_oz, gram)
 
-# good to here, except for certain rows with odd input; ------------------------------------
-# may need to identify these and code individually
-# code below not needed; used for testing purposes
+# summarise birth weight across entire sample
+summary(clean_bw2$gram)
+
+library(pastecs)
+stat.desc(clean_bw2$gram, basic = TRUE, norm = TRUE)
+
+library(psych)
+describe(clean_bw2$gram)
+
+# find rows with missing data in gram variable 
+clean_bw2[is.na(clean_bw2$gram), ] %>% 
+  print(n = 80)
+
+# from these, calculate birth weights where gram was incorrectly coded 
+# as NA due to unconventional input of respondents. Add these to relevant
+# dataprep script.
+
+# ---------------------------
+# code below was used for testing purposes
 
 # identify rows where both metric and imperial birth weights were entered
 # since these get added together in 'gram', resulting in incorrect sum
-unclean_rows <- clean_bw %>%
-   filter(!is.na(cbirth_weight_g) & !is.na(cbirth_weight_lb)) # 162 records
-
-# where parents reported birth weight in both, choose grams
+# unclean_rows <- clean_bw %>%
+#   filter(!is.na(cbirth_weight_g) & !is.na(cbirth_weight_lb)) 
 
 # when both metric and imperials weights were reported, use metric
-unclean_rows$cbirth_weight_g <- ifelse(!is.na(unclean_rows$cbirth_weight_g) & !is.na(unclean_rows$cbirth_weight_lb), unclean_rows$cbirth_weight_g, 0)
+# unclean_rows$cbirth_weight_g <- ifelse(!is.na(unclean_rows$cbirth_weight_g) & !is.na(unclean_rows$cbirth_weight_lb), unclean_rows$cbirth_weight_g, 0)
 
-unclean_rows$gram2 <- ifelse((unclean_rows$gram1 > 0 & unclean_rows$gram2 > 0), (unclean_rows$gram2 <- 0), unclean_rows$gram2)
-
+# unclean_rows$gram2 <- ifelse((unclean_rows$gram1 > 0 & unclean_rows$gram2 > 0), (unclean_rows$gram2 <- 0), unclean_rows$gram2)
 
 sessionInfo()
