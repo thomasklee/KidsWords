@@ -3,7 +3,7 @@
 # Test code: cleaning reported birth weight 
 # Thomas Klee
 # Created: 2019-03-18
-# Updated: 2019-03-21
+# Updated: 2019-03-22
 # ---------------------------
 
 # This script contains code to be
@@ -35,38 +35,54 @@ clean_bw$lb2 <- clean_bw$lb * 453.59237
 clean_bw$oz2 <- clean_bw$oz * 28.34952312
 
 # replace NA with "0"
-clean_bw$lb2[is.na(clean_bw$lb2)] <- 0
-clean_bw$oz2[is.na(clean_bw$oz2)] <- 0
-clean_bw$gram1[is.na(clean_bw$gram1)] <- 0
+#clean_bw$lb2[is.na(clean_bw$lb2)] <- 0
+#clean_bw$oz2[is.na(clean_bw$oz2)] <- 0
+#clean_bw$gram1[is.na(clean_bw$gram1)] <- 0
+
+# where lb reported but not oz, convert NA's to 0
+clean_bw$oz2 <- (ifelse(clean_bw$lb2 > 0 & is.na(clean_bw$oz2), 0, clean_bw$oz2))
 
 # add these together
 clean_bw$gram2 <- clean_bw$lb2 + clean_bw$oz2
 
 # create new variable
-clean_bw$gram <- clean_bw$gram1 + clean_bw$gram2
+#clean_bw$gram <- clean_bw$gram1 + clean_bw$gram2
 
-# Some respondents reported birthweight in kg...
+# create new variable
+# if both metric and imperial weights were reported, use metric
+clean_bw$gram <- ifelse((clean_bw$gram1 > 0 & clean_bw$gram2 > 0), clean_bw$gram1, clean_bw$gram2)
+clean_bw$gram <- ifelse((clean_bw$gram1 > 0 & is.na(clean_bw$gram2)), clean_bw$gram1, clean_bw$gram)
+clean_bw$gram <- ifelse((is.na(clean_bw$gram1) & clean_bw$gram2 > 0), clean_bw$gram2, clean_bw$gram)
+
+# Some respondents reported birthweight in kg, so
 # convert kg to g for any value < 10
 clean_bw$gram <- ifelse(clean_bw$gram < 10, clean_bw$gram * 1000, clean_bw$gram)
+#clean_bw$gram <- ifelse(clean_bw$gram >= 10 & clean_bw$gram < 20, clean_bw$gram * 100, clean_bw$gram)
 
 # round to nearest gram
 clean_bw$gram <- round(clean_bw$gram, digits = 0)
 
 # replace zero values with NA
-clean_bw$gram <- ifelse(clean_bw$gram == 0, NA, clean_bw$gram)
+# clean_bw$gram <- ifelse(clean_bw$gram == 0, NA, clean_bw$gram)
 
 # create new data frame having only original and recoded variables
 clean_bw2 <- select(clean_bw, PID, cbirth_weight_g, cbirth_weight_lb, cbirth_weight_oz, gram)
 
-# done to here -----
+# good to here, except for certain rows with odd input; ------------------------------------
+# may need to identify these and code individually
+# code below not needed; used for testing purposes
 
-# remaining NA values in gram variable need to be cleaned
-# may need to clean these one at a time
+# identify rows where both metric and imperial birth weights were entered
+# since these get added together in 'gram', resulting in incorrect sum
+unclean_rows <- clean_bw %>%
+   filter(!is.na(cbirth_weight_g) & !is.na(cbirth_weight_lb)) # 162 records
 
-# identify rows where metric and imperial birth weights were entered
-# since these get added together in grams variable
-# unclean_rows <- bw_test %>%
-#   filter(is.na(cbirth_weight_g, cbirth_weight_lb))
+# where parents reported birth weight in both, choose grams
+
+# when both metric and imperials weights were reported, use metric
+unclean_rows$cbirth_weight_g <- ifelse(!is.na(unclean_rows$cbirth_weight_g) & !is.na(unclean_rows$cbirth_weight_lb), unclean_rows$cbirth_weight_g, 0)
+
+unclean_rows$gram2 <- ifelse((unclean_rows$gram1 > 0 & unclean_rows$gram2 > 0), (unclean_rows$gram2 <- 0), unclean_rows$gram2)
 
 
 sessionInfo()
