@@ -3,7 +3,7 @@
 # Test code: cleaning reported birth weight 
 # Thomas Klee
 # Created: 2019-03-18
-# Updated: 2019-03-22
+# Updated: 2019-04-11
 # ---------------------------
 
 # This script contains code to be added to 02_kidswords_dataprep.R script.
@@ -73,7 +73,7 @@ missing_bw <- bw2[is.na(bw2$gram), ] %>%
 write.csv(missing_bw, file = "data/missing_bw.csv")
 
 # from the print-out, add lines to 02_kidswords_dataprep.R, 
-# correcting for incorrect NA values in the 'gram' variable. 
+# hand-correcting for incorrect NA values in the 'gram' variable. 
 
 # remove temporary objects from environment
 # rm(bw, bw2, missing_bw)
