@@ -8,7 +8,8 @@
 
 # This script contains code to be added to 02_kidswords_dataprep.R script.
 # Its purpose is to clean respondents' input to 3 parent questionnaire
-# categories related to children's birth weight. 
+# items related to children's birth weight and create a single 
+# birthweight variable: birthweight in grams
 
 library(tidyverse)
 
@@ -20,6 +21,9 @@ bw <- select(PQ, PID, starts_with("cbirth_weight"))
 
 # select first n rows of data
 # bw <- head(bw, 50)
+
+# insert code below into 02_kidswords_dataprep.R script,
+# but change data frame reference to PQ in that script
 
 # create new variables from old by removing alphabetic characters
 bw$gram1 <- str_replace_all(bw$cbirth_weight_g, "[:alpha:]", "")
@@ -56,6 +60,8 @@ bw$gram <- round(bw$gram, digits = 0)
 
 # create new data frame having only original and recoded variables
 bw2 <- select(bw, PID, cbirth_weight_g, cbirth_weight_lb, cbirth_weight_oz, gram)
+
+# no code below needs to be inserted into 02_kidswords_dataprep.R
 
 # get summary statistics for birth weight in grams
 # summary(bw2$gram)
