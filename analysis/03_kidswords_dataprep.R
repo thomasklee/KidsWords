@@ -3,7 +3,7 @@
 # Data preparation-03
 # Thomas Klee
 # Created: 2017-06-09
-# Updated: 2018-08-10
+# Updated: 2019-04-15
 # ---------------------------
 
 library(tidyverse)
@@ -12,6 +12,7 @@ library(tidyverse)
 # calculates CDI word total and grammatical complexity score for each child;
 # merges the CDI data with selected variables from the parent questionnaire;
 # recodes 11 peduc categories into 4 summary categories and orders them;
+# add cbirth_weight_grams;
 # summarizes the variables. 
 
 # Note that no filters have been applied for age or session number.
@@ -71,7 +72,8 @@ CDIdata$CDI_wc <- factor(CDIdata$CDI_wc)
 # select relevant variables from parent quesionnaire
 PQdata <-
   PQ %>% 
-  select(PID, csex, cbirth_order, ctwin, cdaycare, region, prelation, cborn_in_nz, ccountry_where,
+  select(PID, csex, cbirth_order, cbirth_weight_grams, ctwin, cdaycare, 
+         region, prelation, cborn_in_nz, ccountry_where,
          cmain_lang, cother_langs, cwhich_langs, mono_env,
          family_hist, peduc, cethnicity_nz, cethnicity_other)
 
