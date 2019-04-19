@@ -28,6 +28,10 @@
 # The new information resulted from contacting parents about missing data
 # or apparently incorrect data entered by them on the website.
 
+# The script also cleans birth weights recorded in the PQ.
+# Note that some decision rules were used to code some data as missing (NA).
+# These can be fine-tuned in the future by future researchers.
+
 # The script merges the lookup and CDI data frames and creates 
 # a new variable ("resp" in CDI_words data frame) containing 1s and 0s 
 # instead of "Says" and NA. The "resp" variable also contains 1s and 0s 
@@ -516,24 +520,26 @@ PQX <- mutate(PQX, gram4 = replace(gram4, PID == 21481, 3770))
 PQX <- mutate(PQX, gram4 = replace(gram4, PID == 22199, 2523))
 PQX <- mutate(PQX, gram4 = replace(gram4, PID == 22760, 4281))
 
-# identify those with reported birth weights > 400 grams 
+# identify those with reported birth weights < 400 grams 
 # and no reported prematurity and convert gram4 to NA 
 # on the assumption that they were incorrectly entered on the PQ
+PQX <- mutate(PQX, gram4 = replace(gram4, gram4 < 400 & cpremature == "no", NA))
 
-
+# identify remaining records with unlikely reported birth weights
+# and convert them to NA
+# low_bw <- filter(PQX, gram4 < 400 & !is.na(cprem_wks)) # test works
+PQX <- mutate(PQX, gram4 = replace(gram4, gram4 < 400 & !is.na(cprem_wks), NA))
 
 # round to nearest gram (do this as lasts step, so move this command)
-# PQX$gram4 <- round(PQX$gram4, digits = 0)
-
-### done to here 
+PQX$gram4 <- round(PQX$gram4, digits = 0)
 
 # rename gram4 for final data frame
 PQX <- rename(PQX, cbirth_weight_grams = gram4)
 
-# remove intermediate (and temporary) variables
-
 # remove temporary object
 rm(missing_bw)
+
+### no PQX code below here
 
 # create 2nd data frame from CDI before converting CDI to long-format
 CDI_wide <- CDI
