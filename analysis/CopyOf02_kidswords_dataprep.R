@@ -3,7 +3,7 @@
 # Data preparation-02
 # Thomas Klee
 # Created: 2017-04-17
-# Updated: 2019-04-16
+# Updated: 2019-04-19
 # ---------------------------
 
 # This script: 
@@ -353,7 +353,7 @@ PQ$peduc <- ordered(PQ$peduc)
 # for calculating odds ratios 
 PQ$csex <- relevel(PQ$csex, "Girl")
 
-# create single birth weight variable from 3 PQ variables
+# create single birth weight variable (gram4) from 3 PQ variables
 
 # create new variables from old by removing alphabetic characters
 PQ$gram1 <- str_replace_all(PQ$cbirth_weight_g, "[:alpha:]", "")
@@ -369,12 +369,10 @@ PQ$oz <- as.numeric(PQ$oz)
 PQ$lb2 <- PQ$lb * 453.59237
 PQ$oz2 <- PQ$oz * 28.34952312
 
-# create a test data frame and reorder variables
-### remove next statement from final version of this script
-### and change rest of script from PQX to PQ
+### change PQX to PQ throughout when fully tested ###
 PQX <- select(PQ, PID, starts_with("cbirth_weight"), gram1, lb, oz, lb2, oz2, starts_with("cprem"))
 
-# where lb was entered but not oz, convert NA's to 0
+# where lb was entered but not oz in the PQ, convert NAs to 0
 PQX$oz2 <- (ifelse(PQX$lb2 > 0 & is.na(PQX$oz2), 0, PQX$oz2))
 
 # add these together
@@ -390,18 +388,21 @@ PQX <- select(PQX, PID, starts_with("cbirth_weight"), gram1, gram2, gram3, lb, o
 PQX$gram4 <- ifelse((PQX$gram2 > 0 & is.na(PQX$gram1)), PQX$gram2, NA)
 PQX$gram4 <- ifelse((PQX$gram1 > 0 & is.na(PQX$gram2)), PQX$gram1, PQX$gram4)
 
+# declare variable to be numeric
+# PQX$gram4 <- as.numeric(PQX$gram4)
+
 # reorder for easier reading
 PQX <- select(PQX, PID, starts_with("cbirth_weight"), gram1, gram2, gram3, gram4, lb, oz, lb2, oz2, starts_with("cprem"))
 
-# use metric weight when both were reported
+# use metric weight if both metric and imperial were reported
 PQX$gram4 <- ifelse(PQX$gram3 > 0 & is.na(PQX$gram4), PQX$gram3, PQX$gram4)
 
-# round to nearest gram
-PQX$gram4 <- round(PQX$gram4, digits = 0)
-
 # Some respondents reported birthweight in kg, so
-# convert kg to g for any value < 8
-PQX$gram4 <- ifelse(PQX$gram4 < 8, PQX$gram4 * 1000, PQX$gram4)
+# convert kg to g for any value < 10
+PQX$gram4 <- ifelse(PQX$gram4 < 10, PQX$gram4 * 1000, PQX$gram4)
+PQX$gram4 <- ifelse(PQX$gram4 >= 10 & PQX$gram4 < 100, PQX$gram4 * 100, PQX$gram4)
+# the next command may inadvertently increase bw's in the hundreds
+# PQX$gram4 <- ifelse(PQX$gram4 >= 100 & PQX$gram4 < 1000, PQX$gram4 * 10, PQX$gram4)
 
 # hand-calculate remaining birthweights:
 # find rows with missing gram data 
@@ -470,19 +471,66 @@ PQX$gram4 <- ifelse(PQX$PID == 24261 & is.na(PQX$gram4), 3898, PQX$gram4)
 PQX$gram4 <- ifelse(PQX$PID == 24465 & is.na(PQX$gram4), 3572, PQX$gram4) 
 PQX$gram4 <- ifelse(PQX$PID == 24486 & is.na(PQX$gram4), 4026, PQX$gram4) 
 
-# replace mis-calculated birth weights with hand-calculations
-PQX <- mutate(PQX, gram4 = replace(gram4, PID == 23178, "4706")) 
-PQX <- mutate(PQX, gram4 = replace(gram4, PID == 24450, "3402")) 
-PQX <- mutate(PQX, gram4 = replace(gram4, PID == 22565, "2325")) 
-PQX <- mutate(PQX, gram4 = replace(gram4, PID == 22972, "3714")) # 8lbs, 3oz
+# replace mis-calculated birth weights with hand-calculated values
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 20893, 2268))
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 21405, 3062))
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 21608, 4479))
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 21642, 1300))
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 21751, 1170))
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 21791, 3658))
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 22238, NA)) # data entered uninterpretable
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 22301, 1446))
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 22565, 2325)) 
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 22734, 1100)) 
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 22832, 2000)) # 20000g reported 
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 22841, 3062)) 
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 22877, 3912)) 
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 22972, 3714)) # 8lbs, 3oz
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 23178, 4706)) 
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 23277, 1100))
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 23304, 4337)) 
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 24047, NA)) # data entered uninterpretable
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 24052, 4196)) 
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 24059, 3912)) 
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 24169, 2920)) 
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 24450, 3402)) 
 
-# declare as numeric
-PQX$gram4 <- as.numeric(PQX$gram4)
+# identify reported birth weights > 5500 grams and convert
+# them to NA on the assumption that they were incorrectly entered
+# on the PQ
+high_bw <- filter(PQX, gram4 > 5500)
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 20791, NA))
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 21581, NA))
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 21603, NA))
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 21661, NA))
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 21711, NA))
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 21787, NA))
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 23219, NA))
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 23357, NA))
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 23714, NA))
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 24391, NA))
+
+# identify birth weights out of those remaining where both metric
+# and imperial were reported on the PQ and hand-calculate gram4
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 21481, 3770))
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 22199, 2523))
+PQX <- mutate(PQX, gram4 = replace(gram4, PID == 22760, 4281))
+
+# identify those with reported birth weights > 400 grams 
+# and no reported prematurity and convert gram4 to NA 
+# on the assumption that they were incorrectly entered on the PQ
+
+
+
+# round to nearest gram (do this as lasts step, so move this command)
+# PQX$gram4 <- round(PQX$gram4, digits = 0)
 
 ### done to here 
 
 # rename gram4 for final data frame
 PQX <- rename(PQX, cbirth_weight_grams = gram4)
+
+# remove intermediate (and temporary) variables
 
 # remove temporary object
 rm(missing_bw)
