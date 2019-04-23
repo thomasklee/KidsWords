@@ -3,7 +3,7 @@
 # Data preparation-03
 # Thomas Klee
 # Created: 2017-06-09
-# Updated: 2019-04-15
+# Updated: 2019-04-23
 # ---------------------------
 
 library(tidyverse)
@@ -12,8 +12,8 @@ library(tidyverse)
 # calculates CDI word total and grammatical complexity score for each child;
 # merges the CDI data with selected variables from the parent questionnaire;
 # recodes 11 peduc categories into 4 summary categories and orders them;
-# add cbirth_weight_grams;
-# summarizes the variables. 
+# summarizes the variables;
+# saves 4 data frames as .CSV and .RDS files.
 
 # Note that no filters have been applied for age or session number.
 
@@ -115,12 +115,14 @@ summary(CDIPQ)
 saveRDS(CDIPQ, file = "data/data_CDIPQ.RDS")
 saveRDS(CDIdata, file = "data/data_CDIdata.RDS")
 saveRDS(PQdata, file = "data/data_PQdata.RDS")
+saveRDS(CDI_words, file = "data/data_CDI_words.RDS")
 
 # convert data frames to csv file; factor and date formats will be lost
 # no need to use any further but might be useful to give someone else
 write_csv(CDIPQ, "data/data_CDIPQ.csv") 
 write_csv(CDIdata, "data/data_CDIdata.csv") 
 write_csv(PQdata, "data/data_PQdata.csv") 
+write_csv(CDI_words, "data/data_CDI_words.csv") 
 
 # remove temporary data frames
 rm(CDI_long)
