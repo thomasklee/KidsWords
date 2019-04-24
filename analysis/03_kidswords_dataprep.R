@@ -3,7 +3,7 @@
 # Data preparation-03
 # Thomas Klee
 # Created: 2017-06-09
-# Updated: 2019-04-23
+# Updated: 2019-04-24
 # ---------------------------
 
 library(tidyverse)
@@ -116,6 +116,7 @@ saveRDS(CDIPQ, file = "data/data_CDIPQ.RDS")
 saveRDS(CDIdata, file = "data/data_CDIdata.RDS")
 saveRDS(PQdata, file = "data/data_PQdata.RDS")
 saveRDS(CDI_words, file = "data/data_CDI_words.RDS")
+saveRDS(word_lookup, file = "data/data_word_lookup.RDS")
 
 # convert data frames to csv file; factor and date formats will be lost
 # no need to use any further but might be useful to give someone else
@@ -123,6 +124,7 @@ write_csv(CDIPQ, "data/data_CDIPQ.csv")
 write_csv(CDIdata, "data/data_CDIdata.csv") 
 write_csv(PQdata, "data/data_PQdata.csv") 
 write_csv(CDI_words, "data/data_CDI_words.csv") 
+write_csv(word_lookup, "data/data_word_lookup.csv") 
 
 # remove temporary data frames
 rm(CDI_long)
