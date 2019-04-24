@@ -19,7 +19,7 @@
 # this script can then be scrapped.
 
 # load library
-library(dplyr)
+library(tidyverse)
         
 # load lookup table of CDI vocabulary characteristics
 word_lookup <- read_csv("data/cdi_lookup.csv")
@@ -53,15 +53,14 @@ word_lookup <- word_lookup %>%
   mutate(CDI_part = replace(CDI_part, CDI_part == 21, "helping verbs")) %>% 
   mutate(CDI_part = replace(CDI_part, CDI_part == 22, "connecting_words"))
 
-# convert some variables to factors
-word_lookup$CDI_part <- factor(word_lookup$CDI_part)
-word_lookup$word_class <- factor(word_lookup$word_class)
-
 # rearrange columns
 word_lookup <- select(word_lookup, itemID, CDI_item, field, CDI_part, word_class, syllables,
                       syl_structure, ND, WF, WL, IPC)
 
 # convert to data frame
 word_lookup <- as.data.frame(word_lookup)
+
+# convert data frame to CSV file
+write_csv(word_lookup, "data/cdi_lookup.csv")
 
 sessionInfo()
