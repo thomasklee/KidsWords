@@ -255,6 +255,7 @@ PQ$pethnicity_nz <- factor(PQ$pethnicity_nz)
 PQ$pethnicity_other <- factor(PQ$pethnicity_other)
 PQ$psec_qual <- factor(PQ$psec_qual)
 
+word_lookup$CDI_part <- factor(word_lookup$CDI_part)
 word_lookup$word_class <- factor(word_lookup$word_class)
 word_lookup$syl_structure <- factor(word_lookup$syl_structure)
 
