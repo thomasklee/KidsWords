@@ -19,60 +19,130 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction
 
-This document provides examples of how each of the plots in the KidsWords manuscript and a supplementary document were created, along with the code used to create them. 
-It was written for those who have little if any experience of creating plots with R, but it isn't an introduction to R itself, since many excellent resources are already available for that. I'll point you to some that have been useful to me (stay tuned...). 
+This was written for two reasons:
+
+- to provide research students and others with a real example of how one researcher (me) explored data from a large-scale research project; and
+
+- to provide examples of how data plots for that project were created using R. 
+
+The KidsWords project, which I'll describe shortly, was designed:
+
+- to contruct norms for a standardised measure of early language development based on a representative cross-section of children living in Aotearoa/New Zealand; and
+
+- to examine associations between measures of early language development from that measure and various child, family and demographic variables.
+
+We designed the study with both these purposes in mind; however, part of the process of doing most research studies also involves a fair amount of exploratory data analysis. That's what we've tried to illustrate in writing this document. 
+
+Usually, when we read a research article, it contains one or more figures (i.e., plots summarising various aspects of the data), but we often don't get to see how the researcher decided that those particular figures--and not others--should be presented. So the intention here is to lead you through my thought processes. I do this while acknowledging that there is more than one way to explore observational data of the kind we have here. The approach I've taken also may not be the best way--but it does try to reveal some of my thinking as I went from one analysis to the next.
+
+I've written this for those who have little if any experience of doing research or creating plots with R. But it isn't an introduction to R itself, since many excellent resources are already available for that. I'll point you to some that have been useful to me at the end of the document (to do...). 
+
+Since this is an HTML file, the length of text lines will automatically adjust when you view it displays of different sizes (e.g., computer monitor, tablet). If your screen is too small, the text in the grey boxes--the R code used to create the plots--will appear more confusing that it should due to text wrapping of one line into the next. So I recommend viewing this on a large enough screen so that wrapping doesn't interfere with interpretation in the grey boxes.
+
+# Data analysis toolbox
 
 Some of the plots below were created using R's `ggplot2` package, while others were made using other R packages or with R's `plot` command. The specific approach used to create each plot is specified for each plot. This document doesn't go into detailed explanations of what each line of R code does, but one of the best resources I know for learning more about code used for graphs is Winston Chang's [R Graphics Book](https://r-graphics.org), the contents of which are freely available online and for purchase in book form. I highly recommend it.
 
-The sets of instructions (R code) for making plots are presented below in boxes with grey backgrounds, followed by the resulting plot. R usually generates warnings for things like missing data, but these warnings have been suppressed so that the display is more readable in this document. However, it's generally good not to suppress warnings so that you're aware of any potential problems with your code, such as plots where missing data have been excluded. Each R package is loaded as needed to show you which were used for each plot. In practice, though, each R package only needs to be loaded once at the beginning of the script using one `library( )` function for each package needed. 
+The sets of instructions (R code) for making plots are presented below in boxes with grey backgrounds, followed by the resulting plot. R usually generates warnings for things like missing data, but these warnings have been suppressed to make the display more readable in this document. However, it's best not to suppress warnings so that you're aware of any potential problems with your output, such as that missing data have been excluded. Each R package is loaded as needed to show you which were used for each plot. In practice, though, each R package only needs to be loaded once at the beginning of the script using one `library()` function for each package. 
 
-[R](https://www.r-project.org) was used to process the raw data downloaded from an SQL database on the server hosting the KidsWords website. R was also used to analyse the data and create the plots. [R Markdown](https://rmarkdown.rstudio.com/lesson-1.html) was used as the markup language in the document you're reading now and [RStudio](http://www.rstudio.com) was used to integrate everything and store it in the KidsWords repository on [GitHub](https://github.com/thomasklee). 
+[R](https://www.r-project.org) was used to process the raw data downloaded from an SQL database on the server hosting the KidsWords website and a local database on my computer. R was also used to analyse the data and create the plots. [R Markdown](https://rmarkdown.rstudio.com/lesson-1.html) was used as the markup language in the document you're reading now and [RStudio](http://www.rstudio.com) was used to integrate everything and store it in the KidsWords repository on [GitHub](https://github.com/thomasklee). 
 
-Please note that the data analyses and plots presented in this document are not in final form. They are suggestive of the final results but presented here for the purpose of illustrating how the plots were made. The source document underlying the HTML file you're reading does not contain any numbers copied into it from external computer output. This document was written dynamically, meaning that if something gets changed in the data pipeline (e.g., a coding error get corrected), all the results and plots in this document will be automatically updated without any intervention from me. This is another reason for using R, RStudio and R Markdown (or LaTeX) as you write. If you want to see the source document that generated the HTML document you're reading, it will be uploaded to GitHub soon. 
+The data analyses and plots presented in this document are not in final form. They are suggestive of the final results but presented here for the purpose of illustrating how the plots were made. The source document underlying the HTML file you're reading does not contain any numbers or plots copied into it from another source. The document was written dynamically, meaning that if something gets changed in the data pipeline (e.g., a coding error get corrected), all the results and plots get updated automatically without any intervention from me. Thinking about your data preparation, data analysis and manuscript preparation work flow before you begin your project will pay off in the end. Perhaps more on that later. This is another reason for using R, RStudio and R Markdown (or LaTeX) as you write. If you want to see the source document that generated the HTML document you're reading, it will be uploaded to GitHub soon. 
 
 Let's get started.
 
 # The data
 
-The first step in making a plot is to load the data from your research project. For the KidsWords project, parents throughout New Zealand logged onto a secure website to complete an on-line version of the New Zealand adaptation of the [MacArthur-Bates Communicative Development Inventory: Words and Sentences (NZ CDI:WS)](https://github.com/thomasklee/KidsWords/blob/master/PDFs/NZ-CDI-2012.pdf) and a [Parent Questionnaire (PQ)](https://github.com/thomasklee/KidsWords/blob/master/PDFs/KidsWords_parent_questionnaire.pdf) designed to ascertain selected child, family and demographic information. 
+Let's briefly describe the data and where it came from. Parents throughout New Zealand wishing to participate in the KidsWords project were sent a username and password. Upon receiving it, they could log into a secure website to complete an on-line version of the New Zealand adaptation of the [MacArthur-Bates Communicative Development Inventory: Words and Sentences (NZ CDI:WS)](https://github.com/thomasklee/KidsWords/blob/master/PDFs/NZ-CDI-2012.pdf) and a [Parent Questionnaire (PQ)](https://github.com/thomasklee/KidsWords/blob/master/PDFs/KidsWords_parent_questionnaire.pdf) designed to ascertain selected child, family and demographic information. 
 
-I followed Broman and Woo's (2018) principles for "organizing spreadsheet data to reduce errors and ease later analyses" in their excellent paper in [The American Statistician](https://tohdos.ca/wp-content/uploads/2017/11/Broman-TAS-2018-Data-Organization-in-Spreadsheets.pdf). Most of the principles are likely to be things you already do when you construct your own data files, but their paper is well worth reading just the same (and recommending to your research students).
+Even though it wasn't necessary to import the raw data into a spreadsheet, I followed Broman and Woo's (2018) principles for "organizing spreadsheet data to reduce errors and ease later analyses" in their excellent paper in [The American Statistician](https://tohdos.ca/wp-content/uploads/2017/11/Broman-TAS-2018-Data-Organization-in-Spreadsheets.pdf). Most of the principles are likely to be things you already do when you construct your own data files, but their paper is well worth reading just the same (and recommending to your research students). Instead, the CSV text files downloaded from the server were imported to R and processed.
 
-The block of R code below begins by loading the `tidyverse` package, since we'll be using functions from that package frequently. Two data frames, `CDIPQ` and `xs`, are then created. The first, `CDIPQ`, loads data from a CSV file stored on my computer. The raw data containing parents' responses to NZ CDI:WS and PQ were downloaded from the KidsWords web site and processed with [three "dataprep" scripts](https://github.com/thomasklee/KidsWords/tree/master/analysis). The full data set consists of cross-sectional and longitudinal data, but since we only need cross-sectional data for the plots below, a second data frame, `xs`, was created by filtering `CDIPQ` for (1) data entered on the first occasion (`session == 1`), (2) children 16- through 30-months of age (`camos >= 16 & camos <= 30`) and (3) those whose main or only language was reported to be English (`mono_env == "yes"`). Further details of participants and the data set are described in the main manuscript. 
+The first step in exploring data and making tables and plots is to import the data from your research project into R. Let's see how this was done in the KidsWords project. The block of R code below begins by loading the `tidyverse` package, since we'll be using functions from that package frequently. Three data frames, `requests`, `CDIPQ` and `xs`, are then created. 
+
+The first data frame, `requests`, was created by importing text data from a CSV file exported from the database on my computer. That database kept track of parents who expressed an interest in the project, along with login credentials given to them to access the data entry system on the KidsWords web site should they decide to participate. The second data frame, `CDIPQ`, loads data from a CSV file containing parents' responses to NZ CDI:WS and PQ. The raw data was downloaded from the KidsWords web site and processed with [three "dataprep" scripts](https://github.com/thomasklee/KidsWords/tree/master/analysis). The full data set consists of cross-sectional and longitudinal data, but since we only need cross-sectional data for the plots below, a third data frame, `xs`, was created by filtering `CDIPQ` for (1) data entered on the first occasion (`session == 1`), (2) children 16- through 30-months of age (`camos >= 16 & camos <= 30`) and (3) those whose main or only language was reported to be English (`mono_env == "yes"`). Further details of participants and the data set are described in the main manuscript. 
 
 ```{r data, message=FALSE, warning=FALSE}
 
 # load package
 library(tidyverse)
 
+# load data into a data frame called requests
+requests <- read.csv("analysis/data/qry_requests_20151008.csv")
+
 # load data into a data frame called CDIPQ
 CDIPQ <- read.csv("analysis/data/data_CDIPQ.csv")
 
-# fliter CDIPQ into a new data frame called xs
+# filter a subset of data from CDIPQ into a new data frame called xs
 xs <- CDIPQ %>% 
   filter(session == 1,  camos >= 16 & camos <= 30, mono_env == "yes")
 ```
 
-Most of the plots below will be based on the cross-sectional subset, `xs` (_N_ = `r nrow(xs)`) of the full data set, `CDIPQ` (_N_ = `r nrow(CDIPQ)`). Let's take a look at the first 10  rows of the `xs` data frame and some of the variables we'll be using here. Variable names appear in the first row of the output below and participant ID codes appear in the first column. 
+Most of the plots below will be based on the cross-sectional subset, `xs` (_N_ = `r nrow(xs)`) of the full data set, `CDIPQ` (_N_ = `r nrow(CDIPQ)`) using the `filter()` function of the R's `dplyr` package that is bundled with other packages in the `tidyverse` package. Let's take a look at the first 10  rows of the `xs` data frame and some of the variables we'll be using here. Variable names appear in the first row of the output below and participant ID codes appear in the first column. 
 
 ```{r, message=FALSE, warning=FALSE, cache=TRUE}
 xs_select <- select(xs, PID, camos, wordtotal, csex, cbirth_weight_grams, cbirth_order, region)
 head(xs_select, 10)
 ```
 
-All of the R scripts used to process and analyse the anonymised raw data entered by parents on the KidsWords website can be found in the `analysis` folder of the KidsWords repository on GitHub. Currently however, the data files themselves haven't been uploaded to GitHub, but eventually they will be.
+All of the R scripts used to process and analyse the anonymised raw data entered by parents on the KidsWords website can be found in the `analysis` folder of the KidsWords repository on GitHub. Currently however, the data files themselves haven't been uploaded to GitHub, but eventually they will be (to do...).
 
 # The plots
 
-## Distribution of children's birth weight in grams
+## Recruiting participants: distribution of requests
 
-Why plot the distribution of birth weights? The children in the sample were not randomly selected from the population since there wasn't a mechanism available to us for doing that in New Zealand. However, since one of the project's main goals was to develop a population model of children's early language development (e.g., percentile tables for measures of early vocabulary and grammar), we need to know whether our sample is representative of the larger population. 
+The first question researchers thinking of doing a study such as this might ask is, _How long did it take to recruit participants to this project?_ Let's create a plot to find out. To do this, we'll use the `requests` data frame we created above. That data frame contains two variables: an identififation number for each individual who requested to participate in the study and the date emailed a password to the parent. The box below shows you the structure of the data frame, followed by the first 10 rows of the data frame. If you're new to R, a **data frame** is a special kind of **object** that gets created from a set of data (that may have been imported from a spreadsheet, for example). Objects such as this are listed in the Enviroment tab of RStudio and contain data that can be viewed, described and analysed.
+
+```{r}
+
+# load package
+library(tidyverse)
+
+# display internal structure of the data frame
+str(requests)
+
+# display first 10 rows of the data frame
+head(requests, 10)
+```
+
+From this, we can see that the `requests` data frame contains `r nrow(requests)` observations (i.e., participant requests) and two variables: Refno_pwd and Upload_date_pwd. The output also tells us that values of Refno_pwd are defined as integers (`int`), while values of Upload_date_pwd are defined as a categorical variable (`Factor`). In the output below that, we see the contents of the first 10 rows of data and line numbers.
+
+We'll use base R's `plot()` function to make the graph. All the code for making this plot appears in the grey box below. The output resulting from the code, a **cumulative frequency plot**, appears below the code box. 
+
+```{r message=FALSE, warning=FALSE}
+
+# load packages
+library(tidyverse)
+library(lubridate)
+
+# construct a graph of the cumulative frequency of requests
+# from parents to participate in the project.
+
+# convert character strings to date class
+reqdate <- dmy(requests$Upload_date_pwd)
+
+# remove 8 records from database test phase
+requests <- filter(requests, reqdate >= "2012-10-10")
+
+# create table
+request_table <- table(format(reqdate, "%Y-%m"))
+
+# count cumulative number of requests
+cumfreq <- cumsum(request_table)
+
+# create plot  
+plot(cumfreq, xlab = "Month of Data Collection", ylab = "Valid Requests to Participate")
+lines(cumfreq)
+```
+
+## Distribution of birth weight
+
+Why plot the distribution of children's birth weights? The children in the sample were not randomly selected from the population since there wasn't a mechanism available to us for doing that in New Zealand. However, since one of the project's main goals was to develop a population model of children's early language development (e.g., percentile tables for measures of early vocabulary and grammar), we need to know whether our sample is representative of the larger population. 
 
 One way of doing this is to compare relevant demographic characteristics of the sample with those of the population. However, this can only be done for the same measures available in the sample and the population. Anticipating this during the study's planning stage, and knowing that the best source of population-level data available are national census data, we designed as many most of the demographic questions on our Parent Questionnaire using identical wording to questions asked by [Stats NZ](https://www.stats.govt.nz) for the 2013 New Zealand Census. 
 
-In looking at which variables from our study could be compared to census-level results to gauge how representative our sample was, three variables come to mind: the child's birth weight, geographical region of residence and parent education level. Let's see how each of those compares with the national census data (comparison forthcoming...).
+In looking at which variables from our study could be compared to census-level results to gauge how representative our sample was, three variables come to mind: the child's birth weight, geographical region of residence and parent education level. Let's see how each of those compares with the national census data (to do...).
 
-The `ggplot2` package was used to make a **histogram** of children's reported birth weight. To plot any histogram, a decision has to be made about the bin width of the dependent variable--in this case birth weight. While this is easy to do for categorical variables, like sex or birth order which have natural bins, making a histogram of a continuous variable like birth weight requires a decision about how to divide the continuous variable into bins. In the example below, we specified a bin width of 500 grams: `scale_x_continuous("\nBirth weight (grams)", breaks = seq(500, 5500, 500))`.
+The `ggplot2` package was used to make a **histogram** of children's reported birth weight. To plot any histogram, a decision has to be made about the bin width of the dependent variable--in this case birth weight. While this is easy to do for categorical variables, like sex or birth order, making a histogram of a continuous variable like birth weight requires a decision about how to divide a continuous variable into somewhat arbitrary categories, or _bins-. In the example below, we specified a bin width of 500 grams: `scale_x_continuous("\nBirth weight (grams)", breaks = seq(500, 5500, 500))`.
 
 ```{r, message=FALSE, warning=FALSE, cache=TRUE}
 
@@ -112,7 +182,7 @@ ggplot(xs, aes(x = cbirth_weight_grams, y = ..density..)) +
 
 The next step would be to see how the distribution of birthweights in our sample compares with that of the New Zealand population.
 
-Kernel density curves are also useful for comparing subgroups. Let's look at how girls and boys compare on this variable using kernel density curves.
+Kernel density curves are also useful for comparing subgroups. Let's look at how girls and boys compare using this kind of plot.
 
 ```{r, message=FALSE, warning=FALSE, cache=TRUE}
 
@@ -128,10 +198,44 @@ ggplot(xs, aes(x = cbirth_weight_grams, fill = csex)) +
 
 We see from the plot above that the two distributions overlap to a large degree, with boys' birth weights shifted slightly to the right. The appearance of this plot differs from previous ones in that the variable name is used label the x-axis since axis labels default to variable names unless otherwise specified. And unlike in previous plots, light grey reference lines were added to the backgound. This grid and other changes to the appearance of the graph were specified using ggplot's `theme_bw()` function. Previous plots used the `theme_few()` function from the `ggthemes` package.
 
+Now, just for fun, let's compare the birth weight of singletons and twins in the sample. We might predict that, on average, the birth weight of twins would be less than that of singletons. 
+
+```{r, message=FALSE, warning=FALSE, cache=TRUE}
+
+library(ggplot2)
+library(RColorBrewer)
+
+# create plot
+ggplot(xs, aes(x = cbirth_weight_grams, fill = ctwin)) +
+  geom_density(alpha = 0.2) +
+  theme_bw() +
+  labs(caption = "Source: KidsWords project")
+```
+
+That appears to be the case from the plot above. If you compare the R code for these two plots, only one element is different. In the plot of girls and boys, the ggplot function included the `aesthetic` element, `fill = csex`, while in the plot of twins and singletons, the element was changed to `fill = ctwin`. That's all. Easy!
+
+Now, let's create one more birthweight plot. This time, let's look at whether Pakeha and Māori babies had different birth weights. Children's ethnicity on the Parent Questionnaire was coded with the variable, `cethnicity_nz`, so we need to find only children from those two ethnic groups in the `xs` data frame for our plot. This is done with `dplyr`'s `filter()` function and the Boolean operator for "or", which is `|`.
+
+```{r, message=FALSE, warning=FALSE, cache=TRUE}
+
+library(tidyverse)
+library(RColorBrewer)
+
+# find children from either of two ethnicities
+xs_ethnic <- xs %>% 
+  filter(cethnicity_nz == "New Zealand European" | cethnicity_nz == "Māori")
+
+# create plot
+ggplot(xs_ethnic, aes(x = cbirth_weight_grams, fill = cethnicity_nz)) +
+  geom_density(alpha = 0.2) +
+  theme_bw() +
+  labs(caption = "Source: KidsWords project")
+```
+
 
 ## Distribution of vocabulary size by region
 
-Let's create a boxplot using the base R function, `boxplot( )` to see whether the distribution of expressive vocabulary differs by region of the country. 
+Let's create a special kind of boxplot called a **notched boxplot** using the base R function, `boxplot( )` to see whether the distribution of expressive vocabulary differs by region of the country. 
 
 ```{r, message=FALSE, warning=FALSE, cache=TRUE}
 
@@ -172,15 +276,36 @@ ggplot(xs, aes(x = region, y = wordtotal)) +
 
 That worked beautifully. We adjusted the x-axis labels by 45 degrees and adjusted their height relative to the axis line with `theme(axis.text.x = element_text(angle = 45, hjust = 1)`, illustrating that there's usually more than one way of getting things done with R. Incidentally, the logic behind building a plot using `ggplot2` is based on a "grammar of graphics" (gg) that New Zealander Hadley Wickham developed.
 
-When we look at the notched boxplots, the median vocabulary size of children differs across regions. For example, the median vocabulary size of `r median(filter(xs, region == "Otago")$wordtotal, na.rm = TRUE)` for the Otago region appears to be substantially below that of the Bay of Plenty region (`r median(filter(xs, region == "Bay of Plenty")$wordtotal, na.rm = TRUE)`). Further, the lower limit of the 95% confidence interval for Bay of Plenty appears to be greater than the upper limt of the confidence interval for Otago, indicating that the medians are statistically different. This would need to be verified with an appropriate statistical test, of course.
+When we look at the notched boxplots, the median vocabulary size of children differs across regions. For example, the median vocabulary size of `r median(filter(xs, region == "Otago")$wordtotal, na.rm = TRUE)` for the Otago region appears to be substantially below that of the Bay of Plenty region (`r median(filter(xs, region == "Bay of Plenty")$wordtotal, na.rm = TRUE)`). The lower limit of the 95% confidence interval for Bay of Plenty appears to be above than the upper limit of the confidence interval for Otago, indicating that the medians are statistically different. This would need to be verified with an appropriate statistical test, of course.
 
-Before jumping to the conclusion that children in Bay of Plenty have larger vocabularies than Otago children because of where they happen to live, which doesn't make sense intuitively, we need to explore other possibilities. For example, are the median scores of those regions conditioned (influenced) by things like child sex or maternal education level? In other words, does the proportion of girls and boys differ between those regions? If there are substantially more girls than boys in the Bay of Plenty group of our sample--and if girls as a group have larger vocabularies than boys in early development--then a sex-imbalance between regions in our sample would be a more plausible explanation of the vocabulary size difference than the region itself. 
+Before jumping to the conclusion that children in Bay of Plenty have larger vocabularies than Otago children because of where they happen to live, which doesn't make sense intuitively, we should explore other possibilities. For example, are the median scores of those regions conditioned (influenced) by things like child sex or maternal education level? In other words, does the proportion of girls and boys differ between those regions? If there are substantially more girls than boys in the Bay of Plenty group of our sample--and if girls as a group have larger vocabularies than boys in early development--then a sex-imbalance between regions in our sample would be a more plausible explanation of the vocabulary size difference than the region itself. Let's find out if this is the case.
 
-Let's find out if this is the case.
+The first step is to determine how many girls and boys were sampled in each region.
+
+```{r, message=FALSE, warning=FALSE, cache=TRUE}
+
+library(tidyverse)
+
+# create subset of two regions and select variables to examine
+xs$pedcat <- as.factor(xs$pedcat)
+xs_sub <- select(xs, region, wordtotal, csex, pedcat) 
+xs_sub2 <- filter(xs_sub, region == "Bay of Plenty" | region == "Otago") 
+
+summary(xs_sub2)
+
+# run a two-way ANOVA
+# model <- aov(xs_regions$wordtotal ~ xs$region$region * xs$csex)
+
+# cross-tabulate region by sex
+# table(xs_regions$region, xs_regions$csex)
+
+# cross-tabulate region by pedcat
+# table(xs_regions$region, xs_regions$pedcat)
+```
 
 ## Distribution of vocabulary size by age
 
-Let's give the base R function, `boxplot( )`, another try in making a notched boxplot. But first, a little more on what notched boxplots are. Although I haven't seen these used in child language research, Crawley (2013) and Chang (2019) illustrate them with R code. Notched boxplots visually depict the distribution of values of a dependent variable (e.g., vocabulary size). Group medians are represented by horizontal bars near the middle of each box, with the upper and lower limits of the 95% confidence interval of each median depicted by notches. The notches (confidence interval) of each box look like a waist cinched by a belt (the median). The length of each box represents the interquartile range,  extending from the 25th to 75th percentiles, as they do in garden variety boxplots. Asterisks indicate group means (confidence intervals for means are not represented). The lines extending above and below each box indicate values that are beyond $\pm$ 1.5 times the interquartile range. Circles indicate values beyond that range (outliers). Non-overlapping notches of any two groups give a visual impression of which groups are likely to have significantly different medians. _(Natalie, is this a better explanation than before?)_
+Let's give the base R function, `boxplot( )`, another try in making a notched boxplot. But first, a little more on what notched boxplots are. Although I haven't seen these used in child language research, Crawley (2013) and Chang (2019) illustrate them with R code. Notched boxplots visually depict the distribution of values of a dependent variable (e.g., vocabulary size). Group medians are represented by horizontal bars near the middle of each box, with the upper and lower limits of the 95% confidence interval of each median depicted by notches. The notches (confidence interval) of each box look like a waist cinched by a belt (the median). The length of each box represents the interquartile range,  extending from the 25th to 75th percentiles, as they do in garden variety boxplots. Asterisks indicate group means (confidence intervals for means are not represented). The lines extending above and below each box indicate values that are beyond $\pm$ 1.5 times the interquartile range. Circles indicate values beyond that range (outliers). Non-overlapping notches of any two groups give a visual impression of which groups are likely to have significantly different medians. 
 
 ```{r, message=FALSE, warning=FALSE, cache=TRUE}
 
@@ -196,7 +321,9 @@ mean_words <- aggregate(wordtotal ~ camos, xs, mean)
 points(mean_words$wordtotal, pch = "*")
 ```
 
-## Sample percentiles for expressive vocabulary size
+## Sample percentiles for vocabulary size
+
+Percentiles were calculated from the sample data for each month of age and plotted with a **line graph**. (to do: add explanation]
 
 ```{r, message=FALSE, warning=FALSE, cache=TRUE}
 
@@ -242,9 +369,10 @@ ggplot(qdflong, aes(x = factor(camos), y = score,
   scale_colour_brewer(palette = "Dark2", guide = guide_legend(reverse = TRUE)) 
 ```
 
-## Smoothed percentiles for expressive vocabulary size
+## Smoothed percentiles for vocabulary size
 
-This plot uses the `quantregGrowth` package to construct smoothed (fitted) curves to model growth in children's expressive vocabulary size from 16- to 30 months of age at the 10th, 25th, 50th, 75th and 90th percentiles. Each curve is accompanied by its 95% confidence interval. In the manuscript, separate plots for girls and boys are presented. 
+This plot uses the `quantregGrowth` package to construct **smoothed (fitted) curves** to model growth in children's expressive vocabulary size from 16- to 30 months of age at the 10th, 25th, 50th, 75th and 90th percentiles. Each curve is accompanied by its 95% confidence interval. In the manuscript, separate plots for girls and boys are presented.
+(to do: add explanation for why these tell us something different from line graphs based on sample percentiles]
 
 ```{r, message=FALSE, warning=FALSE, cache=TRUE}
 
@@ -270,9 +398,9 @@ plot(vocab_curves, conf.level = .95, shade = TRUE,
      lwd = 2, col = mypalette, lty = 1)
 ```
 
-## Frequent word use
+## Most frequent words
 
-Word clouds are useful for visually illustrating a data pattern for a particular purpose. Although I wouldn't use them as a substitute for a quantitative analysis of vocabulary, they're an interesting way to visualise data and might be suitable on a web page, leaflet, etc. We use the `wordcloud` package here to produce a word cloud of the 200 most frequently spoken words by 24-month-olds in the KidsWords project (_N_ = `r nrow(filter(xs, camos == 24))`). This package isn't particularly well documented but there are some helpful examples of scripts for word clouds, network analysis and other things on [STHDA's website](http://www.sthda.com/english/wiki/text-mining-and-word-cloud-fundamentals-in-r-5-simple-steps-you-should-know.)
+**Word clouds** are useful for visually illustrating a data pattern for a particular purpose. Although I wouldn't use them as a substitute for a quantitative analysis of vocabulary, they're an interesting way to visualise data and might be suitable on a web page, leaflet, etc. We use the `wordcloud` package here to produce a word cloud of the 200 most frequently spoken words by 24-month-olds in the KidsWords project (_N_ = `r nrow(filter(xs, camos == 24))`). This package isn't particularly well documented but there are some helpful examples of scripts for word clouds, network analysis and other things on [STHDA's website](http://www.sthda.com/english/wiki/text-mining-and-word-cloud-fundamentals-in-r-5-simple-steps-you-should-know.)
 
 We start by loading the data in long form, where each row contains each word used by each child, along with other word-level data. We then create a subset of rows from the data frame that we'll use for the word cloud.
 
@@ -384,7 +512,7 @@ ggplot(AoA_table, aes(x = camos, y = prop_said, colour = csex)) +
 
 # About
 
-Many of the plots in this document will appear in final form in a journal article and supplement currently being prepared:
+The final form of many of the plots in this document will appear in a journal article and supplement currently being prepared. That article can be cited as:
 
 Klee, T., Stokes, S.F., Reese, E., Jorgensen, R.N., Bleses, D., Gavin. W.J., & Witchitaksorn, N. (in prep.) Early language development of New Zealand children: national norms for New Zealand English.
 
