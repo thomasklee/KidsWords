@@ -9,6 +9,7 @@ output:
     toc: true
     number_sections: true
     toc_float: true
+    fig_caption: yes
 ---
 
 ```{r include = FALSE}
@@ -19,35 +20,35 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction
 
-This was written for two reasons:
+The KidsWords project, which I'll describe shortly, was designed to:
 
-- to provide research students and others with a real example of how one researcher (me) explored data from a large-scale research project; and
+- contruct norms for a standardised measure of early language development based on a representative cross-section of children living in Aotearoa/New Zealand; and
 
-- to provide examples of how data plots for that project were created using R. 
+- examine associations between measures of early language development and child, family and demographic variables.
 
-The KidsWords project, which I'll describe shortly, was designed:
+Although this was an observational rather than experimental study, both kinds of studies inevitably will involve some exploratory data analyses in the early stages before the actual research questions can be answered. That's what we've tried to illustrate in writing this document. So in writing this document, the goals were to:
 
-- to contruct norms for a standardised measure of early language development based on a representative cross-section of children living in Aotearoa/New Zealand; and
+- provide research students and others with a real-life example of how one researcher (me) explored data from a large-scale research project; and
 
-- to examine associations between measures of early language development from that measure and various child, family and demographic variables.
+- provide examples of how the figures for that project were created using R. 
 
-We designed the study with both these purposes in mind; however, part of the process of doing most research studies also involves a fair amount of exploratory data analysis. That's what we've tried to illustrate in writing this document. 
+Usually, when we read a research article, it contains one or more figures (i.e., visualizations of certain aspects of the data set), but we often don't get to hear what the researcher was thinking as they explored their data. All that's presented in the jourral article is a sanatized version of what went on. So the intention here is to reveal some of my thinking as I progressed from one analysis to the next, while at the same time acknowledging that there is more than one way to explore observational data. 
 
-Usually, when we read a research article, it contains one or more figures (i.e., plots summarising various aspects of the data), but we often don't get to see how the researcher decided that those particular figures--and not others--should be presented. So the intention here is to lead you through my thought processes. I do this while acknowledging that there is more than one way to explore observational data of the kind we have here. The approach I've taken also may not be the best way--but it does try to reveal some of my thinking as I went from one analysis to the next.
+Something else we don't normally see when reading a research article is exactly how the researcher constructed each figure being presented---or indeed, how they actually executed the statistical analyses that they reported. Instead, the Methods section of articles usually only offer rather terse descriptions like, "a paired t-test was done" or a "linear mixed effects model was conducted". Thankfully, more and more funding agencies require, and researchers have been encouraging, us to be more open and transparent about how we did things by uploading the scripts used to analyse the data, and the data itself, to an open source data repository such as GitHub or Dataverse. I'm hopeful that the day will come when we look back at the era when this was not routinely done as being quaint and out-of-step with modern science. Researchers who have a healthy skepticism about what they read is one thing---being able to question the conclusions of research studies has always driven science forward---but having access to the data and the scripts with which those conclusions were drawn is another thing. The move toward open science empowers people to not only question published conclusions but also potentially improve on the data analyses done to reach those conclusions. 
 
 I've written this for those who have little if any experience of doing research or creating plots with R. But it isn't an introduction to R itself, since many excellent resources are already available for that. I'll point you to some that have been useful to me at the end of the document (to do...). 
 
-Since this is an HTML file, the length of text lines will automatically adjust when you view it displays of different sizes (e.g., computer monitor, tablet). If your screen is too small, the text in the grey boxes--the R code used to create the plots--will appear more confusing that it should due to text wrapping of one line into the next. So I recommend viewing this on a large enough screen so that wrapping doesn't interfere with interpretation in the grey boxes.
+Since this is an HTML file, the length of text lines will automatically adjust when you view it displays of different sizes (e.g., computer monitor, tablet). However, text appearing in boxes sometimes wraps if the screen display is too small, and might not be clear.So I recommend viewing this on a large enough screen so that wrapping doesn't interfere with interpretation in the boxes.
 
 # Data analysis toolbox
 
 Some of the plots below were created using R's `ggplot2` package, while others were made using other R packages or with R's `plot` command. The specific approach used to create each plot is specified for each plot. This document doesn't go into detailed explanations of what each line of R code does, but one of the best resources I know for learning more about code used for graphs is Winston Chang's [R Graphics Book](https://r-graphics.org), the contents of which are freely available online and for purchase in book form. I highly recommend it.
 
-The sets of instructions (R code) for making plots are presented below in boxes with grey backgrounds, followed by the resulting plot. R usually generates warnings for things like missing data, but these warnings have been suppressed to make the display more readable in this document. However, it's best not to suppress warnings so that you're aware of any potential problems with your output, such as that missing data have been excluded. Each R package is loaded as needed to show you which were used for each plot. In practice, though, each R package only needs to be loaded once at the beginning of the script using one `library()` function for each package. 
+The sets of instructions (chunks of R code) for making each plot are presented below in boxes with grey backgrounds along with the plot produced by that code. R usually generates warnings for things like missing data, but these warnings have been suppressed to make the display more readable. However, it's best not to suppress warnings so that you're aware of any potential problems with your output, such as that missing data were handled differently than what you wanted. Each R package is loaded as needed to show you which packages were used for each plot. In practice, though, each R package only needs to be loaded once at the beginning of the script using R's `library()` function.
 
-[R](https://www.r-project.org) was used to process the raw data downloaded from an SQL database on the server hosting the KidsWords website and a local database on my computer. R was also used to analyse the data and create the plots. [R Markdown](https://rmarkdown.rstudio.com/lesson-1.html) was used as the markup language in the document you're reading now and [RStudio](http://www.rstudio.com) was used to integrate everything and store it in the KidsWords repository on [GitHub](https://github.com/thomasklee). 
+[R](https://www.r-project.org) was used to process the raw data downloaded from an SQL database on the server hosting the KidsWords website and a local database on my computer. R was also used to analyse the data and create the plots. [R Markdown](https://rmarkdown.rstudio.com/lesson-1.html) was used as the markup language in the document you're reading and [RStudio](http://www.rstudio.com) was used, via its built in Knit function to render what I wrote into HTML without my having to use a single HTML code. RStudio was also the tool that integrated all this and uploaded it to the KidsWords repository on [GitHub](https://github.com/thomasklee). 
 
-The data analyses and plots presented in this document are not in final form. They are suggestive of the final results but presented here for the purpose of illustrating how the plots were made. The source document underlying the HTML file you're reading does not contain any numbers or plots copied into it from another source. The document was written dynamically, meaning that if something gets changed in the data pipeline (e.g., a coding error get corrected), all the results and plots get updated automatically without any intervention from me. Thinking about your data preparation, data analysis and manuscript preparation work flow before you begin your project will pay off in the end. Perhaps more on that later. This is another reason for using R, RStudio and R Markdown (or LaTeX) as you write. If you want to see the source document that generated the HTML document you're reading, it will be uploaded to GitHub soon. 
+The data analyses and plots presented in this document are not in final form. They are suggestive of the final results but presented here for the purpose of illustrating how the plots were made. The source document behind the HTML file you're reading does not contain any numbers or plots copied into it from another source. The source document was written dynamically, meaning that if something gets changed in the data pipeline (e.g., a data point or coding error gets corrected), all the results and plots get updated automatically without any intervention from me. _The last two sentences are worth reading again!_ Thinking about your data preparation, data analysis and manuscript preparation work flow before you begin your project will pay off in the long run. This is another reason for using R, RStudio and a markup language like R Markdown or LaTeX as you write. If you want to see the source document that generated the HTML document you're reading, it will be uploaded to GitHub soon. 
 
 Let's get started.
 
@@ -80,7 +81,8 @@ xs <- CDIPQ %>%
 Most of the plots below will be based on the cross-sectional subset, `xs` (_N_ = `r nrow(xs)`) of the full data set, `CDIPQ` (_N_ = `r nrow(CDIPQ)`) using the `filter()` function of the R's `dplyr` package that is bundled with other packages in the `tidyverse` package. Let's take a look at the first 10  rows of the `xs` data frame and some of the variables we'll be using here. Variable names appear in the first row of the output below and participant ID codes appear in the first column. 
 
 ```{r, message=FALSE, warning=FALSE, cache=TRUE}
-xs_select <- select(xs, PID, camos, wordtotal, csex, cbirth_weight_grams, cbirth_order, region)
+xs_select <- select(xs, PID, camos, wordtotal, csex, cbirth_weight_grams, 
+                    cbirth_order, region)
 head(xs_select, 10)
 ```
 
@@ -106,9 +108,9 @@ head(requests, 10)
 
 From this, we can see that the `requests` data frame contains `r nrow(requests)` observations (i.e., participant requests) and two variables: Refno_pwd and Upload_date_pwd. The output also tells us that values of Refno_pwd are defined as integers (`int`), while values of Upload_date_pwd are defined as a categorical variable (`Factor`). In the output below that, we see the contents of the first 10 rows of data and line numbers.
 
-We'll use base R's `plot()` function to make the graph. All the code for making this plot appears in the grey box below. The output resulting from the code, a **cumulative frequency plot**, appears below the code box. 
+We'll use base R's `plot()` function to make the graph below. All the code for making this plot appears in the grey box below. The output resulting from the code, a **cumulative frequency plot**, appears below the code box. 
 
-```{r message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE, out.width = '80%', fig.asp = 1.0, fig.align = 'center', fig.cap = 'Cumulative number of valid requests to participate'} 
 
 # load packages
 library(tidyverse)
@@ -130,7 +132,8 @@ request_table <- table(format(reqdate, "%Y-%m"))
 cumfreq <- cumsum(request_table)
 
 # create plot  
-plot(cumfreq, xlab = "Month of Data Collection", ylab = "Valid Requests to Participate")
+plot(cumfreq, xlab = "Month of Data Collection", 
+     ylab = "Valid Requests to Participate")
 lines(cumfreq)
 ```
 
@@ -171,10 +174,10 @@ library(RColorBrewer)
 
 # create plot
 ggplot(xs, aes(x = cbirth_weight_grams, y = ..density..)) +
-  geom_histogram(binwidth = 100, fill = "cornsilk", colour = "grey60") + # overlay a histogram
+  geom_histogram(binwidth = 100, fill = "cornsilk", colour = "grey60") +
   geom_line(stat = "density") + 
   scale_x_continuous("\nBirth weight (grams)", breaks = seq(500, 5500, 500)) + 
-  geom_vline(xintercept = median(xs$cbirth_weight_grams, na.rm = TRUE)) + # add line marking median birth weight
+  geom_vline(xintercept = median(xs$cbirth_weight_grams, na.rm = TRUE)) +
   scale_y_continuous("Density\n") + 
   theme_few() +
   labs(caption = "Source: KidsWords project")
@@ -502,7 +505,8 @@ ggplot(AoA_table, aes(x = camos, y = prop_said, colour = csex)) +
   geom_line() + 
   geom_point() + 
   scale_x_continuous(name = "\n Age in months", breaks = seq(16, 30, 2)) + 
-  scale_y_continuous(name = "Proportion of children\n", limits = c(0, 1), breaks = seq(0, 1, .2)) +
+  scale_y_continuous(name = "Proportion of children\n", limits = c(0, 1), 
+                     breaks = seq(0, 1, .2)) +
   facet_wrap( ~ CDI_item) +
   labs (title = "Wh-Question Use (NZ CDI:WS)\n") +
   labs(caption = "Source: KidsWords project")
