@@ -22,33 +22,43 @@ knitr::opts_chunk$set(echo = TRUE)
 
 The KidsWords project, which I'll describe shortly, was designed to:
 
-- contruct norms for a standardised measure of early language development based on a representative cross-section of children living in Aotearoa/New Zealand; and
+- develop norms for a standardised measure of early language development based on a representative cross-section of children living in Aotearoa/New Zealand; and
 
-- examine associations between measures of early language development and child, family and demographic variables.
+- examine associations between measures of early language development, child, family and demographic variables.
 
-Although this was an observational rather than experimental study, both kinds of studies inevitably will involve some exploratory data analyses in the early stages before the actual research questions can be answered. That's what we've tried to illustrate in writing this document. So in writing this document, the goals were to:
+This project involved observational rather than experimental research, but both kinds of investigations involve exploratory data analyses of some kind in the early stages, before the research questions that were initially posed can be addressed. What do we mean by by _exploratory data analysis_? [Wickham and Grolemund (2017)](https://r4ds.had.co.nz/exploratory-data-analysis.html) define it as using "visualisation and transformation to explore your data in a systematic way".
 
-- provide research students and others with a real-life example of how one researcher (me) explored data from a large-scale research project; and
+## Why was this written?
+
+With this document, the goals are to:
+
+- provide research students and others with how one researcher (me) explored real data from a large-scale research project; and
 
 - provide examples of how the figures for that project were created using R. 
 
-Usually, when we read a research article, it contains one or more figures (i.e., visualizations of certain aspects of the data set), but we often don't get to hear what the researcher was thinking as they explored their data. All that's presented in the jourral article is a sanatized version of what went on. So the intention here is to reveal some of my thinking as I progressed from one analysis to the next, while at the same time acknowledging that there is more than one way to explore observational data. 
+When we read a research article, it usually contains one or more figures---visualizations of certain aspects of the data---but typically we don't get to hear what the researcher was thinking as they explored their data. Instead, what we see in the journal article is the finished product---the end result of the data preparation and analysis pipeline, driven in part by the journal's page/word length restrictions. So the intention here is to reveal some of my thinking as I progressed from one analysis to the next, while acknowledging that there is more than one way to explore data. 
 
-Something else we don't normally see when reading a research article is exactly how the researcher constructed each figure being presented---or indeed, how they actually executed the statistical analyses that they reported. Instead, the Methods section of articles usually only offer rather terse descriptions like, "a paired t-test was done" or a "linear mixed effects model was conducted". Thankfully, more and more funding agencies require, and researchers have been encouraging, us to be more open and transparent about how we did things by uploading the scripts used to analyse the data, and the data itself, to an open source data repository such as GitHub or Dataverse. I'm hopeful that the day will come when we look back at the era when this was not routinely done as being quaint and out-of-step with modern science. Researchers who have a healthy skepticism about what they read is one thing---being able to question the conclusions of research studies has always driven science forward---but having access to the data and the scripts with which those conclusions were drawn is another thing. The move toward open science empowers people to not only question published conclusions but also potentially improve on the data analyses done to reach those conclusions. 
+Something else we aren't normally told when reading a research article is _how_ the researcher constructed each figure or executed each statistical analysis. Sometimes authors don't even report what statistical software package was used for data analysis. Instead, the Methods section of articles typically only offer terse descriptions like "a paired t-test was done" or a "linear mixed effects model was conducted". 
+
+Thankfully, things are beginning to change for the better. Many funding agencies and some journals now require researchers to upload their (raw or cleaned) data to a publicly accessible data repository such as [Open Science Framework](https://osf.io), [Dataverse](http://dataverse.org/), [FigShare](http://figshare.com) or [GitHub](https://github.com/), so that others can download and analyse the data for checking and further data analyses. In addition, the specific code or instructions (e.g., R scripts) used to perform the analyses reported can be uploaded to the web site. 
+
+I'm hopeful that the day will come when we look back at the era when this was not routinely done as being out-of-step with modern science. Researchers who have a healthy skepticism about what they read is one thing---being able to question the conclusions of research studies has always driven science forward---but having access to the data and the scripts with which those conclusions were drawn is another thing. The move toward open science empowers people to not only question published conclusions but also potentially improve on the data analyses done to reach those conclusions. 
+
+## Who was this written for?
 
 I've written this for those who have little if any experience of doing research or creating plots with R. But it isn't an introduction to R itself, since many excellent resources are already available for that. I'll point you to some that have been useful to me at the end of the document (to do...). 
 
-Since this is an HTML file, the length of text lines will automatically adjust when you view it displays of different sizes (e.g., computer monitor, tablet). However, text appearing in boxes sometimes wraps if the screen display is too small, and might not be clear.So I recommend viewing this on a large enough screen so that wrapping doesn't interfere with interpretation in the boxes.
+Since this is an HTML file, the length of text lines will automatically adjust when you view it on different devices. However, the text appearing in boxes sometimes wraps if the screen display is too small, and might not be clear, so I recommend viewing this on a large enough screen so that wrapping doesn't interfere with the text in the boxes.
 
 # Data analysis toolbox
 
-Some of the plots below were created using R's `ggplot2` package, while others were made using other R packages or with R's `plot` command. The specific approach used to create each plot is specified for each plot. This document doesn't go into detailed explanations of what each line of R code does, but one of the best resources I know for learning more about code used for graphs is Winston Chang's [R Graphics Book](https://r-graphics.org), the contents of which are freely available online and for purchase in book form. I highly recommend it.
+Some of the plots below were created using R's wonderful `ggplot2` package, while others were made with base with R's `plot` command or other R packages. The specific approach used to create each plot is specified for each plot. This document doesn't go into detailed explanations of what each line of R code does, but one of the best resources I know for learning more about the R code used for making graphs is Winston Chang's [R Graphics Book](https://r-graphics.org), the contents of which are freely available online or for purchase as book. I've used it since the first edition came out and highly recommend it. Another good book for R-based graphics is Kieran Healey's book, [Data Visualization: a Practical Introduction](https://www.bookdepository.com/Data-Visualization/9780691181622).
 
-The sets of instructions (chunks of R code) for making each plot are presented below in boxes with grey backgrounds along with the plot produced by that code. R usually generates warnings for things like missing data, but these warnings have been suppressed to make the display more readable. However, it's best not to suppress warnings so that you're aware of any potential problems with your output, such as that missing data were handled differently than what you wanted. Each R package is loaded as needed to show you which packages were used for each plot. In practice, though, each R package only needs to be loaded once at the beginning of the script using R's `library()` function.
+The sets of instructions (chunks of R code) for making each plot are presented below in boxes with grey backgrounds along with the plot resulting from that code. R usually generates warnings for things like missing data, but these warnings have been suppressed to make the display more readable. However, it's best not to suppress warnings so that you're aware of any potential problems with your output, such as that missing data were handled differently than what you wanted. Each R package is loaded as needed to show you which packages were used for each plot. In practice, though, each R package only needs to be loaded once at the beginning of an R session using the `library()` function.
 
-[R](https://www.r-project.org) was used to process the raw data downloaded from an SQL database on the server hosting the KidsWords website and a local database on my computer. R was also used to analyse the data and create the plots. [R Markdown](https://rmarkdown.rstudio.com/lesson-1.html) was used as the markup language in the document you're reading and [RStudio](http://www.rstudio.com) was used, via its built in Knit function to render what I wrote into HTML without my having to use a single HTML code. RStudio was also the tool that integrated all this and uploaded it to the KidsWords repository on [GitHub](https://github.com/thomasklee). 
+[R](https://www.r-project.org) was used to process the raw data downloaded from an SQL database on the server hosting the KidsWords website and a local database on my computer. R was used to analyse the data and create plots and tables. [R Markdown](https://rmarkdown.rstudio.com/lesson-1.html) was used as the markup language in the document you're reading and [RStudio](http://www.rstudio.com) was used, via the `knitr` package to render what I wrote into HTML without having to use any HTML code. RStudio was the tool that integrated all this and uploaded it to the [KidsWords repository on GitHub](https://github.com/thomasklee). 
 
-The data analyses and plots presented in this document are not in final form. They are suggestive of the final results but presented here for the purpose of illustrating how the plots were made. The source document behind the HTML file you're reading does not contain any numbers or plots copied into it from another source. The source document was written dynamically, meaning that if something gets changed in the data pipeline (e.g., a data point or coding error gets corrected), all the results and plots get updated automatically without any intervention from me. _The last two sentences are worth reading again!_ Thinking about your data preparation, data analysis and manuscript preparation work flow before you begin your project will pay off in the long run. This is another reason for using R, RStudio and a markup language like R Markdown or LaTeX as you write. If you want to see the source document that generated the HTML document you're reading, it will be uploaded to GitHub soon. 
+The data analyses and plots presented in this document are not in final form. They are suggestive of the final results but presented here for the purpose of illustrating how the plots were made. The source document (an R Markdown file) behind the HTML file you're reading does not contain any numbers or plots copied ot er-typed into it from other sources. The source document was written dynamically, meaning that if something gets changed in the data pipeline (e.g., a data point or coding error gets corrected), all the results and plots get updated automatically without any intervention from me. _The last two sentences are worth reading again!_ Thinking about your data preparation, data analysis and manuscript preparation work flow before you begin your project will pay off in the long run. This is another reason for using R, RStudio and a markup language like R Markdown or LaTeX as you write. If you want to see the source document that generated the HTML document you're reading, it will be uploaded to GitHub soon (to do...). 
 
 Let's get started.
 
@@ -56,11 +66,14 @@ Let's get started.
 
 Let's briefly describe the data and where it came from. Parents throughout New Zealand wishing to participate in the KidsWords project were sent a username and password. Upon receiving it, they could log into a secure website to complete an on-line version of the New Zealand adaptation of the [MacArthur-Bates Communicative Development Inventory: Words and Sentences (NZ CDI:WS)](https://github.com/thomasklee/KidsWords/blob/master/PDFs/NZ-CDI-2012.pdf) and a [Parent Questionnaire (PQ)](https://github.com/thomasklee/KidsWords/blob/master/PDFs/KidsWords_parent_questionnaire.pdf) designed to ascertain selected child, family and demographic information. 
 
-Even though it wasn't necessary to import the raw data into a spreadsheet, I followed Broman and Woo's (2018) principles for "organizing spreadsheet data to reduce errors and ease later analyses" in their excellent paper in [The American Statistician](https://tohdos.ca/wp-content/uploads/2017/11/Broman-TAS-2018-Data-Organization-in-Spreadsheets.pdf). Most of the principles are likely to be things you already do when you construct your own data files, but their paper is well worth reading just the same (and recommending to your research students). Instead, the CSV text files downloaded from the server were imported to R and processed.
+Raw CDI and PQ data were exported as text (CSV) files from the KidsWords SQL database and then imported into R for processing and analysis. I followed Broman and Woo's (2018) principles for "organizing spreadsheet data to reduce errors and ease later analyses" in their excellent paper in [The American Statistician](https://tohdos.ca/wp-content/uploads/2017/11/Broman-TAS-2018-Data-Organization-in-Spreadsheets.pdf), even though I used R instead of spreadsheet software. Most of the principles in their paper are likely to be things you already do when you construct your own data files, but it's well worth reading just the same (and recommending to your research students).
 
-The first step in exploring data and making tables and plots is to import the data from your research project into R. Let's see how this was done in the KidsWords project. The block of R code below begins by loading the `tidyverse` package, since we'll be using functions from that package frequently. Three data frames, `requests`, `CDIPQ` and `xs`, are then created. 
+The first step in exploring data is to import the raw data files from your research project into R. The steps taken to prepare or "clean" questionnaire data so that it can be analysed is something we won't go into here, but the approach we took was guided by a paper written by Wickham (2014) in the [Journal of Statistical Software](https://www.jstatsoft.org/article/view/v059i10/). See [Grolemund and Wickam (2017)](https://r4ds.had.co.nz/introduction.html) for a graph illustrating this process. 
+Let's see how this was done with the KidsWords data. The raw data downloaded from the KidsWords web site were first processed with three "dataprep" scripts that you can view or download from the [KidsWords repository  on GitHub](https://github.com/thomasklee/KidsWords/tree/master/analysis). The idea is to never make any changes to the raw data files even if they contain errors. Instead, changes are made to imported data using R scripts in order to get the raw data into shape for data analysis. Turning _raw_ data into _analysable_ data results in **data frames** that can then be used by other scripts for data analysis. (Eventually, a cleaned set of exported text (CSV) files will be uploaded to a public data repository so that others can make use of the data.)
 
-The first data frame, `requests`, was created by importing text data from a CSV file exported from the database on my computer. That database kept track of parents who expressed an interest in the project, along with login credentials given to them to access the data entry system on the KidsWords web site should they decide to participate. The second data frame, `CDIPQ`, loads data from a CSV file containing parents' responses to NZ CDI:WS and PQ. The raw data was downloaded from the KidsWords web site and processed with [three "dataprep" scripts](https://github.com/thomasklee/KidsWords/tree/master/analysis). The full data set consists of cross-sectional and longitudinal data, but since we only need cross-sectional data for the plots below, a third data frame, `xs`, was created by filtering `CDIPQ` for (1) data entered on the first occasion (`session == 1`), (2) children 16- through 30-months of age (`camos >= 16 & camos <= 30`) and (3) those whose main or only language was reported to be English (`mono_env == "yes"`). Further details of participants and the data set are described in the main manuscript. 
+The block of R code below begins by loading the `tidyverse` package, since we'll be using functions from that package frequently. Three data frames, `requests`, `CDIPQ` and `xs`, are then created. The first data frame, `requests`, was created by importing text data from a CSV file exported from a second database on my computer. That database kept track of parents who expressed an interest in the project, along with login credentials given to them to access the data entry system on the KidsWords web site should they decide to participate. The second data frame, `CDIPQ`, loads data from a CSV file containing parents' responses to NZ CDI:WS and PQ. 
+
+The full data set consists of cross-sectional and longitudinal data, but since we only need cross-sectional data for the plots below, a third data frame, `xs`, was created by filtering `CDIPQ` for (1) data entered on the first occasion (`session == 1`), (2) children 16- through 30-months of age (`camos >= 16 & camos <= 30`) and (3) those whose main or only language was reported to be English (`mono_env == "yes"`). Further details of participants and the data set are described in the main manuscript. 
 
 ```{r data, message=FALSE, warning=FALSE}
 
@@ -86,11 +99,9 @@ xs_select <- select(xs, PID, camos, wordtotal, csex, cbirth_weight_grams,
 head(xs_select, 10)
 ```
 
-All of the R scripts used to process and analyse the anonymised raw data entered by parents on the KidsWords website can be found in the `analysis` folder of the KidsWords repository on GitHub. Currently however, the data files themselves haven't been uploaded to GitHub, but eventually they will be (to do...).
-
 # The plots
 
-## Recruiting participants: distribution of requests
+## Distribution of participation requests
 
 The first question researchers thinking of doing a study such as this might ask is, _How long did it take to recruit participants to this project?_ Let's create a plot to find out. To do this, we'll use the `requests` data frame we created above. That data frame contains two variables: an identififation number for each individual who requested to participate in the study and the date emailed a password to the parent. The box below shows you the structure of the data frame, followed by the first 10 rows of the data frame. If you're new to R, a **data frame** is a special kind of **object** that gets created from a set of data (that may have been imported from a spreadsheet, for example). Objects such as this are listed in the Enviroment tab of RStudio and contain data that can be viewed, described and analysed.
 
@@ -183,23 +194,40 @@ ggplot(xs, aes(x = cbirth_weight_grams, y = ..density..)) +
   labs(caption = "Source: KidsWords project")
 ```
 
-The next step would be to see how the distribution of birthweights in our sample compares with that of the New Zealand population.
+The next step is to see how the distribution of birthweights in our sample compares with that of the New Zealand population. After the next plot, we'll do that.
 
-Kernel density curves are also useful for comparing subgroups. Let's look at how girls and boys compare using this kind of plot.
+**Kernel density curves** are also useful for comparing subgroups. Let's look at how girls and boys compare using this kind of plot.
 
 ```{r, message=FALSE, warning=FALSE, cache=TRUE}
 
 library(ggplot2)
 library(RColorBrewer)
 
+# calculate median birth weight of girls and boys
+df_girls <- filter(xs, csex == "Girl")
+df_boys <- filter(xs, csex == "Boy")
+wt_girls <- median(df_girls$cbirth_weight_grams, na.rm = TRUE)
+wt_boys <- median(df_boys$cbirth_weight_grams, na.rm = TRUE)
+
 # create plot
 ggplot(xs, aes(x = cbirth_weight_grams, fill = csex)) +
   geom_density(alpha = 0.2) +
+  geom_vline(xintercept = wt_girls, colour = "#0072B2") +
+  geom_vline(xintercept = wt_boys, colour = "#D55E00") +
   theme_bw() +
   labs(caption = "Source: KidsWords project")
 ```
 
-We see from the plot above that the two distributions overlap to a large degree, with boys' birth weights shifted slightly to the right. The appearance of this plot differs from previous ones in that the variable name is used label the x-axis since axis labels default to variable names unless otherwise specified. And unlike in previous plots, light grey reference lines were added to the backgound. This grid and other changes to the appearance of the graph were specified using ggplot's `theme_bw()` function. Previous plots used the `theme_few()` function from the `ggthemes` package.
+We see from the plot above that the two distributions overlap to a large degree, with boys' birth weights shifted slightly to the right. The appearance of this plot differs from previous ones in that the variable name is used to label the x-axis since axis labels default to variable names in R unless otherwise specified. And unlike in previous plots, light grey reference lines were added to the backgound of the plot. This grid and other changes to the appearance of the graph were specified using ggplot's `theme_bw()` function. Previous plots used the `theme_few()` function from the `ggthemes` package.
+
+How does our sample compare to the population? The reason for asking is to help us decide whether our sample (_N_ = `r nrow(xs)`) might have been affected by [self-selection bias](http://sphweb.bumc.bu.edu/otlt/MPH-Modules/EP/EP713_Bias/EP713_Bias_print.html). This is a distinct possibility since our sample was recruited by making the public aware of the project, but whether they actually paricipated or not was their decision.
+
+In its [Report on Maternity](https://www.health.govt.nz/publication/report-maternity-2010), New Zealand's Ministry of Health stated that, for the calendar 2010,
+
+- _the average birthweight was 3.42 kilograms, with female babies weighing less on average (3.37 kg) than male babies (3.47 kg)_ and
+- _1.8% of full-term  babies were born with a low birthweight (< 2.5 kg)._
+
+In our sample, the median birth weight of girls was `r round(wt_girls / 1000, 2)` kg and the median birth weight of boys was `r round(wt_boys / 1000, 2)` kg. Before drawing any conclusion, we need to find out whether the Ministry used medians or means when they said _average_. But in any case, any difference between our sample and the whole population is likely to be very small.
 
 Now, just for fun, let's compare the birth weight of singletons and twins in the sample. We might predict that, on average, the birth weight of twins would be less than that of singletons. 
 
@@ -215,26 +243,69 @@ ggplot(xs, aes(x = cbirth_weight_grams, fill = ctwin)) +
   labs(caption = "Source: KidsWords project")
 ```
 
-That appears to be the case from the plot above. If you compare the R code for these two plots, only one element is different. In the plot of girls and boys, the ggplot function included the `aesthetic` element, `fill = csex`, while in the plot of twins and singletons, the element was changed to `fill = ctwin`. That's all. Easy!
+That appears to be the case in the plot above. If you compare the R code for this plot and the previous one, only one element is different. In the plot of girls and boys, the ggplot function included the `aesthetic` element, `fill = csex`, while in the plot of twins and singletons, that was changed to `fill = ctwin`. Easy!
 
-Now, let's create one more birthweight plot. This time, let's look at whether Pakeha and Māori babies had different birth weights. Children's ethnicity on the Parent Questionnaire was coded with the variable, `cethnicity_nz`, so we need to find only children from those two ethnic groups in the `xs` data frame for our plot. This is done with `dplyr`'s `filter()` function and the Boolean operator for "or", which is `|`.
+Now, let's create a **kernel density plot** of birthweight. 
+This time, we'll compare children of different ethnicities. Each respondent was asked on the PQ to identify the child's ethnicity.
+Before we create a plot, let's calculate the number of children in each ethnic group using R's `summary` function. 
+
+```{r, message=FALSE, warning=FALSE, cache=TRUE}
+summary(xs$cethnicity_nz)
+```
+
+As expected, we see that those of New Zealand European descent (Pākehā) and Māori comprised a majority of the children in the sample. Excluding those who didn't report the child's ethnicity (designated in the output above with the category `NA's`), and combining the remaining groups into summary categories used by Stats NZ, we're now ready to make a plot.
+
+Pākehā (New Zealanders of European descent) and Māori babies had different birth weights. Children's ethnicity on the Parent Questionnaire was coded with the variable, `cethnicity_nz`, so we need to find only children from those two ethnic groups in the `xs` data frame for our plot. This is done with `dplyr`'s `filter()` function and the Boolean operator for "or", which is `|`.
+
+In the R script below, let's only select the variables we need, ply each participant's ID code, `PID`, for the plot and put those variables into a separate data frame. You don't have to this, but there's no harm since a data frame is just a virtual **object** that takes up some memory. When we're finished with the new (temporary) data frame, we can remove it from RStudio's Global Environment if we don't need it anymore.
 
 ```{r, message=FALSE, warning=FALSE, cache=TRUE}
 
 library(tidyverse)
 library(RColorBrewer)
 
-# find children from either of two ethnicities
+# create new data frame of selected variables
 xs_ethnic <- xs %>% 
-  filter(cethnicity_nz == "New Zealand European" | cethnicity_nz == "Māori")
+  select(PID, cbirth_weight_grams, cethnicity_nz)
 
-# create plot
-ggplot(xs_ethnic, aes(x = cbirth_weight_grams, fill = cethnicity_nz)) +
-  geom_density(alpha = 0.2) +
+# duplicate a variable to recode
+xs_ethnic <- xs_ethnic %>% 
+  mutate(cethnicity_nz2 = cethnicity_nz)
+
+# recode values of duplicate variable using dplyr's old = "new" format
+xs_ethnic$cethnicity_nz2 <- recode(xs_ethnic$cethnicity_nz2,
+                                   Chinese = "Asian",
+                                   Indian = "Asian",
+                                   "Cook Island Maori" = "Pacific Peoples",
+                                   "Niuean" = "Pacific Peoples",
+                                   "Samoan" = "Pacific Peoples",
+                                   "Tongan" = "Pacific Peoples")
+
+# remove rows with missing ethnicity data using R's base syntax
+xs_ethnic <- xs_ethnic[!is.na(xs_ethnic$cethnicity_nz2), ]
+
+# create density curves using geom_density() 
+ggplot(xs_ethnic, aes(x = cbirth_weight_grams, fill = cethnicity_nz2)) +
+  geom_density() + #alpha = 0.2
   theme_bw() +
   labs(caption = "Source: KidsWords project")
 ```
 
+Well, that graph's not terribly informative since the curves overlap so much. 
+
+Let's try another approach, replacing the `geom_density()` function with `geom_line()`, and see what happens.
+
+```{r, message=FALSE, warning=FALSE, cache=TRUE}
+# create density curves using geom_line()
+ggplot(xs_ethnic, aes(x = cbirth_weight_grams, color = cethnicity_nz2)) +
+  geom_line(stat = "density") +
+  theme_bw() +
+  labs(caption = "Source: KidsWords project")
+```
+
+That's more like it. Now we can see the density curve of each ethnic group more clearly, even though they overlap somewhat. 
+
+The reason for going to all this trouble was to have a graph to compare to population-level data from NZ Ministry of Health. (to do...add link or download MoH graph)
 
 ## Distribution of vocabulary size by region
 
@@ -291,19 +362,21 @@ library(tidyverse)
 
 # create subset of two regions and select variables to examine
 xs$pedcat <- as.factor(xs$pedcat)
-xs_sub <- select(xs, region, wordtotal, csex, pedcat) 
-xs_sub2 <- filter(xs_sub, region == "Bay of Plenty" | region == "Otago") 
+xs_sub <- filter(xs, region == "Bay of Plenty" | region == "Otago") 
+xs_sub <- select(xs_sub, region, wordtotal, csex, pedcat) 
 
-summary(xs_sub2)
+summary(xs_sub)
 
-# run a two-way ANOVA
-# model <- aov(xs_regions$wordtotal ~ xs$region$region * xs$csex)
+# to do
 
 # cross-tabulate region by sex
-# table(xs_regions$region, xs_regions$csex)
+# table(xs_sub$region, xs_sub$csex)
 
 # cross-tabulate region by pedcat
-# table(xs_regions$region, xs_regions$pedcat)
+# table(xs_sub$region, xs_sub$pedcat)
+
+# run a two-way ANOVA
+# aov(xs_sub$wordtotal ~ xs$sub$region * xs_sub$csex)
 ```
 
 ## Distribution of vocabulary size by age
@@ -402,6 +475,8 @@ plot(vocab_curves, conf.level = .95, shade = TRUE,
 ```
 
 ## Most frequent words
+
+Inevitably during the course of exploring your data, you might get side-tracked by doing something, well, just because. Everyone needs a few diversions to keep them going, don't they? The following plots are examples of things that occurred to me.
 
 **Word clouds** are useful for visually illustrating a data pattern for a particular purpose. Although I wouldn't use them as a substitute for a quantitative analysis of vocabulary, they're an interesting way to visualise data and might be suitable on a web page, leaflet, etc. We use the `wordcloud` package here to produce a word cloud of the 200 most frequently spoken words by 24-month-olds in the KidsWords project (_N_ = `r nrow(filter(xs, camos == 24))`). This package isn't particularly well documented but there are some helpful examples of scripts for word clouds, network analysis and other things on [STHDA's website](http://www.sthda.com/english/wiki/text-mining-and-word-cloud-fundamentals-in-r-5-simple-steps-you-should-know.)
 
@@ -521,3 +596,5 @@ The final form of many of the plots in this document will appear in a journal ar
 Klee, T., Stokes, S.F., Reese, E., Jorgensen, R.N., Bleses, D., Gavin. W.J., & Witchitaksorn, N. (in prep.) Early language development of New Zealand children: national norms for New Zealand English.
 
 Grant support was provided by the Marsden Fund of the Royal Society of New Zealand (UOC1003) and the CDI Advisory Board. The study commenced when authors TK, SFS and NW were at the University the Canterbury, Christchurch, NZ. Work continues at The University of Hong Kong for authors TK and SFS.
+
+![](images/Marsden-logo-rgb-96dpi.jpg){width=250px}
