@@ -28,9 +28,9 @@ The KidsWords project, which I'll describe shortly, was designed to:
 
 This project involved observational rather than experimental research, but both kinds of investigations involve exploratory data analyses of some kind in the early stages, before the research questions that were initially posed can be addressed. What do we mean by by _exploratory data analysis_? [Wickham and Grolemund (2017)](https://r4ds.had.co.nz/exploratory-data-analysis.html) define it as using "visualisation and transformation to explore your data in a systematic way".
 
-## Why was this written?
+## Aims
 
-With this document, the goals are to:
+In writing this, my aims are to:
 
 - provide research students and others with how one researcher (me) explored real data from a large-scale research project; and
 
@@ -44,7 +44,7 @@ Thankfully, things are beginning to change for the better. Many funding agencies
 
 I'm hopeful that the day will come when we look back at the era when this was not routinely done as being out-of-step with modern science. Researchers who have a healthy skepticism about what they read is one thing---being able to question the conclusions of research studies has always driven science forward---but having access to the data and the scripts with which those conclusions were drawn is another thing. The move toward open science empowers people to not only question published conclusions but also potentially improve on the data analyses done to reach those conclusions. 
 
-## Who was this written for?
+## Audience
 
 I've written this for those who have little if any experience of doing research or creating plots with R. But it isn't an introduction to R itself, since many excellent resources are already available for that. I'll point you to some that have been useful to me at the end of the document (to do...). 
 
@@ -62,7 +62,7 @@ The data analyses and plots presented in this document are not in final form. Th
 
 Let's get started.
 
-# The data
+# Project data
 
 Let's briefly describe the data and where it came from. Parents throughout New Zealand wishing to participate in the KidsWords project were sent a username and password. Upon receiving it, they could log into a secure website to complete an on-line version of the New Zealand adaptation of the [MacArthur-Bates Communicative Development Inventory: Words and Sentences (NZ CDI:WS)](https://github.com/thomasklee/KidsWords/blob/master/PDFs/NZ-CDI-2012.pdf) and a [Parent Questionnaire (PQ)](https://github.com/thomasklee/KidsWords/blob/master/PDFs/KidsWords_parent_questionnaire.pdf) designed to ascertain selected child, family and demographic information. 
 
@@ -94,16 +94,15 @@ xs <- CDIPQ %>%
 Most of the plots below will be based on the cross-sectional subset, `xs` (_N_ = `r nrow(xs)`) of the full data set, `CDIPQ` (_N_ = `r nrow(CDIPQ)`) using the `filter()` function of the R's `dplyr` package that is bundled with other packages in the `tidyverse` package. Let's take a look at the first 10  rows of the `xs` data frame and some of the variables we'll be using here. Variable names appear in the first row of the output below and participant ID codes appear in the first column. 
 
 ```{r, message=FALSE, warning=FALSE, cache=TRUE}
+
 xs_select <- select(xs, PID, camos, wordtotal, csex, cbirth_weight_grams, 
                     cbirth_order, region)
 head(xs_select, 10)
 ```
 
-# The plots
+## Participation requests
 
-## Distribution of participation requests
-
-The first question researchers thinking of doing a study such as this might ask is, _How long did it take to recruit participants to this project?_ Let's create a plot to find out. To do this, we'll use the `requests` data frame we created above. That data frame contains two variables: an identififation number for each individual who requested to participate in the study and the date emailed a password to the parent. The box below shows you the structure of the data frame, followed by the first 10 rows of the data frame. If you're new to R, a **data frame** is a special kind of **object** that gets created from a set of data (that may have been imported from a spreadsheet, for example). Objects such as this are listed in the Enviroment tab of RStudio and contain data that can be viewed, described and analysed.
+The first question researchers thinking of doing a study such as this might ask is, _How long did it take to recruit participants for the project?_ Let's create a plot to find out. To do this, we'll use the `requests` data frame we created above. That data frame contains two variables: an identififation number for each individual who requested to participate in the study and the date emailed a password to the parent. The box below shows you the structure of the data frame, followed by the first 10 rows of the data frame. If you're new to R, a **data frame** is a special kind of **object** that gets created from a set of data (that may have been imported from a spreadsheet, for example). Objects such as this are listed in the Enviroment tab of RStudio and contain data that can be viewed, described and analysed.
 
 ```{r}
 
@@ -148,15 +147,17 @@ plot(cumfreq, xlab = "Month of Data Collection",
 lines(cumfreq)
 ```
 
-## Distribution of birth weight
+# Sample representativeness
 
-Why plot the distribution of children's birth weights? The children in the sample were not randomly selected from the population since there wasn't a mechanism available to us for doing that in New Zealand. However, since one of the project's main goals was to develop a population model of children's early language development (e.g., percentile tables for measures of early vocabulary and grammar), we need to know whether our sample is representative of the larger population. 
+The children in the sample were not randomly selected from the population since there wasn't a mechanism available to us for doing that in New Zealand. However, since one of the project's main goals was to develop a population model of children's early language development (e.g., percentile tables for measures of early vocabulary and grammar), we need to know whether our sample is representative of the larger population. 
 
-One way of doing this is to compare relevant demographic characteristics of the sample with those of the population. However, this can only be done for the same measures available in the sample and the population. Anticipating this during the study's planning stage, and knowing that the best source of population-level data available are national census data, we designed as many most of the demographic questions on our Parent Questionnaire using identical wording to questions asked by [Stats NZ](https://www.stats.govt.nz) for the 2013 New Zealand Census. 
+One way of doing this is to compare relevant demographic characteristics of the sample with those of the population. However, this can only be done for the same measures available in the sample and the population. Anticipating this during the study's planning stage, and knowing that the best source of population-level data available are national census data, we designed most of the demographic questions on our Parent Questionnaire using identical wording to questions on the form used by [Stats NZ](https://www.stats.govt.nz) for the 2010 New Zealand Census. 
 
-In looking at which variables from our study could be compared to census-level results to gauge how representative our sample was, three variables come to mind: the child's birth weight, geographical region of residence and parent education level. Let's see how each of those compares with the national census data (to do...).
+In looking at which variables from our study could be compared to census-level results to gauge how representative our sample was, three variables come to mind: the child's birthweight, geographical region of residence and parent education level. Let's see how each of those compares with the national census data (to do...).
 
-The `ggplot2` package was used to make a **histogram** of children's reported birth weight. To plot any histogram, a decision has to be made about the bin width of the dependent variable--in this case birth weight. While this is easy to do for categorical variables, like sex or birth order, making a histogram of a continuous variable like birth weight requires a decision about how to divide a continuous variable into somewhat arbitrary categories, or _bins-. In the example below, we specified a bin width of 500 grams: `scale_x_continuous("\nBirth weight (grams)", breaks = seq(500, 5500, 500))`.
+## Birthweight: full sample
+
+The `ggplot2` package was used to make a **histogram** of children's reported birthweight. To plot any histogram, a decision has to be made about the bin width of the dependent variable--in this case birthweight. While this is easy to do for categorical variables, like sex or birth order, making a histogram of a continuous variable like birthweight requires a decision about how to divide a continuous variable into somewhat arbitrary categories, or _bins-. In the example below, we specified a bin width of 500 grams: `scale_x_continuous("\nBirth weight (grams)", breaks = seq(500, 5500, 500))`.
 
 ```{r, message=FALSE, warning=FALSE, cache=TRUE}
 
@@ -169,13 +170,14 @@ library(RColorBrewer)
 ggplot(xs, aes(x = cbirth_weight_grams)) +
   geom_histogram(binwidth = 100, fill = "cornsilk", colour = "grey60") +
   scale_x_continuous("\nBirth weight (grams)", breaks = seq(500, 5500, 500)) +
+  labs(y = "Number of Births") +
   theme_few() +
   labs(caption = "Source: KidsWords project")
 ```
 
 An alternative to binning a continuous variable is to plot a **kernel density curve**. We've done that in the next figure and overlaid it on the histogram. These are probability curves, with the area under the curve equal to 1, and they are sometimes referred to as smoothed histograms.
 
-We also added a vertical line indicating the median birth weight of children in the sample (`r median(xs$cbirth_weight_grams, na.rm = TRUE)` grams). The instruction to include the median value was specified with the `geom_vline( )` function. 
+We also added a vertical line indicating the median birthweight of children in the sample (`r median(xs$cbirth_weight_grams, na.rm = TRUE)` grams). The instruction to include the median value was specified with the `geom_vline( )` function. 
 
 ```{r, message=FALSE, warning=FALSE, cache=TRUE}
 
@@ -194,7 +196,9 @@ ggplot(xs, aes(x = cbirth_weight_grams, y = ..density..)) +
   labs(caption = "Source: KidsWords project")
 ```
 
-The next step is to see how the distribution of birthweights in our sample compares with that of the New Zealand population. After the next plot, we'll do that.
+The next step is to see how the distribution of birthweight in our sample compares with that of the New Zealand population. After the next plot, we'll do that.
+
+## Birthweight: girls and boys
 
 **Kernel density curves** are also useful for comparing subgroups. Let's look at how girls and boys compare using this kind of plot.
 
@@ -203,7 +207,7 @@ The next step is to see how the distribution of birthweights in our sample compa
 library(ggplot2)
 library(RColorBrewer)
 
-# calculate median birth weight of girls and boys
+# calculate median birthweight of girls and boys
 df_girls <- filter(xs, csex == "Girl")
 df_boys <- filter(xs, csex == "Boy")
 wt_girls <- median(df_girls$cbirth_weight_grams, na.rm = TRUE)
@@ -218,7 +222,7 @@ ggplot(xs, aes(x = cbirth_weight_grams, fill = csex)) +
   labs(caption = "Source: KidsWords project")
 ```
 
-We see from the plot above that the two distributions overlap to a large degree, with boys' birth weights shifted slightly to the right. The appearance of this plot differs from previous ones in that the variable name is used to label the x-axis since axis labels default to variable names in R unless otherwise specified. And unlike in previous plots, light grey reference lines were added to the backgound of the plot. This grid and other changes to the appearance of the graph were specified using ggplot's `theme_bw()` function. Previous plots used the `theme_few()` function from the `ggthemes` package.
+We see from the plot above that the two distributions overlap to a large degree, with boys' birthweight shifted slightly to the right. The appearance of this plot differs from previous ones in that the variable name is used to label the x-axis since axis labels default to variable names in R unless otherwise specified. And unlike in previous plots, light grey reference lines were added to the backgound of the plot. This grid and other changes to the appearance of the graph were specified using ggplot's `theme_bw()` function. Previous plots used the `theme_few()` function from the `ggthemes` package.
 
 How does our sample compare to the population? The reason for asking is to help us decide whether our sample (_N_ = `r nrow(xs)`) might have been affected by [self-selection bias](http://sphweb.bumc.bu.edu/otlt/MPH-Modules/EP/EP713_Bias/EP713_Bias_print.html). This is a distinct possibility since our sample was recruited by making the public aware of the project, but whether they actually paricipated or not was their decision.
 
@@ -227,9 +231,11 @@ In its [Report on Maternity](https://www.health.govt.nz/publication/report-mater
 - _the average birthweight was 3.42 kilograms, with female babies weighing less on average (3.37 kg) than male babies (3.47 kg)_ and
 - _1.8% of full-term  babies were born with a low birthweight (< 2.5 kg)._
 
-In our sample, the median birth weight of girls was `r round(wt_girls / 1000, 2)` kg and the median birth weight of boys was `r round(wt_boys / 1000, 2)` kg. Before drawing any conclusion, we need to find out whether the Ministry used medians or means when they said _average_. But in any case, any difference between our sample and the whole population is likely to be very small.
+In our sample, the median birthweight of girls was `r round(wt_girls / 1000, 2)` kg and the median birthweight of boys was `r round(wt_boys / 1000, 2)` kg. Before drawing any conclusion, we need to find out whether the Ministry used medians or means when they said _average_. But in any case, any difference between our sample and the whole population is likely to be very small.
 
-Now, just for fun, let's compare the birth weight of singletons and twins in the sample. We might predict that, on average, the birth weight of twins would be less than that of singletons. 
+## Birthweight: twins and singletons
+
+Now, just for fun, let's compare the birthweight of singletons and twins in the sample. We might predict that, on average, the birthweight of twins would be less than that of singletons. 
 
 ```{r, message=FALSE, warning=FALSE, cache=TRUE}
 
@@ -245,19 +251,23 @@ ggplot(xs, aes(x = cbirth_weight_grams, fill = ctwin)) +
 
 That appears to be the case in the plot above. If you compare the R code for this plot and the previous one, only one element is different. In the plot of girls and boys, the ggplot function included the `aesthetic` element, `fill = csex`, while in the plot of twins and singletons, that was changed to `fill = ctwin`. Easy!
 
+## Birthweight: ethnicity
+
 Now, let's create a **kernel density plot** of birthweight. 
-This time, we'll compare children of different ethnicities. Each respondent was asked on the PQ to identify the child's ethnicity.
-Before we create a plot, let's calculate the number of children in each ethnic group using R's `summary` function. 
+This time, we'll compare children of different ethnicities. Each respondent was asked to identify their child's ethnicity on the PQ.
+Before we create a plot, let's look at the number of children in each ethnic group using the `summary` function. 
 
 ```{r, message=FALSE, warning=FALSE, cache=TRUE}
 summary(xs$cethnicity_nz)
 ```
 
-As expected, we see that those of New Zealand European descent (Pākehā) and Māori comprised a majority of the children in the sample. Excluding those who didn't report the child's ethnicity (designated in the output above with the category `NA's`), and combining the remaining groups into summary categories used by Stats NZ, we're now ready to make a plot.
+As expected, we see that children of New Zealand European descent (Pākehā) and Māori comprised a majority of the sample. Excluding those who didn't report ethnicity (designated in the output above as `NA's`), and combining the remaining groups into summary categories used by Stats NZ, we're now ready to make a plot.
 
-Pākehā (New Zealanders of European descent) and Māori babies had different birth weights. Children's ethnicity on the Parent Questionnaire was coded with the variable, `cethnicity_nz`, so we need to find only children from those two ethnic groups in the `xs` data frame for our plot. This is done with `dplyr`'s `filter()` function and the Boolean operator for "or", which is `|`.
+In the script below, we begin by selecting the variables we need and put them into a new data frame called `xs_ethnic` using the `select` function from `dplyr`. We want the participant ID variable (`PID`) and the variables coding birthweight (`cbirth_weight_grams`) and ethnicity (`cethnicity_nz`). 
 
-In the R script below, let's only select the variables we need, ply each participant's ID code, `PID`, for the plot and put those variables into a separate data frame. You don't have to this, but there's no harm since a data frame is just a virtual **object** that takes up some memory. When we're finished with the new (temporary) data frame, we can remove it from RStudio's Global Environment if we don't need it anymore.
+Then, we create a new variable in the `xs_ethnic` data frame called `cethnicity_nz2` from the original variable, `cethnicity_nz`, using the `mutate` function from `dplyr`. I want to reduce the original eight ethnicity categories to four by combining those with smaller numbers to simplify the presentation of the kernel density curves. We can then compare four curves instead of eight.
+
+Finally, we create two versions of the same plot and this is what we get.
 
 ```{r, message=FALSE, warning=FALSE, cache=TRUE}
 
@@ -284,16 +294,27 @@ xs_ethnic$cethnicity_nz2 <- recode(xs_ethnic$cethnicity_nz2,
 # remove rows with missing ethnicity data using R's base syntax
 xs_ethnic <- xs_ethnic[!is.na(xs_ethnic$cethnicity_nz2), ]
 
+# the cowplot package can be used to place two graphs side-by-side
+library(cowplot)
+
 # create density curves using geom_density() 
-ggplot(xs_ethnic, aes(x = cbirth_weight_grams, fill = cethnicity_nz2)) +
-  geom_density() + #alpha = 0.2
+plot1 <- ggplot(xs_ethnic, aes(x = cbirth_weight_grams, fill = cethnicity_nz2)) +
+  geom_density() +
   theme_bw() +
-  labs(caption = "Source: KidsWords project")
+  theme(legend.position = "none") 
+
+# change the curves' opacity 
+plot2 <- ggplot(xs_ethnic, aes(x = cbirth_weight_grams, fill = cethnicity_nz2)) +
+  geom_density(alpha = 0.2) + 
+  labs(y = "") +
+  theme_bw() +
+  theme(legend.position = "none")
+
+# display these side-by-side
+plot_grid(plot1, plot2, labels = "AUTO")
 ```
 
-Well, that graph's not terribly informative since the curves overlap so much. 
-
-Let's try another approach, replacing the `geom_density()` function with `geom_line()`, and see what happens.
+Plot A on the left isn't terribly informative since the four curves overlap, making it impossible to see the shape of their distributions due to the solid colors used. Perhaps we can improve things by reducing the opacity of the colors. We do this by adding an argument to the `geom_density()` function, so that it gets specified as `geom_density(alpha = 0.2)`. Plot B on the right shows the result. While the curve of each group is now somewhat easier to see, let's try another approach, replacing the `geom_density()` function with `geom_line(stat = "density")`. This approach will create the same curves but not fill them with color.
 
 ```{r, message=FALSE, warning=FALSE, cache=TRUE}
 # create density curves using geom_line()
@@ -303,13 +324,19 @@ ggplot(xs_ethnic, aes(x = cbirth_weight_grams, color = cethnicity_nz2)) +
   labs(caption = "Source: KidsWords project")
 ```
 
-That's more like it. Now we can see the density curve of each ethnic group more clearly, even though they overlap somewhat. 
+That's more like it. Now we can see the density curve of each group more clearly despite their overlap. 
 
 The reason for going to all this trouble was to have a graph to compare to population-level data from NZ Ministry of Health. (to do...add link or download MoH graph)
 
-## Distribution of vocabulary size by region
+## Birthweight: geographic region
 
-Let's create a special kind of boxplot called a **notched boxplot** using the base R function, `boxplot( )` to see whether the distribution of expressive vocabulary differs by region of the country. 
+## Birthweight: parent education
+
+# Expressive vocabulary size
+
+## Vocabulary size: geographic region
+
+Let's create a special kind of boxplot called a **notched boxplot** using the base R function, `boxplot( )` to see whether the distribution of expressive vocabulary size differs by region of the country. 
 
 ```{r, message=FALSE, warning=FALSE, cache=TRUE}
 
@@ -379,7 +406,7 @@ summary(xs_sub)
 # aov(xs_sub$wordtotal ~ xs$sub$region * xs_sub$csex)
 ```
 
-## Distribution of vocabulary size by age
+## Vocabulary size: age
 
 Let's give the base R function, `boxplot( )`, another try in making a notched boxplot. But first, a little more on what notched boxplots are. Although I haven't seen these used in child language research, Crawley (2013) and Chang (2019) illustrate them with R code. Notched boxplots visually depict the distribution of values of a dependent variable (e.g., vocabulary size). Group medians are represented by horizontal bars near the middle of each box, with the upper and lower limits of the 95% confidence interval of each median depicted by notches. The notches (confidence interval) of each box look like a waist cinched by a belt (the median). The length of each box represents the interquartile range,  extending from the 25th to 75th percentiles, as they do in garden variety boxplots. Asterisks indicate group means (confidence intervals for means are not represented). The lines extending above and below each box indicate values that are beyond $\pm$ 1.5 times the interquartile range. Circles indicate values beyond that range (outliers). Non-overlapping notches of any two groups give a visual impression of which groups are likely to have significantly different medians. 
 
@@ -397,7 +424,7 @@ mean_words <- aggregate(wordtotal ~ camos, xs, mean)
 points(mean_words$wordtotal, pch = "*")
 ```
 
-## Sample percentiles for vocabulary size
+## Vocabulary size: sample percentiles 
 
 Percentiles were calculated from the sample data for each month of age and plotted with a **line graph**. (to do: add explanation]
 
@@ -442,10 +469,10 @@ ggplot(qdflong, aes(x = factor(camos), y = score,
   scale_y_continuous(breaks=seq(0, 700, 100)) +
   labs(x = "\nAge in Months", y = "Vocabulary Size in Words\n", 
        colour = "Percentile") +
-  scale_colour_brewer(palette = "Dark2", guide = guide_legend(reverse = TRUE)) 
+  scale_colour_brewer(palette = "Dark2", guide = guide_legend(reverse = TRUE))
 ```
 
-## Smoothed percentiles for vocabulary size
+## Vocabulary size: smoothed percentiles
 
 This plot uses the `quantregGrowth` package to construct **smoothed (fitted) curves** to model growth in children's expressive vocabulary size from 16- to 30 months of age at the 10th, 25th, 50th, 75th and 90th percentiles. Each curve is accompanied by its 95% confidence interval. In the manuscript, separate plots for girls and boys are presented.
 (to do: add explanation for why these tell us something different from line graphs based on sample percentiles]
@@ -473,6 +500,8 @@ plot(vocab_curves, conf.level = .95, shade = TRUE,
      legend = TRUE, overlap = TRUE,
      lwd = 2, col = mypalette, lty = 1)
 ```
+
+# Lexicon 
 
 ## Most frequent words
 
@@ -587,7 +616,7 @@ ggplot(AoA_table, aes(x = camos, y = prop_said, colour = csex)) +
   labs(caption = "Source: KidsWords project")
 ```
 
-## to be continued...
+# to be continued...
 
 # About
 
