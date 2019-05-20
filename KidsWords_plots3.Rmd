@@ -46,7 +46,11 @@ I'm hopeful that the day will come when we look back at the era when this was no
 
 ## Audience
 
-I've written this for those who have little if any experience of doing research or creating plots with R. But it isn't an introduction to R itself, since many excellent resources are already available for that. I'll point you to some that have been useful to me at the end of the document (to do...). 
+I wrote this for those who have little if any experience of doing research or creating plots with R. But it isn't an introduction to R itself, since many excellent resources are already available for that. I'll point you to some that have been useful to me at the end of the document.
+
+[TODO: link to R resources]
+
+To be honest, I also wrote this for my future self so that I have a record of what I did as I explored the KidsWords data. It's not only a record of what I was thinking as I moved from one analysis to the next, it's also a catalog of the figures I made and _how_ I made them. 
 
 Since this is an HTML file, the length of text lines will automatically adjust when you view it on different devices. However, the text appearing in boxes sometimes wraps if the screen display is too small, and might not be clear, so I recommend viewing this on a large enough screen so that wrapping doesn't interfere with the text in the boxes.
 
@@ -58,7 +62,9 @@ The sets of instructions (chunks of R code) for making each plot are presented b
 
 [R](https://www.r-project.org) was used to process the raw data downloaded from an SQL database on the server hosting the KidsWords website and a local database on my computer. R was used to analyse the data and create plots and tables. [R Markdown](https://rmarkdown.rstudio.com/lesson-1.html) was used as the markup language in the document you're reading and [RStudio](http://www.rstudio.com) was used, via the `knitr` package to render what I wrote into HTML without having to use any HTML code. RStudio was the tool that integrated all this and uploaded it to the [KidsWords repository on GitHub](https://github.com/thomasklee). 
 
-The data analyses and plots presented in this document are not in final form. They are suggestive of the final results but presented here for the purpose of illustrating how the plots were made. The source document (an R Markdown file) behind the HTML file you're reading does not contain any numbers or plots copied ot er-typed into it from other sources. The source document was written dynamically, meaning that if something gets changed in the data pipeline (e.g., a data point or coding error gets corrected), all the results and plots get updated automatically without any intervention from me. _The last two sentences are worth reading again!_ Thinking about your data preparation, data analysis and manuscript preparation work flow before you begin your project will pay off in the long run. This is another reason for using R, RStudio and a markup language like R Markdown or LaTeX as you write. If you want to see the source document that generated the HTML document you're reading, it will be uploaded to GitHub soon (to do...). 
+The data analyses and plots presented in this document are not in final form. They are suggestive of the final results but presented here for the purpose of illustrating how the plots were made. The source document (an R Markdown file) behind the HTML file you're reading does not contain any numbers or plots copied ot er-typed into it from other sources. The source document was written dynamically, meaning that if something gets changed in the data pipeline (e.g., a data point or coding error gets corrected), all the results and plots get updated automatically without any intervention from me. _The last two sentences are worth reading again!_ Thinking about your data preparation, data analysis and manuscript preparation work flow before you begin your project will pay off in the long run. This is another reason for using R, RStudio and a markup language like R Markdown or LaTeX as you write. If you want to see the source document that generated the HTML document you're reading, it will be uploaded to GitHub soon.
+
+[TODO: add GitHub link]
 
 Let's get started.
 
@@ -153,7 +159,9 @@ The children in the sample were not randomly selected from the population since 
 
 One way of doing this is to compare relevant demographic characteristics of the sample with those of the population. However, this can only be done for the same measures available in the sample and the population. Anticipating this during the study's planning stage, and knowing that the best source of population-level data available are national census data, we designed most of the demographic questions on our Parent Questionnaire using identical wording to questions on the form used by [Stats NZ](https://www.stats.govt.nz) for the 2010 New Zealand Census. 
 
-In looking at which variables from our study could be compared to census-level results to gauge how representative our sample was, three variables come to mind: the child's birthweight, geographical region of residence and parent education level. Let's see how each of those compares with the national census data (to do...).
+In looking at which variables from our study could be compared to census-level results to gauge how representative our sample was, several variables come to mind: the child's birthweight, geographical region of residence and parent education level. Let's see how each of those compares with the national census data.
+
+[TODO:
 
 ## Birthweight: full sample
 
@@ -226,14 +234,14 @@ We see from the plot above that the two distributions overlap to a large degree,
 
 How does our sample compare to the population? The reason for asking is to help us decide whether our sample (_N_ = `r nrow(xs)`) might have been affected by [self-selection bias](http://sphweb.bumc.bu.edu/otlt/MPH-Modules/EP/EP713_Bias/EP713_Bias_print.html). This is a distinct possibility since our sample was recruited by making the public aware of the project, but whether they actually paricipated or not was their decision.
 
-In its [Report on Maternity](https://www.health.govt.nz/publication/report-maternity-2010), New Zealand's Ministry of Health stated that, for the calendar 2010,
+The New Zealand Ministry of Health's [Report on Maternity](https://www.health.govt.nz/publication/report-maternity-2010) indicated that in 2010,
 
 - _the average birthweight was 3.42 kilograms, with female babies weighing less on average (3.37 kg) than male babies (3.47 kg)_ and
 - _1.8% of full-term  babies were born with a low birthweight (< 2.5 kg)._
 
-In our sample, the median birthweight of girls was `r round(wt_girls / 1000, 2)` kg and the median birthweight of boys was `r round(wt_boys / 1000, 2)` kg. Before drawing any conclusion, we need to find out whether the Ministry used medians or means when they said _average_. But in any case, any difference between our sample and the whole population is likely to be very small.
+In our sample, the median birthweight of girls was `r round(wt_girls / 1000, 2)` kg and the median birthweight of boys was `r round(wt_boys / 1000, 2)` kg. Before drawing any conclusions, we need to find out whether the Ministry used medians or means when they said _average_. Regardless, any difference between our sample and the population is likely to be very small.
 
-## Birthweight: twins and singletons
+## Birthweight: twins
 
 Now, just for fun, let's compare the birthweight of singletons and twins in the sample. We might predict that, on average, the birthweight of twins would be less than that of singletons. 
 
@@ -258,6 +266,7 @@ This time, we'll compare children of different ethnicities. Each respondent was 
 Before we create a plot, let's look at the number of children in each ethnic group using the `summary` function. 
 
 ```{r, message=FALSE, warning=FALSE, cache=TRUE}
+
 summary(xs$cethnicity_nz)
 ```
 
@@ -317,6 +326,7 @@ plot_grid(plot1, plot2, labels = "AUTO")
 Plot A on the left isn't terribly informative since the four curves overlap, making it impossible to see the shape of their distributions due to the solid colors used. Perhaps we can improve things by reducing the opacity of the colors. We do this by adding an argument to the `geom_density()` function, so that it gets specified as `geom_density(alpha = 0.2)`. Plot B on the right shows the result. While the curve of each group is now somewhat easier to see, let's try another approach, replacing the `geom_density()` function with `geom_line(stat = "density")`. This approach will create the same curves but not fill them with color.
 
 ```{r, message=FALSE, warning=FALSE, cache=TRUE}
+
 # create density curves using geom_line()
 ggplot(xs_ethnic, aes(x = cbirth_weight_grams, color = cethnicity_nz2)) +
   geom_line(stat = "density") +
@@ -326,17 +336,229 @@ ggplot(xs_ethnic, aes(x = cbirth_weight_grams, color = cethnicity_nz2)) +
 
 That's more like it. Now we can see the density curve of each group more clearly despite their overlap. 
 
-The reason for going to all this trouble was to have a graph to compare to population-level data from NZ Ministry of Health. (to do...add link or download MoH graph)
+The reason for going to all this trouble was to be able to compare our sample data to population-level data from the NZ Ministry of Health. 
 
-## Birthweight: geographic region
+[TODO: add link or download MoH graph]
 
-## Birthweight: parent education
+## Birthweight: education
+
+## Children's first names
+
+In thinking about how other data we collected could be used to evaluate how closely our sample reflects the wider population of New Zealand, here's an idea that's admitedly a little out-there. What if we compared the popularity of children's first names in the KidsWords sample and in the population? If the correlation between the two is greater than zero, it might be plausible to argue that the children in our non-random sample represented the wider population reasonably well. If the two variables aren't correlated, we might conclude that our self-selected sample differed from the population in some systematic ways.
+
+To do this, we need to find out when the children in our sample were born---and how many were born in each year.
+
+```{r, message=FALSE, warning=FALSE, cache=TRUE}
+
+# load packages
+library(tidyverse)
+library(lubridate)
+
+# load data into data frame called CDIPQ using (tidyverse) readr's 
+# read_csv() instead of read.csv() so that dates don't get changed
+# to factors
+CDIPQ <- read_csv("analysis/data/data_CDIPQ.csv")
+
+# filter subset of CDIPQ data into xs
+xs <- CDIPQ %>% 
+  filter(session == 1,  camos >= 16 & camos <= 30, mono_env == "yes")
+
+# display class of DOB variable
+class(xs$DOB)
+
+# display earliest and latest birth dates in the sample
+range(xs$DOB)
+
+# calculate how many children were born in each year
+birthyear <- xs %>%
+  select(DOB) %>% 
+  group_by(year(DOB)) %>% 
+  summarise(Total = n())
+
+# display results
+birthyear
+```
+
+Since there were so few children born during the first and last years of data collection,  we'll restrict the comparison to those born in 2010, 2011, 2012 and 2013. That way, population data from 2009 and 2014 won't be over-represented when making the sample-population comparison. 
+
+### Population data {-}
+
+Before we go any farther, we need to see whether any population data on babies' names are available. 
+
+Shortly after the birth of a baby, parents register the birth and the name they have chosen for their baby with the
+[NZ Department of Internal Affairs](https://www.govt.nz/browse/family-and-whanau/having-a-baby/registering-a-new-baby-and-getting-a-birth-certificate/#how-to-register-your-baby). The Department then makes available a spreadsheet of the number of times the 100 most popular names were registered. The spreadsheet of the [Top 100 Boys' and Girls' Names from 1954 to 2017](https://smartstart.services.govt.nz/assets/files/Top-100-girls-and-boys-names-since-1954.xlsx) will provide the population data we need for our analysis. 
+
+I copied-and-pasted relevant columns from the spreadsheet into another spreadsheet, saved it as a CSV file and read that file into R, creating a data frame called `survey_names`. Copying-and-pasting data from one place to another isn't something I recommend since errors can occur, but I wanted the data quickly and didn't take time to learn how to extract the data directly from the original spreadsheet in a reproducible way. Learning how to do this is now on my TODO list.
+
+The `survey_names` data frame is used below to see what the most popular names of babies were during the years of interest to us. The names of girls and boys are analysed separately. 
+
+```{r, message=FALSE, warning=FALSE, cache=TRUE}
+
+# load package
+library(tidyverse)
+library(lubridate)
+
+# load data from NZ DIA spreadsheet into a data frame called pop_names
+pop_names <- read.csv("analysis/data/popdata/nzdia_names.csv")
+
+# count names of girls born in NZ from 2010 through 2013
+pop_girls <- pop_names %>%
+  filter(csex == "girl", source == "nzdia",
+         year > 2009 & year < 2014) %>%
+  group_by(source, firstname) %>% 
+  summarise(n = sum(n)) %>% 
+  arrange(desc(n))
+
+head(pop_girls, 15)
+
+# count names of boys born in NZ from 2010 through 2013
+pop_boys <- pop_names %>%
+  filter(csex == "boy", source == "nzdia",
+         year > 2009 & year < 2014) %>%
+  group_by(source, firstname) %>% 
+  summarise(n = sum(n)) %>% 
+  arrange(desc(n))
+
+head(pop_boys, 15)
+```
+
+### Sample data {-}
+
+Next we need to construct a data frame containing the names of the children in the KidsWords sample. The variables we need are in two separate CSV files since children's names were removed during the data preparation stage to anonymise the data. We'll put children's first names and some other information into a data frame called `names`. We'll then grab participant ID codes and DOBs from the `xs` data frame and put them into a second data frame called `dobs`. Finally, we'll merge `names` with `dobs`.
+
+```{r, message=FALSE, warning=FALSE, cache=TRUE}
+
+# load package
+library(tidyverse)
+library(lubridate)
+
+# create data frame by reading in raw data from Parent Questionnaires;
+# CSV file surnames and other identifying information have been removed
+sample_names <- read.csv("analysis/data/data_names.csv")
+
+# create new factor to identify source of data
+sample_names <- sample_names %>% 
+  mutate(source = "sample")
+
+# change variable from character to factor
+sample_names$source <- as.factor(sample_names$source)
+
+# get each child's DOB from the xs data frame;
+dobs <- xs %>% 
+  select(PID, DOB)
+
+# merge DOB from dobs with names
+sample_names <- inner_join(sample_names, dobs, by = "PID")
+
+# regularize spelling by forcing first names to begin with capital letter;
+# uses function from stringr package (part of tidyverse)
+sample_names$firstname <- str_to_title(sample_names$firstname, locale = "en")
+
+# remove PID and save for subsequent use
+sample_names <- sample_names %>% 
+  select(source, firstname, csex, DOB) %>% 
+  write.csv("analysis/data/sample_names.csv")
+
+# load anonymised data file and display first 6 rows
+sample_names <- read.csv("analysis/data/sample_names.csv")
+head(sample_names)
+```
+
+Let's count the names of girls in the sample and order them in terms of popularity. Then we'll do the same for boys.
+
+```{r, message=FALSE, warning=FALSE, cache=TRUE}
+
+# count and order names of girls born in NZ from 2010 through 2013
+sample_girls <- sample_names %>%
+  select(firstname, csex, source, DOB) %>% 
+  filter(!is.na(firstname)) %>% 
+  filter(csex == "Girl", source == "sample", 
+         year(DOB) > 2009 & year(DOB) < 2014) %>% 
+  count(firstname, sort = TRUE)
+
+head(sample_girls, 15)
+
+# count and order names of boys born in NZ from 2010 through 2013
+sample_boys <- sample_names %>%
+  select(firstname, csex, source, DOB) %>% 
+  filter(!is.na(firstname)) %>% 
+  filter(csex == "Boy", source == "sample", 
+         year(DOB) > 2009 & year(DOB) < 2014) %>% 
+  count(firstname, sort = TRUE)
+
+head(sample_boys, 15)
+```
+
+Before examining the relationship between the popularity of names in the sample and the population, data from the sample and population data frames need to be combined. From that, we can then calculate the two correlations we've been working hard to get. 
+
+Having posed an _a priori_ research question (i.e. _before_ looking at the data) to help us draw a conclusion about how representative our non-random sample is of the population, the moment of truth has finally arrived. 
+
+```{r, message=FALSE, warning=FALSE, cache=TRUE}
+
+# load packages
+library(tidyverse)
+
+# merge boys' firstnames, population counts and sample counts 
+# into single data frame
+boynames <- full_join(pop_boys, sample_boys, by = "firstname")
+
+# calculate Spearman's correlation coefficient for boys
+boy_results <- cor.test(boynames$n.x, boynames$n.y)
+boy_results
+
+# repeat for girls' firstnames
+girlnames <- full_join(pop_girls, sample_girls, by = "firstname")
+
+# calculate Spearman's correlation coefficient for girls
+girl_results <- cor.test(girlnames$n.x, girlnames$n.y)
+girl_results
+```
+
+### Conclusions {-}
+
+The popularity of boys' names in the sample was strongly correlated with the popularity of names in the NZ population, _r_ = `r round(boy_results$estimate, digits = 2)` (95% confidence interval (CI) = `r round(boy_results$conf.int, digits = 2)`). There was also a strong correlation between the sample and population data with respect to girls' names, _r_ = `r round(girl_results$estimate, digits = 2)` (95% CI = `r round(girl_results$conf.int, digits = 2)`). I don't think people actually say, _"Eureka"_ any more, but that's the word that comes to mind! Quite frankly, I didn't know how this analysis was going to turn out. A zero correlation could have sunk any claim we could make regarding the representativeness of our data, and by extension, whether we could generalise the results of this study to the population. And that's a key question when using sample data to establish developmental norms. So as to moderate my enthusiasm, let's conclude by saying that this is one important piece of evidence suggesting that our sample data is representative of children in the NZ population.
 
 # Expressive vocabulary size
 
-## Vocabulary size: geographic region
+## Vocabulary size: region
 
-Let's create a special kind of boxplot called a **notched boxplot** using the base R function, `boxplot( )` to see whether the distribution of expressive vocabulary size differs by region of the country. 
+Now that we've explored some of the child and family characterisics of our sample, it's time to explore some of the language measures we collected. We'll begin by examining whether there was any regional variation in the size of children's expressive vocabularies. I don't have any reason to suspect there would be, but that's the point. Let's test that hunch. To get our bearings, we use R's `map` and `ggplot2` packages to locate and display a map of New Zealand. 
+
+[TODO: add 16 region boundaries]
+
+```{r, message=FALSE, warning=FALSE}
+# load package
+library(maps)
+library (tidyverse)
+
+# get NZ map and plot it
+nzmap <- map_data("nz")
+
+ggplot(nzmap,aes(x = long, y = lat, group = group)) +
+  geom_path() + 
+  labs(x = "Longitude", y = "Latitude") +
+  theme_bw()
+
+# to create an R function for a theme with background elements removed
+# use this instead of theme_bw() (https://r-graphics.org/chapter-miscgraph)
+theme_clean <- function(base_size = 12) {
+  require(grid)
+  theme_grey(base_size) %+replace%
+    theme(
+      axis.title = element_blank(),
+      axis.text = element_blank(),
+      panel.background = element_blank(),
+      panel.grid = element_blank(),
+      axis.ticks.length = unit(0, "cm"),
+      axis.ticks.margin = unit(0, "cm"),
+      panel.margin = unit(0, "lines"),
+      plot.margin = unit(c(0, 0, 0, 0), "lines"),
+      complete = TRUE
+          )
+}
+```
+
+Now, let's create a special kind of boxplot called a **notched boxplot** using the base R function, `boxplot( )` to see whether the distribution of expressive vocabulary size differs by region of the country. 
 
 ```{r, message=FALSE, warning=FALSE, cache=TRUE}
 
@@ -394,8 +616,7 @@ xs_sub <- select(xs_sub, region, wordtotal, csex, pedcat)
 
 summary(xs_sub)
 
-# to do
-
+# [TODO]
 # cross-tabulate region by sex
 # table(xs_sub$region, xs_sub$csex)
 
@@ -426,7 +647,9 @@ points(mean_words$wordtotal, pch = "*")
 
 ## Vocabulary size: sample percentiles 
 
-Percentiles were calculated from the sample data for each month of age and plotted with a **line graph**. (to do: add explanation]
+Percentiles were calculated from the sample data for each month of age and plotted with a **line graph**. 
+
+[TODO: add explanation]
 
 ```{r, message=FALSE, warning=FALSE, cache=TRUE}
 
@@ -446,7 +669,7 @@ q <- function(xs1) {
 } 
 
 # apply function to each age group using plyr
-# to do: convert plyr code line to tidyverse code)
+# [TODO: convert plyr code to dplyr code]
 library(plyr)
 qdf <- ddply(xs1, .(camos), q)
 head(qdf)
@@ -475,7 +698,8 @@ ggplot(qdflong, aes(x = factor(camos), y = score,
 ## Vocabulary size: smoothed percentiles
 
 This plot uses the `quantregGrowth` package to construct **smoothed (fitted) curves** to model growth in children's expressive vocabulary size from 16- to 30 months of age at the 10th, 25th, 50th, 75th and 90th percentiles. Each curve is accompanied by its 95% confidence interval. In the manuscript, separate plots for girls and boys are presented.
-(to do: add explanation for why these tell us something different from line graphs based on sample percentiles]
+
+[TODO: add explanation for why these tell us something different from line graphs based on sample percentiles]
 
 ```{r, message=FALSE, warning=FALSE, cache=TRUE}
 
