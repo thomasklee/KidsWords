@@ -4,9 +4,9 @@ KidsWords is an international collaborative research project on the early langua
 One of the aims of the project is to establish normative data for the New Zealand adaptation of the
 *MacArthur-Bates Communicative Development Inventory: Words & Sentences* (PDF version available above). Another aim is to examine factors thought to be associated with children's early vocabulary and grammatical development.
 
-Over 2,500 parents of toddlers between 16 and 30 months of age, from every region of New Zealand, participated and data were collected at http://kidswords.org. The website is no longer being used for data collection. 
+Over 2,500 parents of toddlers between 16 and 30 months of age, from every region of New Zealand, participated and data were collected online at kidswords.org (website no longer active).
 
-The purpose of this repository is to make our data analyses transparent and reproducible by others. Consequently, text-based R scripts and data files (CSV format) will be placed here as they become available.
+The purpose of this repository is to make our data analyses transparent and reproducible. To that end, text-based R scripts and data files (CSV format) will be placed here as they become available.
 
 ### Research Team
 
