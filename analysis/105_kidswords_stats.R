@@ -53,6 +53,8 @@ xs$pedcat2 <- relevel(xs$pedcat2, "qual")
 # OLS model 1: age-in-months on word total ------
 m1 <- lm(wordtotal ~ ccamos, data = xs)
 summary(m1)
+confint(m1)
+
 # diagnostic plots 
 layout(matrix(c(1,2,3,4),2,2)) # optional 4 graphs/page 
 plot(m1)
@@ -60,6 +62,8 @@ plot(m1)
 # OLS model 2: age and sex ----------------------
 m2 <- lm(wordtotal ~ ccamos + csex, data = xs)
 summary(m2)
+confint(m2)
+
 # diagnostic plots 
 layout(matrix(c(1,2,3,4),2,2)) # optional 4 graphs/page 
 plot(m2)
@@ -67,6 +71,8 @@ plot(m2)
 # OLS model 3: age, sex, other variables --------
 m3<- lm(wordtotal ~ ccamos + csex + cbirth_order + ctwin + pedcat2, data = xs)
 summary(m3)
+confint(m3)
+
 # diagnostic plots 
 layout(matrix(c(1,2,3,4),2,2)) # optional 4 graphs/page 
 plot(m3)
@@ -77,6 +83,15 @@ plot(m3)
 
 # model 4: reference case based on 1st born, singleton girl 
 # whose mother has an educational qualification:
-# best quess in terms of protective factors
-m4 <- rq(wordtotal ~ ccamos + csex + cbirth_order + ctwin + pedcat2, data = xs, tau = c(0.1, 0.25, 0.5, 0.75, 0.9))
+# best quess in terms of protective factors.
+# Calculate 3 taus for manuscript table.
+m4 <- rq(wordtotal ~ ccamos + csex + cbirth_order + ctwin + pedcat2, data = xs, tau = c(0.1, 0.5, 0.9))
 summary(m4)
+
+# plot coefficients and 95% CIs of model 4
+m4_coeff <- rq(wordtotal ~ ccamos + csex + cbirth_order + ctwin + pedcat2, data = xs, tau = seq(0.05, 0.95, by = .05))
+summary(m4_coeff)
+m4_coeff_plot <- summary(m4_coeff)
+plot(m4_coeff_plot)
+
+sessionInfo()
