@@ -20,7 +20,7 @@ library(quantreg)
 # to maintain variable types (eg factor, character, integer)
 # defined in 02_kidswords_dataprep.R
 
-# CDIPQ <- read.csv("data/data_CDIPQ.csv") 
+CDIPQ <- read.csv("data/data_CDIPQ.csv") 
 
 # select data for CDI normative study
 xs <- CDIPQ %>% 
@@ -36,7 +36,8 @@ xs$pedcat <- factor(xs$pedcat)
 
 # based on similarity of pedcat means, dichotomize pedcat
 # into 'qualification' or 'no qualification'
-xs$pedcat2 <- ifelse(xs$pedcat == "0", "noqual", "qual")
+# and define new variable as a factor
+xs$pedcat2 <- factor(ifelse(xs$pedcat == "0", "noqual", "qual"))
 
 # declare baseline (reference) categories
 # for regression analyses
