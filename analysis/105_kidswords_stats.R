@@ -78,17 +78,18 @@ layout(matrix(c(1,2,3,4),2,2)) # optional 4 graphs/page
 plot(m3)
 
 # -----------------------------------------------
-# Quantile regression models 
+# QR model 
 # -----------------------------------------------
 
 # model 4: reference case based on 1st born, singleton girl 
 # whose mother has an educational qualification:
 # best quess in terms of protective factors.
-# Calculate 3 taus for manuscript table.
+
+# create table for manuscript: QR coefficients at 3 quantiles
 m4 <- rq(wordtotal ~ ccamos + csex + cbirth_order + ctwin + pedcat2, data = xs, tau = c(0.1, 0.5, 0.9))
 summary(m4)
 
-# plot coefficients and 95% CIs of model 4
+# create figure for manuscript: plot QR coefficients and 95% CIs
 m4_coeff <- rq(wordtotal ~ ccamos + csex + cbirth_order + ctwin + pedcat2, data = xs, tau = seq(0.05, 0.95, by = .05))
 summary(m4_coeff)
 m4_coeff_plot <- summary(m4_coeff)
