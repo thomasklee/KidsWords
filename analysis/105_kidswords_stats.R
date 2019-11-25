@@ -3,7 +3,7 @@
 # Modelling vocabulary size with OLS and QR
 # Thomas Klee
 # Created: 2019-11-22
-# Updated: 2019-11-23
+# Updated: 2019-11-25
 # ---------------------------
 
 # This script constructs growth models of vocabulary size
