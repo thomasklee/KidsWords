@@ -3,7 +3,7 @@
 # Modelling vocabulary size with OLS and QR
 # Thomas Klee
 # Created: 2019-11-22
-# Updated: 2019-11-25
+# Updated: 2019-11-26
 # ---------------------------
 
 # This script constructs growth models of vocabulary size
@@ -94,5 +94,20 @@ m4_coeff <- rq(wordtotal ~ ccamos + csex + cbirth_order + ctwin + pedcat2, data 
 summary(m4_coeff)
 m4_coeff_plot <- summary(m4_coeff)
 plot(m4_coeff_plot)
+
+# print confidence intervals of QR coefficients
+summary(m4, se = "rank")
+
+# Notes about the confidence intervals used here:
+
+# For sample sizes under about 1000, quantreg's summary(x) function can be used to generate
+# confidence interals (see Koenker, 2005, p. 298). However, with our large sample, standard
+# errors were produced in the output. To get around this, the function above was used. 
+
+# From quantreg's help page for summary.rq:
+# se = "rank" was used since ... it produces confidence intervals for the estimated parameters 
+# by inverting a rank test as described in Koenker (1994). This method involves solving a 
+# parametric linear programming problem, and for large sample sizes can be extremely slow, 
+# so by default it is only used when the sample size is less than 1000, see below. 
 
 sessionInfo()
