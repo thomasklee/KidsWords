@@ -22,11 +22,11 @@ library(RColorBrewer)
 # to maintain variable types (eg factor, character, integer)
 # defined in 02_kidswords_dataprep.R
 
-CDIPQ <- read.csv("data/data_CDIPQ.csv") 
+# CDIPQ <- read.csv("data/data_CDIPQ.csv") 
 
-# select cross-sectional data for the normative study
+# select data for CDI normative study
 xs <- CDIPQ %>% 
-  filter(session == 1,  camos >= 16 & camos <= 30)
+  filter(session == 1,  camos >= 16 & camos <= 30, mono_env == "yes")
 
 # center values of continuous predictors on the mean 
 # so that intercept can be more easily interpreted;
@@ -123,7 +123,7 @@ xs$noqual <- if_else(xs$pedcat == "0", 1, 0)
 
 # reference case for model 3 based on 1st born girl, singleton with  
 # mother having at least a high school qualification;
-# age-in-months is entered as an independent variables
+# age-in-months is entered to predict vocabulary size
 
 # model 3: same as model 1, but predictors converted to dichotomous variables before being entered
 qr_m3 <- rq(wordtotal ~ camos + male + born_later + twin + noqual, data = xs, tau = seq(0.05, 0.95, by = .05))
