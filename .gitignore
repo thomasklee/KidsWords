@@ -13,7 +13,7 @@ KidsWords_user_children_20161201.csv
 *LTT*
 KidsWords Access Tables/
 *_unused_testcode.R
-analysis/data
-!analysis/data/*names.csv
+!analysis/data/boynames.csv
+!analysis/data/girlnames.csv
 qry*
 00_kidswords_dataprep.R
