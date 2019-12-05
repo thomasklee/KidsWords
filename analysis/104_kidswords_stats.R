@@ -220,4 +220,3 @@ boy_corr <- cor.test(boynames$population, boynames$sample,
 
 girl_corr <- cor.test(girlnames$population, girlnames$sample,
                          method = "pearson", alternative = "g")
-girl_corr
