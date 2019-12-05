@@ -3,7 +3,7 @@
 # Children's first names
 # Thomas Klee
 # Created: 2019-05-15
-# Revised: 2019-12-04
+# Revised: 2019-12-05
 # ---------------------------
 
 # This script creates counts of first names
@@ -188,6 +188,16 @@ rm(girlnames)
 boynames <- read_csv("data/boynames.csv")
 girlnames <- read_csv("data/girlnames.csv")
 
+# select variables
+boynames <- boynames %>%
+  select(firstname, population, sample)
+girlnames <- girlnames %>%
+  select(firstname, population, sample)
+
+# change character variables to factors (not really necessary)
+boynames$firstname <- as.factor(boynames$firstname)
+girlnames$firstname <- as.factor(girlnames$firstname)
+
 # display first 10 rows of each 
 head(boynames, 10)
 head(girlnames, 10)
@@ -210,3 +220,4 @@ boy_corr <- cor.test(boynames$population, boynames$sample,
 
 girl_corr <- cor.test(girlnames$population, girlnames$sample,
                          method = "pearson", alternative = "g")
+girl_corr
