@@ -17,3 +17,4 @@ KidsWords Access Tables/
 !analysis/data/girlnames.csv
 qry*
 00_kidswords_dataprep.R
+KidsWords_plots*.Rmd
