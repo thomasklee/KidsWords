@@ -1,3 +1,5 @@
+
+
 # KidsWords
 
 KidsWords is an international collaborative research project on the early language development of children growing up in New Zealand. 
@@ -7,6 +9,12 @@ One of the aims of the project is to establish normative data for the New Zealan
 Over 2,500 parents of toddlers between 16 and 30 months of age, from every region of New Zealand, participated and data were collected online at kidswords.org (website no longer active).
 
 The purpose of this repository is to make our data analyses transparent and reproducible. To that end, text-based R scripts and data files (CSV format) will be placed here as they become available.
+
+<center>
+
+![](images/gcrq_vocab_comb.jpeg)
+
+</center>
 
 ### Research Team
 
