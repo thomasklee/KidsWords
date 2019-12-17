@@ -1,20 +1,3 @@
----
-title: "Early Language Development of Children Learning New Zealand English"
-subtitle: "The KidsWords Project"
-author: ""
-date: "`r format(Sys.time(), '%Y-%m-%d')`"
-output: 
-  html_document:
-    theme: readable
-    toc: false
-    number_sections: false
-    toc_float: false
-    fig_caption: yes
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 ![](images/CMDS1836_Kids_Word_Banner.jpg)
 
 # Acknowledgements
