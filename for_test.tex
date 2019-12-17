@@ -1,0 +1,215 @@
+\documentclass[10pt,a4paper]{article}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+% \documentclass[jou,natbib]{apa6}
+% \usepackage{fullpage}
+\usepackage[latin1]{inputenc}
+\usepackage{booktabs}
+%\usepackage[toc, page]{appendix}
+
+\usepackage{graphicx}
+\usepackage{amsfonts, amsmath, amsthm, amssymb} % For math fonts, symbols and environments
+%\usepackage{textcomp} % for some math symbols
+%\usepackage{tikz}
+%\usepackage{tikzscale}
+%\usetikzlibrary{shapes,arrows,shadows}
+\usepackage{ctable} % for command-driven tables
+
+% load {hyperref} before {apacite}, but after {biblatex} if using that 
+\usepackage[colorlinks = true, linkcolor = blue, urlcolor = blue, citecolor = black]{hyperref} 
+\usepackage[natbibapa]{apacite}
+% \usepackage[backend=bibtex]{biblatex} % alternative to {natbib}? doesn't require \bibliographystyle?
+% \usepackage[sort]{natbib} % [sort]: no need to manually order citations
+
+\usepackage{longtable} % allows tables to span pages
+\usepackage{dcolumn} % aligns column numbers on the decimal point
+\usepackage[blocks]{authblk} % for listing multiple authors, institutions
+
+% to display R program symbol
+\newcommand{\R}{R}
+
+% load data file for statistical analyses in this document
+% replace file below if raw data changes; no need to change subsequent R code
+
+
+\title{Early Language Development of New Zealand Children: National Norms for English\footnote{Grant support was provided by the Marsden Fund of the Royal Society of New Zealand (UOC1003) and the CDI Advisory Board. The study commenced when authors TK, SFS and NW were at the University the Canterbury, Christchurch, NZ.}}
+
+\author[1]{Thomas Klee\footnote{Correspondnce: tomklee@hku.hk}}
+\author[1]{Stephanie F. Stokes}
+\affil[1]{University of Hong Kong}
+
+\author[2]{Elaine Reese}
+\affil[2]{University of Otago}
+
+\author[3]{Rune N\o rgaard J\o rgensen}
+\affil[3]{University of Southern Denmark}
+
+\author[4]{Dorthe Bleses}
+\affil[4]{Aarhus University}
+
+\author[5]{William J. Gavin}
+\affil[5]{Colorado State University}
+
+\author[6]{Nuttanan Witchitaksorn}
+\affil[6]{Auckland University of Technology}
+
+\date{\today}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+% combine two word combination categories (sometimes, often) into one
+
+
+% insert table of word combinations
+\ctable[caption = Percentage of children reported to be combining words$^{a}$, label = wordcomb
+        ]{crrr}{
+          \tnote[a]{\emph{Sometimes} and \emph{Often} responses combined.}
+        }{
+          \FL
+          Age & Girls (\%) & Boys (\%) & Total (\%) \ML
+
+          16 & 
+          37.8 &
+          19.8 &
+          30.3 \NN
+          
+          17 & 
+          44.0 &
+          30.4 &
+          37.1 \NN
+          
+          18 & 
+          59.6 &
+          35.5 &
+          47.4 \NN
+          
+          19 & 
+          69.3 &
+          53.3 &
+          61.1 \NN
+          
+          20 & 
+          82.8 &
+          54.5 &
+          67.6 \NN
+          
+          21 & 
+          79.3 &
+          74.4 &
+          76.9 \NN
+          
+          22 & 
+          87.5 &
+          75.3 &
+          81.6 \NN
+          
+          23 & 
+          85.7 &
+          85.9 &
+          85.8 \NN
+          
+          24 & 
+          92.9 &
+          88.0 &
+          90.6 \NN
+          
+          25 & 
+          96.2 &
+          83.3 &
+          89.7 \NN
+          
+          26 & 
+          94.7 &
+          89.3 &
+          92.0 \NN
+          
+          27 & 
+          93.9 &
+          94.7 &
+          94.3 \NN
+          
+          28 & 
+          94.9 &
+          84.2 &
+          89.7 \NN
+          
+          29 & 
+          96.7 &
+          92.2 &
+          94.6 \NN
+          
+          30 & 
+          100.0 &
+          92.9 &
+          96.4
+          
+          \LL
+        }
+
+[1] TRUE
+[1] TRUE
+NULL
+
+
+%\ctable[caption = Percentage of children reported to be combining words$^{a}$, label = wordcomb
+%        ]{crrr}{
+%          \tnote[a]{\emph{Sometimes} and \emph{Often} responses combined.}
+%        }{
+%          \FL
+%          Age & Girls (\%) & Boys (\%) & Total (\%) \ML
+%          testdata
+%          \LL
+
+%}
+
+\end{document}
