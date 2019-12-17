@@ -9,7 +9,9 @@ Over 2,500 parents of toddlers between 16 and 30 months of age, from every regio
 
 The purpose of this repository is to make our data analyses transparent and reproducible. To that end, text-based R scripts and data files (CSV format) will be placed here as they become available.
 
+<p align="center">
 ![](images/gcrq_vocab_comb.jpg)
+</p>
 
 ### Research Team
 
