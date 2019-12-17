@@ -5,9 +5,10 @@
 *.pdf
 !NZ-CDI-2012.pdf
 !NZCDIWS_percentiles.pdf
-acknowledgements.html
+acknowledgements.Rmd
 !PDFs/*.*
 *.html
+!acknowledgements.html
 KidsWords_cdi_replies_011216.csv
 Kidswords_sci_replies_011216.csv
 KidsWords_user_children_20161201.csv
