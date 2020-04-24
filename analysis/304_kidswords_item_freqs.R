@@ -47,11 +47,11 @@ p + theme_light() +
   scale_x_continuous(name = "\n Age in months", breaks = seq(16, 30, 2)) + 
   scale_y_continuous(name = "Proportion of children\n", limits = c(0, 1), breaks = seq(0, 1, .2)) +
   labs (title = "Reported predicate use based on NZ CDI:WS (N = 2,581) \n") +
-  geom_vline(xintercept = 24) +
+#  geom_vline(xintercept = 24) +
   geom_hline(yintercept = .8) +
-  facet_wrap_paginate(~CDI_item, ncol = 3, nrow = 8, page = 1)
+  facet_wrap_paginate(~CDI_item, ncol = 3, nrow = 3, page = 1)
 
 # save each page as PDF using RStudio Plot | Export
 
 # save plot as PDF
-# ggsave(filename = "figures/nouns_by_sex.pdf")
+ggsave(filename = "figures\predicate_items.pdf")
