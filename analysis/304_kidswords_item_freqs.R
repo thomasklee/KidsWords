@@ -6,12 +6,14 @@
 # Revised: 
 # ---------------------------
 
-# This script produces item frequencies and AoA plots for 
-# predicates and closed-class items
+# This script produces item frequencies and AoA plots for predicates
 
 # load packages
 library(tidyverse)
 library(ggforce) # for output pagination
+
+# get data
+CDI_words <- read.csv("data/data_CDI_words.csv")
 
 # select predicates from full data set
 predlist <- CDI_words %>%
@@ -21,27 +23,30 @@ predlist <- CDI_words %>%
   filter(field == 14 | field == 15)
 
 # select closed-class items from full data set
-closedlist <- CDI_words %>%
-  select(session, camos, response, resp, CDI_item, field) %>%
-  filter(session == "1") %>%
-  filter(camos >= 16 & camos <= 30) %>%
-  filter(field == 17 | field == 18 | field == 19 |
-         field == 20 | field == 21 | field == 22)
+# closedlist <- CDI_words %>%
+#  select(session, camos, response, resp, CDI_item, field) %>%
+#  filter(session == "1") %>%
+#  filter(camos >= 16 & camos <= 30) %>%
+#  filter(field == 17 | field == 18 | field == 19 |
+#         field == 20 | field == 21 | field == 22)
 
 # summarise predicate data
 
-# create summary table:
-# proportion of kids producing each word by age
+# create summary table
+# proportion of kids producing each word at each month of age
 pred_table <- predlist %>%
   group_by(CDI_item, camos) %>% 
-  summarise(prop_said = mean(resp), n = length(resp))
+  summarise(prop_said = round(mean(resp), digits = 2), n = length(resp))
 
 pred_table <- as.data.frame(pred_table)
 
-# create graphs of each word
+# display summary table
+pred_table
+
+# create graphs for each word item
 pred_plots <- ggplot(data = pred_table, mapping = aes(x = camos, y = prop_said))
             
-p + theme_light() + 
+pred_plots + theme_light() + 
   geom_line() + 
   geom_point() + 
   scale_x_continuous(name = "\n Age in months", breaks = seq(16, 30, 2)) + 
@@ -54,4 +59,4 @@ p + theme_light() +
 # save each page as PDF using RStudio Plot | Export
 
 # save plot as PDF
-ggsave(filename = "figures\predicate_items.pdf")
+# ggsave(filename = "figures\predicate_items.pdf")
