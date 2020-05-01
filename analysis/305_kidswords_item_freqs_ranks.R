@@ -3,7 +3,7 @@
 # CDI item frequencies and ranks by age
 # Thomas Klee
 # Created: 2019-04-30
-# Revised: 
+# Revised: 2019-05-01
 # ---------------------------
 
 # This script calculates ranked item frequencies 
@@ -15,24 +15,44 @@ library(tidyverse)
 # get data
 CDI_words <- read.csv("data/data_CDI_words.csv")
 
-# select predicate items
-predicates <- CDI_words %>%
+# select action items
+action_items <- CDI_words %>%
   select(session, camos, response, resp, CDI_item, field) %>%
   filter(session == "1") %>%
   filter(camos >= 16 & camos <=30) %>%
-  filter(field == 14 | field == 15)
+  filter(field == 14)
 
 # create summary table
-pred_table <- predicates %>%
+action_table <- action_items %>%
   group_by(camos, CDI_item) %>% 
   summarise(n_said = sum(resp), prop_said = round(mean(resp), digits = 3), n = length(resp)) %>%
   arrange(camos, desc(prop_said))
 
-pred_table <- as.data.frame(pred_table)
+action_table <- as.data.frame(action_table)
 
 # display summary table
-pred_table
+action_table
 
+# ------------------------
+# select descriptive items
+descriptive_items <- CDI_words %>%
+  select(session, camos, response, resp, CDI_item, field) %>%
+  filter(session == "1") %>%
+  filter(camos >= 16 & camos <=30) %>%
+  filter(field == 15)
+
+# create summary table
+descriptive_table <- descriptive_items %>%
+  group_by(camos, CDI_item) %>% 
+  summarise(n_said = sum(resp), prop_said = round(mean(resp), digits = 3), n = length(resp)) %>%
+  arrange(camos, desc(prop_said))
+
+descriptive_table <- as.data.frame(descriptive_table)
+
+# display summary table
+descriptive_table
+
+# -------------------
 # select closed-class
 closedclass <- CDI_words %>%
 select(session, camos, response, resp, CDI_item, field) %>%
